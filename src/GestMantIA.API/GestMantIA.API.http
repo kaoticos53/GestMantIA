@@ -1,0 +1,6 @@
+@GestMantIA.API_HostAddress = http://localhost:5180
+
+GET {{GestMantIA.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

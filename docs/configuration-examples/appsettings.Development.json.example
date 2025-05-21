@@ -1,0 +1,27 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+  "Jwt": {
+    "Key": "ClaveSecretaMuyLargaYParaNadaSeguraEnEntornoDeDesarrollo",
+    "Issuer": "GestMantIA-API-Dev",
+    "Audience": "GestMantIA-Client-Dev",
+    "ExpireDays": 7,
+    "RefreshTokenExpireDays": 30
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Port=5432;Database=GestMantIA_Dev;Username=postgres;Password=postgres;"
+  },
+  "Cors": {
+    "AllowedOrigins": [
+      "http://localhost:5001",
+      "https://localhost:5002"
+    ]
+  },
+  "AllowInsecureHttp": true
+}
