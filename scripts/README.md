@@ -1,6 +1,31 @@
-# Scripts de CI/CD Local para GestMantIA
+# Scripts de Utilidad para GestMantIA
 
-Este directorio contiene los scripts necesarios para ejecutar un flujo de CI/CD local en tu máquina de desarrollo.
+Este directorio contiene scripts útiles para el desarrollo y mantenimiento del proyecto GestMantIA, incluyendo CI/CD local y generación de componentes.
+
+## Scripts Disponibles
+
+### New-Component.ps1
+
+Genera un nuevo componente basado en plantillas, incluyendo controladores, DTOs, comandos y pruebas unitarias.
+
+**Uso:**
+```powershell
+.\New-Component.ps1 -ComponentName "Product" -FeatureName "Inventory"
+```
+
+**Parámetros:**
+- `ComponentName`: Nombre del componente a generar (en singular, ej: "User").
+- `FeatureName`: (Opcional) Nombre de la característica. Por defecto es igual a ComponentName.
+
+**Ejemplo:**
+```powershell
+# Genera un componente de Producto dentro de la característica Inventory
+.\New-Component.ps1 -ComponentName "Product" -FeatureName "Inventory"
+```
+
+### CI/CD Local
+
+Scripts para ejecutar un flujo de CI/CD local en tu máquina de desarrollo.
 
 ## Requisitos
 
@@ -8,6 +33,20 @@ Este directorio contiene los scripts necesarios para ejecutar un flujo de CI/CD 
 - PowerShell Core 7+ (recomendado) o PowerShell 5.1+
 - Docker Desktop (con Docker Compose)
 - .NET 9.0 SDK
+
+## Plantillas
+
+Las plantillas se encuentran en el directorio `.templates` en la raíz del proyecto. Incluyen:
+
+- `dto.template.cs`: Plantilla para DTOs
+- `controller.template.cs`: Plantilla para controladores de API
+- `unittest.template.cs`: Plantilla para pruebas unitarias
+
+## Convenciones
+
+- Los nombres de los componentes deben estar en singular (ej: User, Product, Order)
+- Los nombres de las características deben ser descriptivos y estar en singular
+- Todas las rutas son relativas a la raíz del proyecto
 
 ## Configuración Inicial
 

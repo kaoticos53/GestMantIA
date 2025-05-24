@@ -7,10 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="12.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" />
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,6 @@
+D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\obj\Debug\net9.0\GestMantIA.Infrastructure.csproj.AssemblyReference.cache
+D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\obj\Debug\net9.0\GestMantIA.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\obj\Debug\net9.0\GestMantIA.Infrastructure.AssemblyInfoInputs.cache
+D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\obj\Debug\net9.0\GestMantIA.Infrastructure.AssemblyInfo.cs
+D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\obj\Debug\net9.0\GestMantIA.Infrastructure.csproj.CoreCompileInputs.cache
+D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\obj\Debug\net9.0\GestMantIA.Infrastructure.sourcelink.json

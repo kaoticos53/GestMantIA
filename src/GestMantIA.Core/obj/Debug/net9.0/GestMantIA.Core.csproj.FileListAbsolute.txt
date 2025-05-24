@@ -1,0 +1,13 @@
+D:\source\Repos\GestMantIA\src\GestMantIA.Core\bin\Debug\net9.0\GestMantIA.Core.deps.json
+D:\source\Repos\GestMantIA\src\GestMantIA.Core\bin\Debug\net9.0\GestMantIA.Core.dll
+D:\source\Repos\GestMantIA\src\GestMantIA.Core\bin\Debug\net9.0\GestMantIA.Core.pdb
+D:\source\Repos\GestMantIA\src\GestMantIA.Core\obj\Debug\net9.0\GestMantIA.Core.csproj.AssemblyReference.cache
+D:\source\Repos\GestMantIA\src\GestMantIA.Core\obj\Debug\net9.0\GestMantIA.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\source\Repos\GestMantIA\src\GestMantIA.Core\obj\Debug\net9.0\GestMantIA.Core.AssemblyInfoInputs.cache
+D:\source\Repos\GestMantIA\src\GestMantIA.Core\obj\Debug\net9.0\GestMantIA.Core.AssemblyInfo.cs
+D:\source\Repos\GestMantIA\src\GestMantIA.Core\obj\Debug\net9.0\GestMantIA.Core.csproj.CoreCompileInputs.cache
+D:\source\Repos\GestMantIA\src\GestMantIA.Core\obj\Debug\net9.0\GestMantIA.Core.sourcelink.json
+D:\source\Repos\GestMantIA\src\GestMantIA.Core\obj\Debug\net9.0\GestMantIA.Core.dll
+D:\source\Repos\GestMantIA\src\GestMantIA.Core\obj\Debug\net9.0\refint\GestMantIA.Core.dll
+D:\source\Repos\GestMantIA\src\GestMantIA.Core\obj\Debug\net9.0\GestMantIA.Core.pdb
+D:\source\Repos\GestMantIA\src\GestMantIA.Core\obj\Debug\net9.0\ref\GestMantIA.Core.dll

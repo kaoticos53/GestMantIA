@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\GestMantIA.Web.props" />
+</Project>
