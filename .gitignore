@@ -2,7 +2,7 @@
 bin/
 obj/
 appsettings*.json
-appsettings.*.json
+appsettings.*.json 
 
 # Archivos de entorno
 .env
