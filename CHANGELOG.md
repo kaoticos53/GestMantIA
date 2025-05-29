@@ -21,6 +21,10 @@ Este archivo documenta los cambios notables en el proyecto GestMantIA. El format
     - Error `CS1503` en `PersistenceServiceExtensions.cs` (conversión de grupo de métodos a `Action<string>` para `options.LogTo`). Solucionado usando una expresión lambda.
   - El proyecto `GestMantIA.API` ahora compila sin errores.
 
+### Cambiado
+- Eliminado el archivo `Class1.cs` (placeholder no utilizado) del proyecto `GestMantIA.Core`.
+- Añadido `README.md` a la carpeta `src/GestMantIA.Core/Entities` para documentar su propósito.
+
 
 ### Corregido
 - **Resolución de Errores de Compilación en Backend (`GestMantIA.API`)**:

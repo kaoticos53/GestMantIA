@@ -19,8 +19,8 @@ Este documento describe las tareas de refactorización planificadas para el proy
 
 ### 2.1. Limpieza y Organización General
 
-*   [ ] **2.1.1.** Eliminar el archivo `Class1.cs` (placeholder no utilizado).
-*   [ ] **2.1.2.** Mantener la carpeta `Entities` para futuras entidades de dominio. Considerar añadir un `README.md` para explicar su propósito si permanece vacía por mucho tiempo.
+*   [X] **2.1.1.** Eliminar el archivo `Class1.cs` (placeholder no utilizado).
+*   [X] **2.1.2.** Mantener la carpeta `Entities` para futuras entidades de dominio. Considerar añadir un `README.md` para explicar su propósito si permanece vacía por mucho tiempo.
 *   [ ] **2.1.3.** Clarificar el propósito de la carpeta `Models`. Si no tiene un uso definido, considerar su eliminación o renombrar a algo más específico (ej. `ViewModels`, `DTOs` si aplica, aunque los DTOs suelen ir en `Application`).
 
 ### 2.2. Revisión de Interfaces
