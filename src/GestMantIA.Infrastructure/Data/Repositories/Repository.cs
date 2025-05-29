@@ -29,7 +29,7 @@ namespace GestMantIA.Infrastructure.Data.Repositories
         }
 
         /// <inheritdoc />
-        public virtual async Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public virtual async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await _dbSet.FindAsync(new object[] { id }, cancellationToken);
         }

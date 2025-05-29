@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
-using GestMantIA.Core.Identity.DTOs;
+using GestMantIA.Shared.Identity.DTOs; 
+using GestMantIA.Shared.Identity.DTOs.Requests; 
 using GestMantIA.Core.Identity.Results;
 
 namespace GestMantIA.Core.Identity.Interfaces
@@ -51,10 +52,10 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// <summary>
         /// Inicia el proceso de restablecimiento de contraseña para un correo electrónico.
         /// </summary>
-        /// <param name="email">Correo electrónico del usuario.</param>
+        /// <param name="request">Solicitud de olvido de contraseña.</param>
         /// <param name="origin">Origen de la solicitud (para envío de correos electrónicos).</param>
         /// <returns>Resultado de la operación.</returns>
-        Task<OperationResult> ForgotPasswordAsync(string email, string origin);
+        Task<OperationResult> ForgotPasswordAsync(ForgotPasswordRequest request, string origin);
 
         /// <summary>
         /// Restablece la contraseña de un usuario.
@@ -64,11 +65,11 @@ namespace GestMantIA.Core.Identity.Interfaces
         Task<OperationResult> ResetPasswordAsync(ResetPasswordRequest request);
 
         /// <summary>
-        /// Genera una clave secreta para la autenticación de dos factores.
+        /// Genera la configuración para la autenticación de dos factores.
         /// </summary>
         /// <param name="userId">ID del usuario.</param>
         /// <param name="email">Correo electrónico del usuario.</param>
-        /// <returns>Clave secreta y código QR en formato base64.</returns>
+        /// <returns>Resultado con la clave secreta y el código QR.</returns>
         Task<TwoFactorSetupResult> GenerateTwoFactorSetupAsync(string userId, string email);
 
         /// <summary>

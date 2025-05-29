@@ -1,7 +1,7 @@
 using System;
 using AutoMapper;
-using GestMantIA.Core.Identity.DTOs.Requests;
-using GestMantIA.Core.Identity.DTOs.Responses;
+using GestMantIA.Shared.Identity.DTOs.Requests;
+using GestMantIA.Shared.Identity.DTOs.Responses;
 using GestMantIA.Core.Identity.Entities;
 
 namespace GestMantIA.Infrastructure.Mappings
@@ -14,8 +14,8 @@ namespace GestMantIA.Infrastructure.Mappings
         public UserManagementMapping()
         {
             // Mapeo de CreateUserDTO a ApplicationUser
-            CreateMap<CreateUserDTO, ApplicationUser>()
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username))
+            CreateMap<GestMantIA.Shared.Identity.DTOs.Requests.CreateUserDTO, ApplicationUser>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
@@ -25,23 +25,23 @@ namespace GestMantIA.Infrastructure.Mappings
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
 
             // Mapeo de UpdateUserDTO a ApplicationUser
-            CreateMap<UpdateUserDTO, ApplicationUser>()
+            CreateMap<GestMantIA.Shared.Identity.DTOs.Requests.UpdateUserDTO, ApplicationUser>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
-                .ForMember(dest => dest.EmailConfirmed, opt => opt.MapFrom(src => src.EmailConfirmed))
-                .ForMember(dest => dest.PhoneNumberConfirmed, opt => opt.MapFrom(src => src.PhoneNumberConfirmed))
-                .ForMember(dest => dest.TwoFactorEnabled, opt => opt.MapFrom(src => src.TwoFactorEnabled))
-                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
+                .ForMember(d => d.EmailConfirmed, o => o.MapFrom((src, dest) => src.EmailConfirmed ?? dest.EmailConfirmed))
+                .ForMember(d => d.PhoneNumberConfirmed, o => o.MapFrom((src, dest) => src.PhoneNumberConfirmed ?? dest.PhoneNumberConfirmed))
+                .ForMember(d => d.TwoFactorEnabled, o => o.MapFrom((src, dest) => src.TwoFactorEnabled ?? dest.TwoFactorEnabled))
+                .ForMember(d => d.IsActive, o => o.MapFrom((src, dest) => src.IsActive ?? dest.IsActive))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow));
 
             // Mapeo de ApplicationUser a UserResponseDTO
-            CreateMap<ApplicationUser, UserResponseDTO>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName))
+            CreateMap<ApplicationUser, GestMantIA.Shared.Identity.DTOs.Responses.UserResponseDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
@@ -50,8 +50,7 @@ namespace GestMantIA.Infrastructure.Mappings
                 .ForMember(dest => dest.PhoneNumberConfirmed, opt => opt.MapFrom(src => src.PhoneNumberConfirmed))
                 .ForMember(dest => dest.TwoFactorEnabled, opt => opt.MapFrom(src => src.TwoFactorEnabled))
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
-                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt))
+                .ForMember(dest => dest.DateRegistered, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.IsLockedOut, opt => opt.Ignore())
                 .ForMember(dest => dest.LockoutEnd, opt => opt.Ignore())
                 .ForMember(dest => dest.LockoutReason, opt => opt.Ignore())

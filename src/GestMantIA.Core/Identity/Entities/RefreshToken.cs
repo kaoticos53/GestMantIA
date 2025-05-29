@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GestMantIA.Core.Identity.Entities
 {
@@ -17,7 +18,7 @@ namespace GestMantIA.Core.Identity.Entities
             CreatedByIp = string.Empty;
             RevokedByIp = string.Empty;
             ReplacedByToken = string.Empty;
-            UserId = Guid.Empty;
+            UserId = Guid.Empty; // Usar Guid.Empty para inicializar el UserId
             User = null!; // Inicialización forzada, se debe establecer después
         }
 
@@ -39,11 +40,6 @@ namespace GestMantIA.Core.Identity.Entities
 
 
         /// <summary>
-        /// Fecha de creación del token.
-        /// </summary>
-        public DateTime Created { get; set; } = DateTime.UtcNow;
-
-        /// <summary>
         /// Dirección IP desde la que se creó el token.
         /// </summary>
         public string CreatedByIp { get; set; }
@@ -58,14 +54,22 @@ namespace GestMantIA.Core.Identity.Entities
         /// Dirección IP desde la que se revocó el token.
         /// </summary>
         public string RevokedByIp { get; set; }
+
+        /// <summary>
+        /// Razón por la que el token fue revocado.
+        /// </summary>
+        public string? ReasonRevoked { get; set; }
+
         /// <summary>
         /// Token que reemplazó a este token, si fue revocado.
         /// </summary>
         public string ReplacedByToken { get; set; }
+
         /// <summary>
         /// Identificador del usuario propietario del token.
         /// </summary>
         public Guid UserId { get; set; }
+
         /// <summary>
         /// Usuario propietario del token.
         /// </summary>
@@ -74,11 +78,13 @@ namespace GestMantIA.Core.Identity.Entities
         /// <summary>
         /// Indica si el token ha expirado.
         /// </summary>
+        [NotMapped]
         public bool IsExpired => DateTime.UtcNow >= Expires;
 
         /// <summary>
         /// Indica si el token está activo (no revocado y no expirado).
         /// </summary>
+        [NotMapped]
         public bool IsActive => !IsRevoked && !IsExpired;
     }
 }

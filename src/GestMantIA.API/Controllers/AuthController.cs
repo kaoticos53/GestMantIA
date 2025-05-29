@@ -1,11 +1,11 @@
 using System;
 using System.Threading.Tasks;
-using GestMantIA.Core.Identity.DTOs;
+using Microsoft.AspNetCore.Mvc;
+using GestMantIA.Shared.Identity.DTOs;
 using GestMantIA.Core.Identity.Interfaces;
 using GestMantIA.Core.Identity.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace GestMantIA.API.Controllers
@@ -40,15 +40,16 @@ namespace GestMantIA.API.Controllers
         /// <param name="request">Datos de inicio de sesión.</param>
         /// <returns>Token de autenticación y datos del usuario.</returns>
         [HttpPost("login")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<AuthenticationResult>> Login(LoginRequest request)
+        public async Task<ActionResult<AuthenticationResult>> Login([FromBody] LoginRequest request)
         {
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("Intento de inicio de sesión con modelo inválido");
-                return BadRequest(ModelState);
+                return BadRequest(new { message = "Datos de inicio de sesión inválidos", errors = ModelState });
             }
 
             try
@@ -56,7 +57,7 @@ namespace GestMantIA.API.Controllers
                 var ipAddress = GetIpAddress();
                 var result = await _authService.AuthenticateAsync(request, ipAddress);
 
-                if (!result.Success)
+                if (result.Succeeded == false)
                 {
                     _logger.LogWarning("Error en el inicio de sesión: {Message}", result.Message);
                     return Unauthorized(result);
@@ -93,7 +94,7 @@ namespace GestMantIA.API.Controllers
                 var origin = GetOrigin();
                 var result = await _authService.RegisterAsync(request, origin);
 
-                if (!result.Success)
+                if (result.Succeeded == false)
                 {
                     _logger.LogWarning("Error en el registro: {Message}", result.Message);
                     return BadRequest(result);
@@ -130,7 +131,7 @@ namespace GestMantIA.API.Controllers
                 var ipAddress = GetIpAddress();
                 var result = await _authService.RefreshTokenAsync(refreshToken, ipAddress);
 
-                if (!result.Success)
+                if (result.Succeeded == false)
                 {
                     _logger.LogWarning("Error al renovar el token: {Message}", result.Message);
                     return Unauthorized(result);
@@ -202,7 +203,7 @@ namespace GestMantIA.API.Controllers
             {
                 var result = await _authService.VerifyEmailAsync(token);
 
-                if (!result.Success)
+                if (result.Succeeded == false)
                 {
                     _logger.LogWarning("Error al verificar el correo: {Message}", result.Message);
                     return BadRequest(result);
@@ -235,10 +236,10 @@ namespace GestMantIA.API.Controllers
             try
             {
                 var origin = GetOrigin();
-                var result = await _authService.ForgotPasswordAsync(request.Email, origin);
+                var result = await _authService.ForgotPasswordAsync(request, origin);
 
                 // Por seguridad, no revelamos si el correo existe o no
-                if (!result.Success)
+                if (result.Succeeded == false)
                 {
                     _logger.LogWarning("Error al procesar la solicitud de restablecimiento de contraseña para {Email}", request.Email);
                 }
@@ -272,7 +273,7 @@ namespace GestMantIA.API.Controllers
             {
                 var result = await _authService.ResetPasswordAsync(request);
 
-                if (!result.Success)
+                if (result.Succeeded == false)
                 {
                     _logger.LogWarning("Error al restablecer la contraseña: {Message}", result.Message);
                     return BadRequest(result);
@@ -304,15 +305,29 @@ namespace GestMantIA.API.Controllers
 
         private string GetIpAddress()
         {
-            if (_httpContextAccessor.HttpContext.Request.Headers.ContainsKey("X-Forwarded-For"))
-                return _httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-For"];
-            
-            return _httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "unknown";
+            // Intentar obtener desde X-Forwarded-For
+            if (_httpContextAccessor.HttpContext?.Request?.Headers.TryGetValue("X-Forwarded-For", out var forwardedFor) == true)
+            {
+                // StringValues puede contener múltiples valores, tomar el primero no nulo
+                var ip = forwardedFor.FirstOrDefault(val => !string.IsNullOrEmpty(val));
+                if (!string.IsNullOrEmpty(ip))
+                {
+                    return ip;
+                }
+            }
+
+            // Si no, obtener desde RemoteIpAddress
+            var remoteIp = _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress;
+            return remoteIp?.MapToIPv4()?.ToString() ?? "unknown";
         }
 
         private string GetOrigin()
         {
-            var request = _httpContextAccessor.HttpContext.Request;
+            var request = _httpContextAccessor.HttpContext?.Request;
+            if (request == null)
+            {
+                return string.Empty; // O un valor predeterminado apropiado / lanzar excepción
+            }
             return $"{request.Scheme}://{request.Host}{request.PathBase}";
         }
 

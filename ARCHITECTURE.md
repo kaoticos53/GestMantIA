@@ -7,21 +7,35 @@
 ```
 src/
 ├── GestMantIA.API/               # API principal (Web API)
-├── GestMantIA.Core/              # Lógica de negocio
-│   ├── Common/                   # Utilidades y helpers
-│   ├── Domain/                   # Entidades de dominio
-│   ├── Application/              # Casos de uso
-│   │   ├── Features/             # Agrupación por características
-│   │   │   ├── Users/            # Ejemplo: Característica de usuarios
-│   │   │   └── ...
-│   │   └── Shared/              # Lógica compartida entre características
-│   └── Shared/                   # Objetos de valor y tipos compartidos
-├── GestMantIA.Infrastructure/    # Implementaciones de infraestructura
-│   ├── Persistence/             # Persistencia (EF Core)
+├── GestMantIA.Core/            # Lógica de negocio central
+│   ├── Configuration/           # Configuraciones de la aplicación
+│   ├── Entities/                # Entidades del dominio
 │   ├── Identity/                # Identidad y autenticación
-│   ├── Services/                 # Servicios de infraestructura
-│   └── External/                # Integraciones externas
-└── GestMantIA.Web/              # Frontend (MudBlazor)
+│   │   ├── DTOs/                # Objetos de transferencia de datos
+│   │   ├── Entities/            # Entidades de identidad
+│   │   ├── Interfaces/          # Contratos de servicios de identidad
+│   │   └── Results/             # Resultados de operaciones
+│   ├── Interfaces/              # Contratos de repositorios y servicios
+│   ├── Models/                  # DTOs y ViewModels
+│   └── Shared/                  # Utilidades y extensiones compartidas de transferencia de datos
+│   └── Shared/                   # Tipos y utilidades compartidas
+├── GestMantIA.Infrastructure/    # Implementaciones de infraestructura
+│   ├── Data/                     # Contextos de base de datos
+│   ├── Services/                 # Implementaciones de servicios
+│   │   ├── Auth/                 # Servicios de autenticación
+│   │   ├── Email/                # Servicios de correo electrónico
+│   │   └── Security/             # Servicios de seguridad
+│   └── Migrations/               # Migraciones de base de datos
+└── GestMantIA.Web/               # Frontend (MudBlazor)
+    ├── Components/               # Componentes reutilizables
+    ├── Layout/                   # Layouts de la aplicación
+    ├── Models/                   # Modelos del frontend
+    ├── Pages/                    # Páginas de la aplicación
+    │   ├── Admin/                # Páginas de administración
+    │   └── Auth/                 # Páginas de autenticación
+    ├── Services/                 # Servicios del frontend
+    ├── Shared/                   # Recursos compartidos
+    └── wwwroot/                  # Archivos estáticos
 ```
 
 ### 1.2 Convenciones de Nombres
@@ -202,9 +216,89 @@ public async Task<ActionResult<UserDto>> GetUser(int id)
 }
 ```
 
-## 6. Pruebas
+## 6. Autenticación y Gestión de Usuarios
 
-### 6.1 Estructura de Pruebas
+### 6.1 Estructura de Identidad
+
+La gestión de identidad sigue la estructura de ASP.NET Core Identity con personalizaciones:
+
+```
+Identity/
+├── DTOs/                    # Objetos de transferencia de datos
+│   ├── Requests/            # Modelos de solicitud
+│   │   ├── LoginRequest.cs
+│   │   ├── RegisterRequest.cs
+│   │   └── ...
+│   └── Responses/           # Modelos de respuesta
+│       ├── AuthResponse.cs
+│       └── UserResponse.cs
+├── Entities/                # Entidades de identidad
+│   ├── ApplicationUser.cs
+│   ├── ApplicationRole.cs
+│   └── ...
+├── Interfaces/              # Contratos de servicios
+│   ├── IAuthService.cs
+│   ├── IUserService.cs
+│   └── IRoleService.cs
+└── Results/                 # Resultados de operaciones
+    ├── AuthenticationResult.cs
+    └── OperationResult.cs
+```
+
+### 6.2 Autenticación con JWT
+
+```csharp
+services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = Configuration["Jwt:Issuer"],
+            ValidAudience = Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+        };
+    });
+```
+
+### 6.3 Gestión de Usuarios y Roles
+
+La gestión de usuarios y roles se realiza a través de los servicios `IUserService` e `IRoleService` respectivamente, que encapsulan la lógica de negocio relacionada con la identidad.
+
+```csharp
+public interface IUserService
+{
+    Task<UserResponseDTO?> GetUserProfileAsync(string userId);
+    Task<bool> UpdateUserProfileAsync(string userId, UpdateProfileDTO profile);
+    Task<PagedResult<UserResponseDTO>> SearchUsersAsync(string? searchTerm, int pageNumber, int pageSize);
+    Task<UserResponseDTO> CreateUserAsync(CreateUserDTO createUserDto, IEnumerable<string>? roleNames = null);
+    Task<UserResponseDTO> UpdateUserAsync(UpdateUserDTO updateUserDto);
+    Task<bool> DeleteUserAsync(string userId);
+    Task<UserResponseDTO?> GetUserByIdAsync(string userId);
+    Task<PagedResult<UserResponseDTO>> GetAllUsersAsync(int pageNumber, int pageSize, string? searchTerm, bool? activeOnly);
+}
+```
+
+### 6.4 Políticas de Autorización
+
+```csharp
+services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole", 
+        policy => policy.RequireRole("Admin"));
+    
+    options.AddPolicy("RequireUserRole", 
+        policy => policy.RequireRole("User"));
+});
+```
+
+## 7. Pruebas
+
+### 7.1 Estructura de Pruebas
 
 ```
 tests/
@@ -223,7 +317,7 @@ tests/
         └── UserRepositoryTests.cs
 ```
 
-### 6.2 Ejemplo de Prueba Unitaria
+### 7.2 Ejemplo de Prueba Unitaria
 
 ```csharp
 public class UserTests
@@ -244,9 +338,9 @@ public class UserTests
 }
 ```
 
-## 7. Convenciones de Git
+## 8. Convenciones de Git
 
-### 7.1 Mensajes de Commit
+### 8.1 Mensajes de Commit
 
 ```
 tipo(ámbito): descripción breve
@@ -266,7 +360,7 @@ Se agregaron los endpoints necesarios para la generación y validación de códi
 Refs: #123
 ```
 
-### 7.2 Tipos de Cambio
+### 8.2 Tipos de Cambio
 
 - `feat`: Nueva característica
 - `fix`: Corrección de error
@@ -276,9 +370,9 @@ Refs: #123
 - `test`: Adición o modificación de pruebas
 - `chore`: Cambios en el proceso de construcción o herramientas auxiliares
 
-## 8. Configuración de Herramientas
+## 9. Configuración de Herramientas
 
-### 8.1 EditorConfig
+### 9.1 EditorConfig
 
 ```ini
 # Archivo .editorconfig
@@ -298,7 +392,7 @@ dotnet_sort_system_directives_first = true
 # ...
 ```
 
-### 8.2 Directory.Build.props
+### 9.2 Directory.Build.props
 
 ```xml
 <Project>
@@ -312,9 +406,9 @@ dotnet_sort_system_directives_first = true
 </Project>
 ```
 
-## 9. Guía de Implementación
+## 10. Guía de Implementación
 
-### 9.1 Pasos para Agregar una Nueva Característica
+### 10.1 Pasos para Agregar una Nueva Característica
 
 1. Crear rama feature/ desde develop
 2. Implementar la característica siguiendo la estructura definida
@@ -324,7 +418,7 @@ dotnet_sort_system_directives_first = true
 6. Pasar revisión de código
 7. Fusionar a develop después de la aprobación
 
-### 9.2 Revisión de Código
+### 10.2 Revisión de Código
 
 - [ ] El código sigue las convenciones de estilo
 - [ ] Las pruebas unitarias pasan
@@ -334,7 +428,7 @@ dotnet_sort_system_directives_first = true
 - [ ] El rendimiento es aceptable
 - [ ] Se manejan correctamente los errores
 
-## 10. Recursos Adicionales
+## 11. Recursos Adicionales
 
 - [Guía de Estilo de C# de Microsoft](https://docs.microsoft.com/es-es/dotnet/csharp/fundamentals/coding-style/coding-conventions)
 - [Patrones de Diseño](https://refactoring.guru/es/design-patterns/csharp)

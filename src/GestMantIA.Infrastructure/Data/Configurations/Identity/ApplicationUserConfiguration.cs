@@ -18,11 +18,11 @@ namespace GestMantIA.Infrastructure.Data.Configurations.Identity
             builder.HasKey(u => u.Id);
 
             // Configuración de propiedades
-            builder.Property(u => u.Username)
+            builder.Property(u => u.UserName)
                 .IsRequired()
                 .HasMaxLength(50);
 
-            builder.HasIndex(u => u.Username)
+            builder.HasIndex(u => u.UserName)
                 .IsUnique();
 
             builder.Property(u => u.Email)
@@ -54,6 +54,33 @@ namespace GestMantIA.Infrastructure.Data.Configurations.Identity
             builder.HasMany(u => u.RefreshTokens)
                 .WithOne(rt => rt.User)
                 .HasForeignKey(rt => rt.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Relaciones con otras entidades de Identity (heredadas)
+            builder.HasMany<Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>>()
+                .WithOne()
+                .HasForeignKey(ut => ut.UserId)
+                .IsRequired();
+
+            builder.HasMany<Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>>()
+                .WithOne()
+                .HasForeignKey(ul => ul.UserId)
+                .IsRequired();
+
+            builder.HasMany<Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>>()
+                .WithOne()
+                .HasForeignKey(uc => uc.UserId)
+                .IsRequired();
+
+            // Relaciones con entidades de Seguridad
+            builder.HasMany<SecurityLog>()
+                .WithOne(sl => sl.User)
+                .HasForeignKey(sl => sl.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany<SecurityNotification>()
+                .WithOne(sn => sn.User)
+                .HasForeignKey(sn => sn.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

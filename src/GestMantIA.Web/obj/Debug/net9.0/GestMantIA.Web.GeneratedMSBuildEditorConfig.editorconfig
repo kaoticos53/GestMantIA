@@ -31,6 +31,34 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Components/MudFormGrowWidth.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xNdWRGb3JtR3Jvd1dpZHRoLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Components/ThemeToggle.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xUaGVtZVRvZ2dsZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Layout/LoginDisplay.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XExvZ2luRGlzcGxheS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Layout/RedirectToLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XFJlZGlyZWN0VG9Mb2dpbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Pages/Authentication.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aGVudGljYXRpb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Pages/Auth/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxMb2dpbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Pages/Auth/Register.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxSZWdpc3Rlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/source/Repos/GestMantIA/src/GestMantIA.Web/Pages/Counter.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291bnRlci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 

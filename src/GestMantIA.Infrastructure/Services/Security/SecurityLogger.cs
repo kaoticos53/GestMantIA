@@ -28,7 +28,7 @@ namespace GestMantIA.Infrastructure.Services.Security
         }
 
         public async Task<SecurityLog> LogSecurityEventAsync(
-            string? userId,
+            Guid? userId,
             string eventType,
             string description,
             string? ipAddress = null,
@@ -55,7 +55,7 @@ namespace GestMantIA.Infrastructure.Services.Security
 
                 _logger.LogInformation(
                     "Evento de seguridad registrado: {EventType} para el usuario {UserId} - {Succeeded}",
-                    eventType, userId ?? "system", succeeded ? "Éxito" : "Fallo");
+                    eventType, userId.ToString() ?? "system", succeeded ? "Éxito" : "Fallo");
 
                 return log;
             }
@@ -67,15 +67,15 @@ namespace GestMantIA.Infrastructure.Services.Security
         }
 
         public async Task<(IEnumerable<SecurityLog> Logs, int TotalCount)> GetUserSecurityLogsAsync(
-            string userId, int page = 1, int pageSize = 20)
+            Guid userId, int page = 1, int pageSize = 20)
         {
             try
             {
-                if (string.IsNullOrEmpty(userId))
+                if (userId == Guid.Empty) // Corrected check for Guid type
                     throw new ArgumentNullException(nameof(userId));
 
                 var query = _context.SecurityLogs
-                    .Where(log => log.UserId == userId)
+                    .Where(log => log.UserId.HasValue && log.UserId.Value == userId) // Fixed comparison between Guid? and Guid
                     .OrderByDescending(log => log.Timestamp);
 
                 var totalCount = await query.CountAsync();
@@ -135,9 +135,9 @@ namespace GestMantIA.Infrastructure.Services.Security
         }
 
         public async Task<bool> DetectSuspiciousActivityAsync(
-            string userId, string? ipAddress = null, string? userAgent = null)
+            Guid userId, string? ipAddress = null, string? userAgent = null)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (userId == Guid.Empty)
                 throw new ArgumentNullException(nameof(userId));
 
             try
@@ -191,9 +191,9 @@ namespace GestMantIA.Infrastructure.Services.Security
             }
         }
 
-        public Task<bool> IsKnownDeviceAsync(string userId, string deviceId)
+        public Task<bool> IsKnownDeviceAsync(Guid userId, string deviceId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (userId == Guid.Empty)
                 throw new ArgumentNullException(nameof(userId));
             if (string.IsNullOrEmpty(deviceId))
                 throw new ArgumentNullException(nameof(deviceId));
@@ -217,24 +217,25 @@ namespace GestMantIA.Infrastructure.Services.Security
             }
         }
 
-        public async Task<IEnumerable<SecurityLog>> GetKnownDevicesAsync(string userId)
+        public async Task<List<SecurityLog>> GetKnownDevicesAsync(Guid userId)
         {
-            if (string.IsNullOrEmpty(userId))
-                throw new ArgumentNullException(nameof(userId));
-
             try
             {
-                // Obtener los dispositivos únicos de los últimos 90 días
-                var devices = await _context.SecurityLogs
+                var filteredLogs = await _context.SecurityLogs
                     .Where(log => log.UserId == userId &&
-                                log.IpAddress != null &&
-                                log.UserAgent != null &&
-                                log.Timestamp > DateTimeOffset.UtcNow.AddDays(-90))
-                    .AsEnumerable()
-                    .GroupBy(log => GenerateDeviceId(log.IpAddress!, log.UserAgent!))
-                    .Select(g => g.OrderByDescending(log => log.Timestamp).First())
-                    .OrderByDescending(log => log.Timestamp)
-                    .ToListAsync();
+                                    log.EventType == SecurityEventTypes.LoginSucceeded && // Corregido
+                                    !string.IsNullOrEmpty(log.IpAddress) && // Comprobación más robusta
+                                    !string.IsNullOrEmpty(log.UserAgent) &&
+                                    log.Timestamp > DateTimeOffset.UtcNow.AddDays(-90))
+                    .OrderByDescending(log => log.Timestamp) // Ordenar antes de traer a memoria puede ser útil si solo necesitas los más recientes
+                    .ToListAsync(); // Materializar la consulta a la BD aquí
+
+                // Procesamiento en memoria
+                var devices = filteredLogs
+                    .GroupBy(log => GenerateDeviceId(log.IpAddress!, log.UserAgent!)) // IpAddress y UserAgent ya comprobados que no son nulos/vacíos
+                    .Select(g => g.OrderByDescending(l => l.Timestamp).First()!) // Suprimir advertencia de nulabilidad aquí
+                    .OrderByDescending(l => l.Timestamp) // Re-ordenar los dispositivos finales si es necesario
+                    .ToList();
 
                 return devices;
             }

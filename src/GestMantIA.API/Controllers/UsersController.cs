@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using GestMantIA.Core.Identity.DTOs;
+using GestMantIA.Shared.Identity.DTOs;
+using GestMantIA.Shared.Identity.DTOs.Responses;
 using GestMantIA.Core.Identity.Interfaces;
+using GestMantIA.Core.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -72,7 +74,7 @@ namespace GestMantIA.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<PagedResult<UserResponseDTO>>> SearchUsers(
-            [FromQuery] string searchTerm = null,
+            [FromQuery] string? searchTerm = null,
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10)
         {

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using GestMantIA.Core.Identity.Entities;
 using GestMantIA.Core.Identity.Interfaces;
 using GestMantIA.Infrastructure.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -20,37 +21,45 @@ namespace GestMantIA.Infrastructure.Services.Auth
     {
         private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserClaimsPrincipalFactory<ApplicationUser> _claimsPrincipalFactory;
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase <see cref="JwtTokenService"/>
         /// </summary>
         /// <param name="configuration">Configuración de la aplicación.</param>
         /// <param name="context">Contexto de la base de datos.</param>
-        public JwtTokenService(IConfiguration configuration, ApplicationDbContext context)
+        /// <param name="userManager">Administrador de usuarios.</param>
+        public JwtTokenService(IConfiguration configuration, ApplicationDbContext context, UserManager<ApplicationUser> userManager, IUserClaimsPrincipalFactory<ApplicationUser> claimsPrincipalFactory)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _claimsPrincipalFactory = claimsPrincipalFactory ?? throw new ArgumentNullException(nameof(claimsPrincipalFactory));
         }
 
         /// <inheritdoc />
-        public string GenerateAccessToken(ApplicationUser user)
+        public async Task<string> GenerateAccessTokenAsync(ApplicationUser user)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(GetSecretKey());
-            
+
+            // Obtener claims del usuario a través de CustomUserClaimsPrincipalFactory
+            var userPrincipal = await _claimsPrincipalFactory.CreateAsync(user);
+            var claims = new List<Claim>(userPrincipal.Claims);
+
+            // Añadir claims específicos del token JWT
+            claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+            // El claim Iat (Issued At) es añadido automáticamente por JwtSecurityTokenHandler si no se especifica.
+            // Si se desea control explícito:
+            // claims.Add(new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64));
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] 
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Name, user.Username),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
-                }),
+                Subject = new ClaimsIdentity(claims), // Usar los claims obtenidos y los específicos del JWT
                 Expires = DateTime.UtcNow.AddMinutes(GetTokenExpirationMinutes()),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key), 
@@ -163,13 +172,20 @@ namespace GestMantIA.Infrastructure.Services.Auth
         }
 
         /// <inheritdoc />
-        public string GetUserIdFromToken(string token)
+        public Guid? GetUserIdFromToken(string token)
         {
             if (string.IsNullOrEmpty(token))
                 return null;
 
             var claims = GetClaimsFromToken(token);
-            return claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var userIdClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return null;
+            }
+            
+            return userId;
         }
 
         #region Métodos auxiliares privados

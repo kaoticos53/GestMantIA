@@ -1,8 +1,10 @@
-using GestMantIA.Core.Identity.DTOs;
-using GestMantIA.Core.Identity.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GestMantIA.Shared.Identity.DTOs; 
+using GestMantIA.Shared.Identity.DTOs.Requests; 
+using GestMantIA.Shared.Identity.DTOs.Responses; 
+using GestMantIA.Core.Identity.Entities;
 using GestMantIA.Core.Shared;
 
 namespace GestMantIA.Core.Identity.Interfaces
@@ -67,7 +69,7 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// </summary>
         /// <param name="userId">ID del usuario.</param>
         /// <returns>Información de bloqueo o null si el usuario no existe o no está bloqueado.</returns>
-        Task<UserLockoutInfo> GetUserLockoutInfoAsync(string userId);
+        Task<UserLockoutInfo?> GetUserLockoutInfoAsync(string userId);
 
         #region Gestión de Usuarios
 
@@ -82,9 +84,10 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// <summary>
         /// Actualiza un usuario existente.
         /// </summary>
-        /// <param name="updateUserDto">Datos actualizados del usuario.</param>
+        /// <param name="userId">ID del usuario a actualizar.</param>
+        /// <param name="userDto">Datos actualizados del usuario.</param>
         /// <returns>El usuario actualizado o null si no se encontró.</returns>
-        Task<UserResponseDTO> UpdateUserAsync(UpdateUserDTO updateUserDto);
+        Task<UserResponseDTO> UpdateUserAsync(string userId, UpdateUserDTO userDto);
 
         /// <summary>
         /// Elimina un usuario del sistema.
@@ -113,7 +116,7 @@ namespace GestMantIA.Core.Identity.Interfaces
             int pageNumber = 1, 
             int pageSize = 10, 
             string? searchTerm = null, 
-            bool? activeOnly = null);
+            bool activeOnly = false);
 
         /// <summary>
         /// Asigna roles a un usuario.

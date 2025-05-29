@@ -10,10 +10,13 @@
     <PackageReference Include="Ardalis.GuardClauses" />
     <PackageReference Include="AutoMapper" />
     <PackageReference Include="FluentValidation" />
-    <!-- Referencia eliminada: IdentityModel no es necesario -->
     <PackageReference Include="Microsoft.AspNetCore.Identity" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GestMantIA.Shared\GestMantIA.Shared.csproj" />
   </ItemGroup>
 
 </Project>

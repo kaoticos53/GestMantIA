@@ -1,10 +1,23 @@
+using Microsoft.AspNetCore.Identity;
+using System;
+
 namespace GestMantIA.Core.Identity.Entities
 {
     /// <summary>
     /// Clase que representa la relación muchos a muchos entre roles y permisos.
     /// </summary>
-    public class ApplicationRolePermission : BaseEntity
+    public class ApplicationRolePermission 
     {
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase <see cref="ApplicationRolePermission"/>
+        /// </summary>
+        public ApplicationRolePermission()
+        {
+            // Inicialización de propiedades de navegación
+            Role = null!;
+            Permission = null!;
+        }
+
         /// <summary>
         /// Identificador del rol.
         /// </summary>

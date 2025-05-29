@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using GestMantIA.Core.Identity.DTOs;
+using GestMantIA.Shared.Identity.DTOs;
+using GestMantIA.Shared.Identity.DTOs.Responses;
 using GestMantIA.Core.Identity.Entities;
 using GestMantIA.Core.Identity.Interfaces;
 using GestMantIA.Infrastructure.Data;
@@ -58,7 +59,7 @@ namespace GestMantIA.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public async Task<RoleDTO> GetRoleByIdAsync(string roleId)
+        public async Task<RoleDTO?> GetRoleByIdAsync(string roleId)
         {
             if (string.IsNullOrEmpty(roleId))
                 throw new ArgumentNullException(nameof(roleId));
@@ -188,6 +189,12 @@ namespace GestMantIA.Infrastructure.Services
                 }
 
                 // Verificar si hay usuarios con este rol
+                if (string.IsNullOrEmpty(role.Name))
+                {
+                    _logger.LogError("El nombre del rol con ID {RoleId} es nulo o vacío.", role.Id);
+                    // Considerar devolver un error específico o lanzar una excepción
+                    return RoleResult.Failed("Error interno: El nombre del rol es inválido.");
+                }
                 var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name);
                 if (usersInRole.Any())
                 {
@@ -334,7 +341,7 @@ namespace GestMantIA.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<UserResponseDTO>> GetUsersInRoleAsync(string roleName)
+        public async Task<IList<ApplicationUser>> GetUsersInRoleAsync(string roleName)
         {
             if (string.IsNullOrEmpty(roleName))
                 throw new ArgumentNullException(nameof(roleName));
@@ -345,25 +352,22 @@ namespace GestMantIA.Infrastructure.Services
                 if (role == null)
                 {
                     _logger.LogWarning("No se encontró el rol: {RoleName}", roleName);
-                    return Enumerable.Empty<UserResponseDTO>();
+                    return new List<ApplicationUser>();
                 }
 
-                var users = await _userManager.GetUsersInRoleAsync(roleName);
-                var userDtos = _mapper.Map<List<UserResponseDTO>>(users);
-                
-                // Obtener roles para cada usuario
-                foreach (var userDto in userDtos)
+                // Asegurarse de que el rol tenga un nombre válido
+                if (string.IsNullOrEmpty(role.Name))
                 {
-                    var user = users.First(u => u.Id == userDto.Id);
-                    var roles = await _userManager.GetRolesAsync(user);
-                    userDto.Roles = roles.ToList();
+                    _logger.LogWarning("El rol encontrado no tiene un nombre válido: {RoleId}", role.Id);
+                    return new List<ApplicationUser>();
                 }
-                
-                return userDtos;
+
+                var users = await _userManager.GetUsersInRoleAsync(role.Name);
+                return users?.ToList() ?? new List<ApplicationUser>();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener los usuarios con el rol: {RoleName}", roleName);
+                _logger.LogError(ex, "Error al obtener los usuarios del rol: {RoleName}", roleName);
                 throw;
             }
         }
@@ -420,7 +424,7 @@ namespace GestMantIA.Infrastructure.Services
             {
                 if (disposing)
                 {
-                    _context?.Dispose();
+                    _context.Dispose();
                 }
                 _disposed = true;
             }

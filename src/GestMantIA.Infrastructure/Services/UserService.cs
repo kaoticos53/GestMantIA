@@ -1,10 +1,11 @@
 using System;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using GestMantIA.Core.Identity.DTOs;
+using GestMantIA.Shared.Identity.DTOs;
+using GestMantIA.Shared.Identity.DTOs.Requests;
+using GestMantIA.Shared.Identity.DTOs.Responses;
 using GestMantIA.Core.Identity.Entities;
 using GestMantIA.Core.Identity.Interfaces;
 using GestMantIA.Core.Shared;
@@ -12,13 +13,10 @@ using GestMantIA.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using GestMantIA.Core.Identity.DTOs.Responses;
+using Microsoft.Extensions.Options;
 
 namespace GestMantIA.Infrastructure.Services
 {
-    /// <summary>
-    /// Implementación del servicio de gestión de usuarios.
-    /// </summary>
     public class UserService : IUserService, IDisposable
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -26,89 +24,79 @@ namespace GestMantIA.Infrastructure.Services
         private readonly IMapper _mapper;
         private readonly ILogger<UserService> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly IOptions<IdentityOptions> _identityOptions;
         private bool _disposed = false;
 
-        /// <summary>
-        /// Inicializa una nueva instancia de la clase <see cref="UserService"/>
-        /// </summary>
         public UserService(
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
             IMapper mapper,
             ILogger<UserService> logger,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            IOptions<IdentityOptions> identityOptions)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _identityOptions = identityOptions ?? throw new ArgumentNullException(nameof(identityOptions));
         }
 
-        /// <inheritdoc />
-        public async Task<UserResponseDTO?> GetUserProfileAsync(string userId)
+        public async Task<GestMantIA.Shared.Identity.DTOs.Responses.UserResponseDTO?> GetUserProfileAsync(string userId)
         {
-            if (string.IsNullOrEmpty(userId))
-                throw new ArgumentNullException(nameof(userId));
-
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
+                if (!Guid.TryParse(userId, out var userIdGuid))
                 {
-                    _logger.LogDebug("No se encontró el usuario con ID: {UserId}", userId);
+                    _logger.LogWarning("El ID de usuario no es un GUID válido: {UserId}", userId);
                     return null;
                 }
 
-
-                var userDto = _mapper.Map<UserResponseDTO>(user);
-                var roles = await _userManager.GetRolesAsync(user);
-                userDto.Roles = roles.ToList();
-                userDto.IsLockedOut = await _userManager.IsLockedOutAsync(user);
-                if (userDto.IsLockedOut)
+                var user = await _userManager.FindByIdAsync(userIdGuid.ToString());
+                if (user == null)
                 {
-                    userDto.LockoutEnd = user.LockoutEnd;
-                    userDto.LockoutReason = user.LockoutReason;
+                    _logger.LogWarning("No se encontró el usuario con ID: {UserId}", userId);
+                    return null;
                 }
 
-                return userDto;
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var userResponse = _mapper.Map<GestMantIA.Shared.Identity.DTOs.Responses.UserResponseDTO>(user);
+                userResponse.Roles = userRoles.ToList();
+
+                return userResponse;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener el perfil del usuario con ID: {UserId}", userId);
+                _logger.LogError(ex, "Error al obtener el perfil del usuario con ID {UserId}", userId);
                 throw;
             }
         }
 
-        /// <inheritdoc />
         public async Task<bool> UpdateUserProfileAsync(string userId, UpdateProfileDTO profile)
         {
-            if (string.IsNullOrEmpty(userId))
-                throw new ArgumentNullException(nameof(userId));
-            
-            if (profile == null)
-                throw new ArgumentNullException(nameof(profile));
-
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
+                if (!Guid.TryParse(userId, out var userIdGuid))
                 {
-                    _logger.LogWarning("No se encontró el usuario con ID: {UserId} para actualizar", userId);
+                    _logger.LogWarning("El ID de usuario no es un GUID válido: {UserId}", userId);
                     return false;
                 }
 
-                // Actualizar propiedades
-                user.FirstName = profile.FirstName ?? user.FirstName;
-                user.LastName = profile.LastName ?? user.LastName;
-                user.PhoneNumber = profile.PhoneNumber ?? user.PhoneNumber;
-                user.UpdatedAt = DateTime.UtcNow;
+                var user = await _userManager.FindByIdAsync(userIdGuid.ToString());
+                if (user == null)
+                {
+                    _logger.LogWarning("No se encontró el usuario con ID: {UserId}", userId);
+                    return false;
+                }
 
+                _mapper.Map(profile, user);
                 var result = await _userManager.UpdateAsync(user);
+
                 if (!result.Succeeded)
                 {
-                    _logger.LogWarning("Error al actualizar el usuario: {Errors}", 
-                        string.Join(", ", result.Errors.Select(e => e.Description)));
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    _logger.LogWarning("Error al actualizar el perfil del usuario {UserId}: {Errors}", userId, errors);
                     return false;
                 }
 
@@ -116,62 +104,69 @@ namespace GestMantIA.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al actualizar el perfil del usuario con ID: {UserId}", userId);
+                _logger.LogError(ex, "Error al actualizar el perfil del usuario con ID {UserId}", userId);
                 throw;
             }
         }
 
-        /// <inheritdoc />
-        public async Task<PagedResult<UserResponseDTO>> SearchUsersAsync(
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    // Dispose managed state (managed objects).
+                }
+
+                // Free any unmanaged objects here.
+
+                _disposed = true;
+            }
+        }
+
+        public async Task<PagedResult<GestMantIA.Shared.Identity.DTOs.Responses.UserResponseDTO>> SearchUsersAsync(
             string? searchTerm = null, 
             int pageNumber = 1, 
             int pageSize = 10)
         {
-            if (pageNumber < 1) pageNumber = 1;
-            if (pageSize < 1 || pageSize > 100) pageSize = 10;
-
             try
             {
                 var query = _userManager.Users.AsQueryable();
 
-                // Aplicar filtro de búsqueda si se proporciona
                 if (!string.IsNullOrWhiteSpace(searchTerm))
                 {
-                    var normalizedSearchTerm = searchTerm.ToLower();
-                    query = query.Where(u =>
-                        (u.NormalizedUserName != null && u.NormalizedUserName.Contains(normalizedSearchTerm)) ||
-                        (u.NormalizedEmail != null && u.NormalizedEmail.Contains(normalizedSearchTerm)) ||
-                        (u.FirstName != null && u.FirstName.ToLower().Contains(normalizedSearchTerm)) ||
-                        (u.LastName != null && u.LastName.ToLower().Contains(normalizedSearchTerm)));
+                    var searchTermLower = searchTerm.ToLower();
+                    query = query.Where(u => 
+                        u.UserName != null && u.UserName.ToLower().Contains(searchTermLower) ||
+                        u.Email != null && u.Email.ToLower().Contains(searchTermLower) ||
+                        u.FirstName != null && u.FirstName.ToLower().Contains(searchTermLower) ||
+                        u.LastName != null && u.LastName.ToLower().Contains(searchTermLower));
                 }
 
-                // Obtener el total de registros
-                var totalCount = await query.CountAsync();
 
-                // Aplicar paginación
+                var totalCount = await query.CountAsync();
                 var users = await query
-                    .OrderBy(u => u.UserName)
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
 
-                // Mapear a DTOs y obtener roles
-                var userDtos = new List<UserResponseDTO>();
-                foreach (var user in users)
+                var userDtos = _mapper.Map<List<GestMantIA.Shared.Identity.DTOs.Responses.UserResponseDTO>>(users);
+
+                foreach (var userDto in userDtos)
                 {
-                    var userDto = _mapper.Map<UserResponseDTO>(user);
+                    var userId = Guid.Parse(userDto.Id);
+                    var user = users.First(u => u.Id == userId);
                     var roles = await _userManager.GetRolesAsync(user);
                     userDto.Roles = roles.ToList();
-                    userDto.IsLockedOut = await _userManager.IsLockedOutAsync(user);
-                    if (userDto.IsLockedOut)
-                    {
-                        userDto.LockoutEnd = user.LockoutEnd;
-                        userDto.LockoutReason = user.LockoutReason;
-                    }
-                    userDtos.Add(userDto);
                 }
 
-                return new PagedResult<UserResponseDTO>
+                return new PagedResult<GestMantIA.Shared.Identity.DTOs.Responses.UserResponseDTO>
                 {
                     Items = userDtos,
                     PageNumber = pageNumber,
@@ -186,727 +181,382 @@ namespace GestMantIA.Infrastructure.Services
             }
         }
 
-        /// <inheritdoc />
         public async Task<bool> LockUserAsync(string userId, TimeSpan? duration = null, string? reason = null)
         {
-            if (string.IsNullOrEmpty(userId))
-                throw new ArgumentNullException(nameof(userId));
-
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
+                if (!Guid.TryParse(userId, out var userIdGuid))
                 {
-                    _logger.LogWarning("No se encontró el usuario con ID: {UserId}", userId);
+                    _logger.LogWarning("El ID de usuario no es un GUID válido: {UserId}", userId);
                     return false;
                 }
 
-                // Configurar la fecha de fin de bloqueo
-                DateTimeOffset? lockoutEnd = null;
+                var user = await _userManager.FindByIdAsync(userIdGuid.ToString());
+                if (user == null)
+                {
+                    _logger.LogWarning("Intento de bloquear usuario no encontrado con ID {UserId}", userId);
+                    return false;
+                }
+
+                // Asegurarse de que el bloqueo esté habilitado para el usuario
+                if (!await _userManager.GetLockoutEnabledAsync(user))
+                {
+                    await _userManager.SetLockoutEnabledAsync(user, true);
+                }
+
+                DateTimeOffset lockoutEnd;
                 if (duration.HasValue)
                 {
                     lockoutEnd = DateTimeOffset.UtcNow.Add(duration.Value);
                 }
                 else
                 {
-                    // Bloqueo indefinido (hasta que se desbloquee manualmente)
-                    lockoutEnd = DateTimeOffset.MaxValue;
+                    // Usar la duración de bloqueo por defecto de Identity si no se especifica
+                    // Esto podría requerir configuración adicional en IdentityOptions.Lockout
+                    lockoutEnd = DateTimeOffset.UtcNow.Add(_identityOptions.Value.Lockout.DefaultLockoutTimeSpan);
                 }
 
-                // Establecer el bloqueo
-                var result = await _userManager.SetLockoutEnabledAsync(user, true);
-                if (!result.Succeeded)
+                user.LockoutReason = reason ?? string.Empty;
+                var result = await _userManager.SetLockoutEndDateAsync(user, lockoutEnd);
+                
+                if (result.Succeeded)
                 {
-                    _logger.LogWarning("No se pudo habilitar el bloqueo para el usuario {UserId}: {Errors}", 
-                        userId, string.Join(", ", result.Errors.Select(e => e.Description)));
-                    return false;
+                    _logger.LogInformation("Usuario con ID {UserId} bloqueado hasta {LockoutEnd} por razón: {Reason}", userId, lockoutEnd, reason ?? "N/A");
                 }
-
-                result = await _userManager.SetLockoutEndDateAsync(user, lockoutEnd);
-                if (!result.Succeeded)
+                else
                 {
-                    _logger.LogWarning("No se pudo establecer la fecha de fin de bloqueo para el usuario {UserId}: {Errors}", 
-                        userId, string.Join(", ", result.Errors.Select(e => e.Description)));
-                    return false;
+                    _logger.LogError("Error al bloquear usuario con ID {UserId}: {Errors}", userId, string.Join(", ", result.Errors.Select(e => e.Description)));
                 }
-
-                // Registrar el motivo del bloqueo (si se proporciona)
-                if (!string.IsNullOrWhiteSpace(reason))
-                {
-                    user.LockoutReason = reason;
-                    user.LockoutDate = DateTime.UtcNow;
-                    await _userManager.UpdateAsync(user);
-                }
-
-                _logger.LogInformation("Usuario {UserId} bloqueado hasta {LockoutEnd}", userId, lockoutEnd);
-                return true;
+                return result.Succeeded;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al bloquear al usuario {UserId}", userId);
-                return false;
+                _logger.LogError(ex, "Excepción al bloquear usuario con ID {UserId}", userId);
+                throw;
             }
         }
 
-        /// <inheritdoc />
         public async Task<bool> UnlockUserAsync(string userId)
         {
-            if (string.IsNullOrEmpty(userId))
-                throw new ArgumentNullException(nameof(userId));
-
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
+                if (!Guid.TryParse(userId, out var userIdGuid))
+                {
+                    _logger.LogWarning("El ID de usuario no es un GUID válido: {UserId}", userId);
+                    return false;
+                }
+
+                var user = await _userManager.FindByIdAsync(userIdGuid.ToString());
                 if (user == null)
                 {
-                    _logger.LogWarning("No se encontró el usuario con ID: {UserId}", userId);
+                    _logger.LogWarning("Intento de desbloquear usuario no encontrado con ID {UserId}", userId);
                     return false;
                 }
 
-                // Deshabilitar el bloqueo
-                var result = await _userManager.SetLockoutEndDateAsync(user, null);
-                if (!result.Succeeded)
+                // Para desbloquear, se establece la fecha de fin de bloqueo a null o a un tiempo pasado.
+                // Identity considera null como no bloqueado, o Now/UtcNow.
+                var result = await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
+                if (result.Succeeded)
                 {
-                    _logger.LogWarning("No se pudo desbloquear al usuario {UserId}: {Errors}", 
-                        userId, string.Join(", ", result.Errors.Select(e => e.Description)));
-                    return false;
+                     user.LockoutReason = string.Empty; // Limpiar la razón del bloqueo
+                     await _userManager.UpdateAsync(user); // Guardar el cambio de LockoutReason
+                    _logger.LogInformation("Usuario con ID {UserId} desbloqueado.", userId);
                 }
-
-                // Limpiar la razón del bloqueo
-                user.LockoutReason = null;
-                user.LockoutDate = null;
-                await _userManager.UpdateAsync(user);
-
-                _logger.LogInformation("Usuario {UserId} desbloqueado exitosamente", userId);
-                return true;
+                else
+                {
+                    _logger.LogError("Error al desbloquear usuario con ID {UserId}: {Errors}", userId, string.Join(", ", result.Errors.Select(e => e.Description)));
+                }
+                return result.Succeeded;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al desbloquear al usuario {UserId}", userId);
-                return false;
+                _logger.LogError(ex, "Excepción al desbloquear usuario con ID {UserId}", userId);
+                throw;
             }
         }
 
-        /// <inheritdoc />
         public async Task<bool> IsUserLockedOutAsync(string userId)
         {
-            if (string.IsNullOrEmpty(userId))
-                throw new ArgumentNullException(nameof(userId));
-
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
+                if (!Guid.TryParse(userId, out var userIdGuid))
                 {
-                    _logger.LogWarning("No se encontró el usuario con ID: {UserId}", userId);
+                    _logger.LogWarning("El ID de usuario no es un GUID válido: {UserId}", userId);
                     return false;
                 }
 
+                var user = await _userManager.FindByIdAsync(userIdGuid.ToString());
+                if (user == null)
+                {
+                    _logger.LogWarning("Intento de verificar bloqueo de usuario no encontrado con ID {UserId}", userId);
+                    return false; // O lanzar excepción, dependiendo de cómo se quiera manejar usuarios no encontrados
+                }
                 return await _userManager.IsLockedOutAsync(user);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al verificar el estado de bloqueo del usuario {UserId}", userId);
+                _logger.LogError(ex, "Excepción al verificar si el usuario con ID {UserId} está bloqueado", userId);
                 throw;
             }
         }
 
-        /// <inheritdoc />
-        public async Task<UserLockoutInfo> GetUserLockoutInfoAsync(string userId)
+        public async Task<GestMantIA.Shared.Identity.DTOs.UserLockoutInfo?> GetUserLockoutInfoAsync(string userId)
         {
-            if (string.IsNullOrEmpty(userId))
-                throw new ArgumentNullException(nameof(userId));
-
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
+                if (!Guid.TryParse(userId, out var userIdGuid))
                 {
-                    _logger.LogWarning("No se encontró el usuario con ID: {UserId}", userId);
+                    _logger.LogWarning("El ID de usuario no es un GUID válido: {UserId}", userId);
                     return null;
                 }
 
-                var lockoutInfo = new UserLockoutInfo
+                var user = await _userManager.FindByIdAsync(userIdGuid.ToString());
+                if (user == null)
                 {
-                    UserId = user.Id,
-                    UserName = user.UserName,
-                    IsLockedOut = await _userManager.IsLockedOutAsync(user),
-                    LockoutEnd = user.LockoutEnd,
-                    LockoutStart = user.LockoutDate,
-                    Reason = user.LockoutReason,
-                    IsPermanent = user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.UtcNow.AddYears(100) // Consideramos bloqueo permanente si es más de 100 años
-                };
+                    _logger.LogWarning("No se encontró usuario con ID {UserId} al obtener información de bloqueo.", userId);
+                    return null;
+                }
 
-                return lockoutInfo;
+                var isLockedOut = await _userManager.IsLockedOutAsync(user);
+                var lockoutEnd = user.LockoutEnd;
+
+                return new GestMantIA.Shared.Identity.DTOs.UserLockoutInfo
+                {
+                    UserId = user.Id.ToString(),
+                    UserName = user.UserName ?? string.Empty,
+                    IsLockedOut = isLockedOut,
+                    LockoutEnd = lockoutEnd?.UtcDateTime,
+                    Reason = user.LockoutReason // Corregido: la propiedad en UserLockoutInfo se llama Reason
+                };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener la información de bloqueo del usuario {UserId}", userId);
+                _logger.LogError(ex, "Excepción al obtener información de bloqueo para el usuario con ID {UserId}", userId);
                 throw;
             }
         }
 
-        #region Gestión de Usuarios
-
-        /// <inheritdoc />
-        public async Task<UserResponseDTO> CreateUserAsync(CreateUserDTO createUserDto, IEnumerable<string>? roleNames = null)
+        public async Task<GestMantIA.Shared.Identity.DTOs.Responses.UserResponseDTO> CreateUserAsync(GestMantIA.Shared.Identity.DTOs.Requests.CreateUserDTO createUserDto, IEnumerable<string>? roleNames = null)
         {
-            if (createUserDto == null)
-                throw new ArgumentNullException(nameof(createUserDto));
-
             try
             {
-                // Verificar si el nombre de usuario ya existe
-                var existingUser = await _userManager.FindByNameAsync(createUserDto.Username);
-                if (existingUser != null)
-                {
-                    _logger.LogWarning("El nombre de usuario '{Username}' ya está en uso.", createUserDto.Username);
-                    return null;
-                }
-
-
-                // Verificar si el correo ya está registrado
-                existingUser = await _userManager.FindByEmailAsync(createUserDto.Email);
-                if (existingUser != null)
-                {
-                    _logger.LogWarning("El correo electrónico '{Email}' ya está registrado.", createUserDto.Email);
-                    return null;
-                }
-
-                // Crear el nuevo usuario
-                var user = new ApplicationUser
-                {
-                    UserName = createUserDto.Username,
-                    Email = createUserDto.Email,
-                    FirstName = createUserDto.FirstName,
-                    LastName = createUserDto.LastName,
-                    PhoneNumber = createUserDto.PhoneNumber,
-                    IsActive = true,
-                    EmailConfirmed = !createUserDto.RequireEmailConfirmation,
-                    CreatedAt = DateTime.UtcNow
-                };
-
-                // Crear el usuario
+                var user = _mapper.Map<ApplicationUser>(createUserDto);
+                user.UserName = createUserDto.Email; // Asegurar que el nombre de usuario sea el email
+                
                 var result = await _userManager.CreateAsync(user, createUserDto.Password);
+                
                 if (!result.Succeeded)
                 {
-                    _logger.LogWarning("No se pudo crear el usuario. Errores: {Errors}", 
-                        string.Join(", ", result.Errors.Select(e => e.Description)));
-                    return null;
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    _logger.LogWarning("Error al crear el usuario {Email}: {Errors}", createUserDto.Email, errors);
+                    throw new ApplicationException($"Error al crear el usuario: {errors}");
                 }
 
                 // Asignar roles si se especificaron
                 if (roleNames != null && roleNames.Any())
                 {
-                    await AssignRolesToUserAsync(user.Id, roleNames);
+                    var rolesToAdd = roleNames.Where(r => _roleManager.Roles.Any(role => role.Name == r)).ToList();
+                    if (rolesToAdd.Any())
+                    {
+                        var roleResult = await _userManager.AddToRolesAsync(user, rolesToAdd);
+                        if (!roleResult.Succeeded)
+                        {
+                            _logger.LogWarning("No se pudieron asignar los roles al usuario {UserId}", user.Id);
+                        }
+                    }
                 }
 
-
-                _logger.LogInformation("Usuario creado exitosamente con ID: {UserId}", user.Id);
-                return _mapper.Map<UserResponseDTO>(user);
+                var userDto = _mapper.Map<GestMantIA.Shared.Identity.DTOs.Responses.UserResponseDTO>(user);
+                userDto.Roles = (await _userManager.GetRolesAsync(user)).ToList();
+                
+                return userDto;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear el usuario con email: {Email}", createUserDto.Email);
+                _logger.LogError(ex, "Error al crear el usuario con email {Email}", createUserDto.Email);
                 throw;
             }
         }
 
-
-        /// <inheritdoc />
-        public async Task<UserResponseDTO> UpdateUserAsync(UpdateUserDTO updateUserDto)
+        public async Task<UserResponseDTO> UpdateUserAsync(string userId, UpdateUserDTO updateUserDto)
         {
-            if (updateUserDto == null)
-                throw new ArgumentNullException(nameof(updateUserDto));
-
-            try
+            if (updateUserDto == null || userId != updateUserDto.Id)
             {
-                // Obtener el usuario existente
-                var user = await _userManager.FindByIdAsync(updateUserDto.Id);
-                if (user == null)
-                {
-                    _logger.LogWarning("No se encontró el usuario con ID: {UserId}", updateUserDto.Id);
-                    return null;
-                }
-
-                // Actualizar propiedades si se proporcionan
-                if (!string.IsNullOrWhiteSpace(updateUserDto.Username) && user.UserName != updateUserDto.Username)
-                {
-                    var existingUser = await _userManager.FindByNameAsync(updateUserDto.Username);
-                    if (existingUser != null && existingUser.Id != user.Id)
-                    {
-                        _logger.LogWarning("El nombre de usuario '{Username}' ya está en uso.", updateUserDto.Username);
-                        return null;
-                    }
-                    user.UserName = updateUserDto.Username;
-                }
-
-                if (!string.IsNullOrWhiteSpace(updateUserDto.Email) && user.Email != updateUserDto.Email)
-                {
-                    var existingUser = await _userManager.FindByEmailAsync(updateUserDto.Email);
-                    if (existingUser != null && existingUser.Id != user.Id)
-                    {
-                        _logger.LogWarning("El correo electrónico '{Email}' ya está registrado.", updateUserDto.Email);
-                        return null;
-                    }
-                    user.Email = updateUserDto.Email;
-                }
-
-
-                if (updateUserDto.FirstName != null) user.FirstName = updateUserDto.FirstName;
-                if (updateUserDto.LastName != null) user.LastName = updateUserDto.LastName;
-                if (updateUserDto.PhoneNumber != null) user.PhoneNumber = updateUserDto.PhoneNumber;
-                if (updateUserDto.IsActive.HasValue) user.IsActive = updateUserDto.IsActive.Value;
-                if (updateUserDto.EmailConfirmed.HasValue) user.EmailConfirmed = updateUserDto.EmailConfirmed.Value;
-                if (updateUserDto.PhoneNumberConfirmed.HasValue) user.PhoneNumberConfirmed = updateUserDto.PhoneNumberConfirmed.Value;
-                if (updateUserDto.TwoFactorEnabled.HasValue) user.TwoFactorEnabled = updateUserDto.TwoFactorEnabled.Value;
-
-
-                user.UpdatedAt = DateTime.UtcNow;
-
-                // Actualizar el usuario
-                var result = await _userManager.UpdateAsync(user);
-                if (!result.Succeeded)
-                {
-                    _logger.LogWarning("No se pudo actualizar el usuario {UserId}. Errores: {Errors}", 
-                        user.Id, string.Join(", ", result.Errors.Select(e => e.Description)));
-                    return null;
-                }
-
-                _logger.LogInformation("Usuario actualizado exitosamente: {UserId}", user.Id);
-                return _mapper.Map<UserResponseDTO>(user);
+                _logger.LogWarning("UpdateUserAsync fue llamado con argumentos inválidos. UserID: {UserId}, DTO ID: {DtoId}", userId, updateUserDto?.Id);
+                throw new ArgumentException("Los datos proporcionados para la actualización del usuario son inválidos.", nameof(updateUserDto));
             }
-            catch (Exception ex)
+
+            if (!Guid.TryParse(updateUserDto.Id, out var userIdGuid))
             {
-                _logger.LogError(ex, "Error al actualizar el usuario con ID: {UserId}", updateUserDto.Id);
-                throw;
+                _logger.LogWarning("El ID de usuario no es un GUID válido: {UserId}", updateUserDto.Id);
+                throw new ArgumentException("El ID de usuario proporcionado no es válido.", nameof(updateUserDto.Id));
             }
+
+            var user = await _userManager.FindByIdAsync(userIdGuid.ToString());
+            if (user == null)
+            {
+                _logger.LogWarning("No se encontró el usuario con ID {UserId} para actualizar.", updateUserDto.Id);
+                throw new KeyNotFoundException($"No se encontró el usuario con ID {updateUserDto.Id}");
+            }
+
+            _mapper.Map(updateUserDto, user);
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                _logger.LogError("Error al actualizar el usuario {UserId}: {Errors}", user.Id, errors);
+                throw new ApplicationException($"Error al actualizar el usuario: {errors}");
+            }
+
+            /*
+            // Actualizar roles si se proporcionan
+            if (updateUserDto.Roles != null && updateUserDto.Roles.Any()) // updateUserDto es el nombre correcto del parámetro
+            { 
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                var rolesToRemove = currentRoles.Except(updateUserDto.Roles).ToList();
+                var rolesToAdd = updateUserDto.Roles.Except(currentRoles).ToList();
+
+                if (rolesToRemove.Any())
+                { 
+                    var removeResult = await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+                    if (!removeResult.Succeeded)
+                    { 
+                        // Log error pero no necesariamente fallar toda la operación por esto
+                        _logger.LogWarning("UpdateUserAsync: Error al quitar roles para {UserId}: {Errors}", userId, string.Join(", ", removeResult.Errors.Select(e => e.Description)));
+                    }
+                }
+
+                if (rolesToAdd.Any())
+                { 
+                    var addResult = await _userManager.AddToRolesAsync(user, rolesToAdd);
+                    if (!addResult.Succeeded)
+                    { 
+                        _logger.LogWarning("UpdateUserAsync: Error al añadir roles para {UserId}: {Errors}", userId, string.Join(", ", addResult.Errors.Select(e => e.Description)));
+                    }
+                }
+            }
+            */
+
+            // Recargar el usuario para obtener el estado más reciente y evitar problemas de concurrencia o datos obsoletos
+            var reloadedUser = await _userManager.FindByIdAsync(userId);
+            if (reloadedUser == null)
+            {
+                _logger.LogError("CRÍTICO: No se pudo recargar el usuario {UserId} después de una actualización exitosa.", user.Id);
+                throw new InvalidOperationException($"No se pudo recargar el usuario con ID {user.Id} después de la actualización.");
+            }
+            
+            var responseDto = _mapper.Map<UserResponseDTO>(reloadedUser);
+            if (responseDto == null)
+            {
+                 _logger.LogError("El mapeo del usuario recargado {UserId} a UserResponseDTO resultó en null.", reloadedUser.Id);
+                 throw new InvalidOperationException($"Error al mapear el usuario recargado {reloadedUser.Id} a DTO.");
+            }
+
+            responseDto.Roles = (await _userManager.GetRolesAsync(reloadedUser)).ToList();
+            
+            return responseDto;
         }
 
-
-        /// <inheritdoc />
         public async Task<bool> DeleteUserAsync(string userId, bool hardDelete = false)
         {
-            if (string.IsNullOrEmpty(userId))
-                throw new ArgumentNullException(nameof(userId));
-
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
+                if (!Guid.TryParse(userId, out var userIdGuid))
                 {
-                    _logger.LogWarning("No se encontró el usuario con ID: {UserId}", userId);
+                    _logger.LogWarning("El ID de usuario no es un GUID válido: {UserId}", userId);
                     return false;
                 }
 
+                var user = await _userManager.FindByIdAsync(userIdGuid.ToString());
+                if (user == null) 
+                {
+                    _logger.LogWarning("No se encontró el usuario con ID: {UserId} para eliminar.", userId);
+                    return false;
+                }
 
                 if (hardDelete)
                 {
-                    // Eliminación física
                     var result = await _userManager.DeleteAsync(user);
-                    if (!result.Succeeded)
-                    {
-                        _logger.LogWarning("No se pudo eliminar el usuario {UserId}. Errores: {Errors}", 
-                            userId, string.Join(", ", result.Errors.Select(e => e.Description)));
-                        return false;
-                    }
-                    _logger.LogInformation("Usuario eliminado permanentemente: {UserId}", userId);
+                    return result.Succeeded;
                 }
                 else
                 {
-                    // Eliminación lógica
-                    user.IsActive = false;
-                    user.UpdatedAt = DateTime.UtcNow;
+                    user.IsDeleted = true;
+                    user.DeletedAt = DateTime.UtcNow;
                     var result = await _userManager.UpdateAsync(user);
-                    if (!result.Succeeded)
-                    {
-                        _logger.LogWarning("No se pudo desactivar el usuario {UserId}. Errores: {Errors}", 
-                            userId, string.Join(", ", result.Errors.Select(e => e.Description)));
-                        return false;
-                    }
-                    _logger.LogInformation("Usuario desactivado: {UserId}", userId);
+                    return result.Succeeded;
                 }
-
-                return true;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al eliminar el usuario con ID: {UserId}", userId);
+                _logger.LogError(ex, "Error al eliminar el usuario con ID {UserId}", userId);
                 throw;
             }
         }
 
-
-        /// <inheritdoc />
         public async Task<UserResponseDTO?> GetUserByIdAsync(string userId)
         {
-            if (string.IsNullOrEmpty(userId))
-                throw new ArgumentNullException(nameof(userId));
-
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
+                if (!Guid.TryParse(userId, out var userIdGuid))
                 {
-                    _logger.LogDebug("No se encontró el usuario con ID: {UserId}", userId);
+                    _logger.LogWarning("El ID de usuario no es un GUID válido: {UserId}", userId);
+                    return null;
+                }
+
+                var user = await _userManager.Users
+                    .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                    .FirstOrDefaultAsync(u => u.Id == userIdGuid);
+                    
+                if (user == null) 
+                {
+                    _logger.LogWarning("No se encontró el usuario con ID {UserId}", userId);
                     return null;
                 }
 
                 var userDto = _mapper.Map<UserResponseDTO>(user);
                 
-                // Obtener roles del usuario
+                // Obtener los roles del usuario
                 var roles = await _userManager.GetRolesAsync(user);
                 userDto.Roles = roles.ToList();
                 
-                // Verificar si el usuario está bloqueado
-                userDto.IsLockedOut = await _userManager.IsLockedOutAsync(user);
-                if (userDto.IsLockedOut)
-                {
-                    userDto.LockoutEnd = user.LockoutEnd;
-                    userDto.LockoutReason = user.LockoutReason;
-                }
-
+                // Mapear propiedades adicionales
+                userDto.IsLockedOut = user.LockoutEnd.HasValue && user.LockoutEnd > DateTimeOffset.UtcNow;
+                userDto.LockoutEnd = user.LockoutEnd;
+                userDto.LockoutReason = user.LockoutReason;
+                userDto.IsActive = user.IsActive;
+                userDto.DateRegistered = user.CreatedAt;
+                
                 return userDto;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener el usuario con ID: {UserId}", userId);
+                _logger.LogError(ex, "Error al obtener el usuario con ID {UserId}", userId);
                 throw;
             }
         }
 
-
-        /// <inheritdoc />
         public async Task<PagedResult<UserResponseDTO>> GetAllUsersAsync(
             int pageNumber = 1, 
             int pageSize = 10, 
             string? searchTerm = null, 
-            bool? activeOnly = null)
+            bool activeOnly = false)
         {
             try
             {
-                // Validar parámetros
-                if (pageNumber < 1) pageNumber = 1;
-                if (pageSize < 1 || pageSize > 100) pageSize = 10;
-
-                // Obtener usuarios con paginación
-                var users = _userManager.Users.AsQueryable();
-                
-                // Aplicar filtro de búsqueda si se proporciona
-                if (!string.IsNullOrWhiteSpace(searchTerm))
-                {
-                    var normalizedSearchTerm = searchTerm.ToLower();
-                    users = users.Where(u => 
-                        u.NormalizedUserName != null && u.NormalizedUserName.Contains(normalizedSearchTerm) ||
-                        u.NormalizedEmail != null && u.NormalizedEmail.Contains(normalizedSearchTerm) ||
-                        u.FirstName != null && u.FirstName.ToLower().Contains(normalizedSearchTerm) ||
-                        u.LastName != null && u.LastName.ToLower().Contains(normalizedSearchTerm)
-                    );
-                }
-
-                // Aplicar filtro de estado activo si se proporciona
-                if (activeOnly.HasValue)
-                {
-                    users = users.Where(u => u.IsActive == activeOnly.Value);
-                }
-
-                // Contar el total de usuarios que coinciden con los filtros
-                var totalCount = await users.CountAsync();
-
-                // Aplicar paginación
-                var pagedUsers = await users
-                    .OrderBy(u => u.UserName)
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToListAsync();
-
-                // Mapear a DTOs
-                var userDtos = new List<UserResponseDTO>();
-                foreach (var user in pagedUsers)
-                {
-                    var userDto = _mapper.Map<UserResponseDTO>(user);
-                    
-                    // Obtener roles del usuario
-                    var roles = await _userManager.GetRolesAsync(user);
-                    userDto.Roles = roles.ToList();
-                    
-                    // Verificar si el usuario está bloqueado
-                    userDto.IsLockedOut = await _userManager.IsLockedOutAsync(user);
-                    if (userDto.IsLockedOut)
-                    {
-                        userDto.LockoutEnd = user.LockoutEnd;
-                        userDto.LockoutReason = user.LockoutReason;
-                    }
-                    
-                    userDtos.Add(userDto);
-                }
-
-
-                // Devolver resultado paginado
-                var result = new PagedResult<UserResponseDTO>
-                {
-                    Items = userDtos,
-                    PageNumber = pageNumber,
-                    PageSize = pageSize,
-                    TotalCount = totalCount
-                };
-                
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al obtener la lista de usuarios");
-                throw;
-            }
-        }
-
-
-        /// <inheritdoc />
-        public async Task<bool> AssignRolesToUserAsync(string userId, IEnumerable<string> roleNames)
-        {
-            if (string.IsNullOrEmpty(userId))
-                throw new ArgumentNullException(nameof(userId));
-            if (roleNames == null)
-                throw new ArgumentNullException(nameof(roleNames));
-
-            try
-            {
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
-                {
-                    _logger.LogWarning("No se encontró el usuario con ID: {UserId}", userId);
-                    return false;
-                }
-
-                // Validar que los roles existan
-                var validRoles = new List<string>();
-                foreach (var roleName in roleNames.Distinct())
-                {
-                    var roleExists = await _roleManager.RoleExistsAsync(roleName);
-                    if (roleExists)
-                    {
-                        validRoles.Add(roleName);
-                    }
-                    else
-                    {
-                        _logger.LogWarning("El rol '{RoleName}' no existe y no se asignará al usuario {UserId}", 
-                            roleName, userId);
-                    }
-                }
-
-
-                if (!validRoles.Any())
-                {
-                    _logger.LogWarning("No se proporcionaron roles válidos para asignar al usuario {UserId}", userId);
-                    return false;
-                }
-
-
-                // Asignar roles al usuario
-                var result = await _userManager.AddToRolesAsync(user, validRoles);
-                if (!result.Succeeded)
-                {
-                    _logger.LogWarning("No se pudieron asignar los roles al usuario {UserId}. Errores: {Errors}", 
-                        userId, string.Join(", ", result.Errors.Select(e => e.Description)));
-                    return false;
-                }
-
-                _logger.LogInformation("Roles asignados correctamente al usuario {UserId}: {Roles}", 
-                    userId, string.Join(", ", validRoles));
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al asignar roles al usuario {UserId}", userId);
-                throw;
-            }
-        }
-
-
-        /// <inheritdoc />
-        public async Task<bool> RemoveRolesFromUserAsync(string userId, IEnumerable<string> roleNames)
-        {
-            if (string.IsNullOrEmpty(userId))
-                throw new ArgumentNullException(nameof(userId));
-            if (roleNames == null)
-                throw new ArgumentNullException(nameof(roleNames));
-
-            try
-            {
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
-                {
-                    _logger.LogWarning("No se encontró el usuario con ID: {UserId}", userId);
-                    return false;
-                }
-
-                // Validar que los roles existan
-                var validRoles = new List<string>();
-                foreach (var roleName in roleNames.Distinct())
-                {
-                    var roleExists = await _roleManager.RoleExistsAsync(roleName);
-                    if (roleExists)
-                    {
-                        validRoles.Add(roleName);
-                    }
-                    else
-                    {
-                        _logger.LogWarning("El rol '{RoleName}' no existe y no se puede eliminar del usuario {UserId}", 
-                            roleName, userId);
-                    }
-                }
-
-
-                if (!validRoles.Any())
-                {
-                    _logger.LogWarning("No se proporcionaron roles válidos para eliminar del usuario {UserId}", userId);
-                    return false;
-                }
-
-
-                // Eliminar roles del usuario
-                var result = await _userManager.RemoveFromRolesAsync(user, validRoles);
-                if (!result.Succeeded)
-                {
-                    _logger.LogWarning("No se pudieron eliminar los roles del usuario {UserId}. Errores: {Errors}", 
-                        userId, string.Join(", ", result.Errors.Select(e => e.Description)));
-                    return false;
-                }
-
-                _logger.LogInformation("Roles eliminados correctamente del usuario {UserId}: {Roles}", 
-                    userId, string.Join(", ", validRoles));
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al eliminar roles del usuario {UserId}", userId);
-                throw;
-            }
-        }
-
-
-        /// <inheritdoc />
-        public async Task<IEnumerable<string>> GetUserRolesAsync(string userId)
-        {
-            if (string.IsNullOrEmpty(userId))
-                throw new ArgumentNullException(nameof(userId));
-
-            try
-            {
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
-                {
-                    _logger.LogWarning("No se encontró el usuario con ID: {UserId}", userId);
-                    return Enumerable.Empty<string>();
-                }
-
-                var roles = await _userManager.GetRolesAsync(user);
-                return roles;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al obtener los roles del usuario {UserId}", userId);
-                throw;
-            }
-        }
-
-        #endregion
-
-        /// <inheritdoc />
-        public async Task<PagedResult<UserResponseDTO>> GetAllUsersAsync(
-            int pageNumber = 1, 
-            int pageSize = 10, 
-            string? searchTerm = null, 
-            bool? activeOnly = null)
-        {
-            try
-            {
-                // Validar parámetros
-                if (pageNumber < 1) pageNumber = 1;
-                if (pageSize < 1 || pageSize > 100) pageSize = 10;
-
-                // Obtener usuarios con paginación
-                var users = _userManager.Users.AsQueryable();
-                
-                // Aplicar filtro de búsqueda si se proporciona
-                if (!string.IsNullOrWhiteSpace(searchTerm))
-                {
-                    var normalizedSearchTerm = searchTerm.ToLower();
-                    users = users.Where(u => 
-                        (u.NormalizedUserName != null && u.NormalizedUserName.Contains(normalizedSearchTerm)) ||
-                        (u.NormalizedEmail != null && u.NormalizedEmail.Contains(normalizedSearchTerm)) ||
-                        (u.FirstName != null && u.FirstName.ToLower().Contains(normalizedSearchTerm)) ||
-                        (u.LastName != null && u.LastName.ToLower().Contains(normalizedSearchTerm)));
-                }
-
-                // Aplicar filtro de estado activo si se proporciona
-                if (activeOnly.HasValue)
-                {
-                    users = users.Where(u => u.IsActive == activeOnly.Value);
-                }
-
-                // Contar el total de usuarios que coinciden con los filtros
-                var totalCount = await users.CountAsync();
-
-                // Aplicar paginación
-                var pagedUsers = await users
-                    .OrderBy(u => u.UserName)
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToListAsync();
-
-                // Mapear a DTOs
-                var userDtos = _mapper.Map<List<UserResponseDTO>>(pagedUsers);
-
-                // Obtener roles para cada usuario
-                foreach (var userDto in userDtos)
-                {
-                    var user = pagedUsers.First(u => u.Id == userDto.Id);
-                    var roles = await _userManager.GetRolesAsync(user);
-                    userDto.Roles = roles.ToList();
-                    
-                    // Verificar si el usuario está bloqueado
-                    userDto.IsLockedOut = await _userManager.IsLockedOutAsync(user);
-                    if (userDto.IsLockedOut)
-                    {
-                        userDto.LockoutEnd = user.LockoutEnd;
-                        userDto.LockoutReason = user.LockoutReason;
-                    }
-                }
-
-
-                return new PagedResult<UserResponseDTO>
-                {
-                    Items = userDtos,
-                    PageNumber = pageNumber,
-                    PageSize = pageSize,
-                    TotalCount = totalCount
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al obtener la lista de usuarios. Página: {PageNumber}, Tamaño: {PageSize}", pageNumber, pageSize);
-                throw;
-            }
-        }
-        #endregion
-
-        // Implementación explícita de IUserService.SearchUsersAsync
-        async Task<PagedResult<UserResponseDTO>> IUserService.SearchUsersAsync(string? searchTerm, int pageNumber, int pageSize)
-        {
-            try
-            {
-                // Validar parámetros de paginación
-                if (pageNumber < 1) pageNumber = 1;
-                if (pageSize < 1 || pageSize > 100) pageSize = 10;
-
-                // Construir la consulta base
                 var query = _userManager.Users.AsQueryable();
 
-                // Aplicar filtro de búsqueda si se proporciona
+                // Aplicar filtros
+                if (activeOnly)
+                {
+                    query = query.Where(u => !u.IsDeleted);
+                }
+
                 if (!string.IsNullOrWhiteSpace(searchTerm))
                 {
-                    var searchTermLower = searchTerm.Trim().ToLower();
+                    var searchTermLower = searchTerm.ToLower();
                     query = query.Where(u => 
                         (u.UserName != null && u.UserName.ToLower().Contains(searchTermLower)) ||
                         (u.Email != null && u.Email.ToLower().Contains(searchTermLower)) ||
@@ -919,28 +569,30 @@ namespace GestMantIA.Infrastructure.Services
 
                 // Aplicar paginación
                 var users = await query
-                    .OrderBy(u => u.UserName)
+                    .OrderBy(u => u.LastName)
+                    .ThenBy(u => u.FirstName)
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
 
-                // Mapear a DTOs
-                var userDtos = _mapper.Map<List<UserResponseDTO>>(users);
-
-                // Obtener roles para cada usuario
-                foreach (var userDto in userDtos)
+                // Mapear a DTOs y cargar roles
+                var userDtos = new List<UserResponseDTO>();
+                foreach (var user in users)
                 {
-                    var user = users.First(u => u.Id == userDto.Id);
+                    var userDto = _mapper.Map<UserResponseDTO>(user);
+                    
+                    // Obtener los roles del usuario
                     var roles = await _userManager.GetRolesAsync(user);
                     userDto.Roles = roles.ToList();
                     
-                    // Verificar si el usuario está bloqueado
-                    userDto.IsLockedOut = await _userManager.IsLockedOutAsync(user);
-                    if (userDto.IsLockedOut)
-                    {
-                        userDto.LockoutEnd = user.LockoutEnd;
-                        userDto.LockoutReason = user.LockoutReason;
-                    }
+                    // Mapear propiedades adicionales
+                    userDto.IsLockedOut = user.LockoutEnd.HasValue && user.LockoutEnd > DateTimeOffset.UtcNow;
+                    userDto.LockoutEnd = user.LockoutEnd;
+                    userDto.LockoutReason = user.LockoutReason;
+                    userDto.IsActive = user.IsActive;
+                    userDto.DateRegistered = user.CreatedAt;
+                    
+                    userDtos.Add(userDto);
                 }
 
 
@@ -954,27 +606,92 @@ namespace GestMantIA.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al buscar usuarios con el término: {SearchTerm}", searchTerm);
+                _logger.LogError(ex, "Error al obtener todos los usuarios. Página: {PageNumber}, Tamaño: {PageSize}", pageNumber, pageSize);
                 throw;
             }
         }
 
-        protected virtual void Dispose(bool disposing)
+        public async Task<bool> AssignRolesToUserAsync(string userId, IEnumerable<string> roleNames)
         {
-            if (!_disposed)
+            try
             {
-                if (disposing)
+                if (!Guid.TryParse(userId, out var userIdGuid))
                 {
-                    _context?.Dispose();
+                    _logger.LogWarning("El ID de usuario no es un GUID válido: {UserId}", userId);
+                    return false;
                 }
-                _disposed = true;
+
+                var user = await _userManager.FindByIdAsync(userIdGuid.ToString());
+                if (user == null) 
+                {
+                    _logger.LogWarning("No se encontró el usuario con ID: {UserId} para asignar roles.", userId);
+                    return false;
+                }
+
+                var result = await _userManager.AddToRolesAsync(user, roleNames);
+                return result.Succeeded;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al asignar roles al usuario con ID {UserId}", userId);
+                throw;
             }
         }
 
-        public void Dispose()
+        public async Task<bool> RemoveRolesFromUserAsync(string userId, IEnumerable<string> roleNames)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            try
+            {
+                if (!Guid.TryParse(userId, out var userIdGuid))
+                {
+                    _logger.LogWarning("El ID de usuario no es un GUID válido: {UserId}", userId);
+                    return false;
+                }
+
+
+                var user = await _userManager.FindByIdAsync(userIdGuid.ToString());
+                if (user == null) 
+                {
+                    _logger.LogWarning("No se encontró el usuario con ID: {UserId} para eliminar roles.", userId);
+                    return false;
+                }
+
+                var result = await _userManager.RemoveFromRolesAsync(user, roleNames);
+                return result.Succeeded;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar roles del usuario con ID {UserId}", userId);
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<string>> GetUserRolesAsync(string userId)
+        {
+            try
+            {
+                if (!Guid.TryParse(userId, out var userIdGuid))
+                {
+                    _logger.LogWarning("El ID de usuario no es un GUID válido: {UserId}", userId);
+                    return Enumerable.Empty<string>();
+                }
+
+                var user = await _userManager.FindByIdAsync(userIdGuid.ToString());
+                if (user == null)
+                {
+                    _logger.LogWarning("No se encontró el usuario con ID {UserId}", userId);
+                    return Enumerable.Empty<string>();
+                }
+
+                var roles = await _userManager.GetRolesAsync(user);
+                _logger.LogInformation("Se obtuvieron {Count} roles para el usuario con ID {UserId}", roles.Count, userId);
+                return roles;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener los roles del usuario con ID {UserId}", userId);
+                throw;
+            }
         }
     }
 }

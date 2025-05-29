@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// </summary>
         /// <param name="user">Usuario para el que se generará el token.</param>
         /// <returns>Token de acceso JWT como cadena.</returns>
-        string GenerateAccessToken(ApplicationUser user);
+        Task<string> GenerateAccessTokenAsync(ApplicationUser user);
 
         /// <summary>
         /// Genera un token de actualización para el usuario especificado.
@@ -44,6 +45,6 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// </summary>
         /// <param name="token">Token JWT.</param>
         /// <returns>Identificador del usuario o null si no se puede obtener.</returns>
-        string GetUserIdFromToken(string token);
+        Guid? GetUserIdFromToken(string token);
     }
 }

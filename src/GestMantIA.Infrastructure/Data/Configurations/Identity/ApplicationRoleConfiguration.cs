@@ -41,12 +41,24 @@ namespace GestMantIA.Infrastructure.Data.Configurations.Identity
             builder.HasMany(r => r.UserRoles)
                 .WithOne(ur => ur.Role)
                 .HasForeignKey(ur => ur.RoleId)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(r => r.RolePermissions)
                 .WithOne(rp => rp.Role)
                 .HasForeignKey(rp => rp.RoleId)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Relación con IdentityRoleClaim<Guid>
+            builder.HasMany<Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>>()
+                .WithOne()
+                .HasForeignKey(rc => rc.RoleId)
+                .IsRequired();
+
+            // Configuración del tipo de columna para el ID
+            builder.Property(r => r.Id)
+                .HasColumnType("uuid");
         }
     }
 }

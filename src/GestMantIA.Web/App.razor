@@ -1,12 +1,80 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
+@using Microsoft.AspNetCore.Components.Authorization
+@using MudBlazor.Services
+@using GestMantIA.Web.Services
+@inject IThemeService ThemeService
+
+<CascadingAuthenticationState>
+    <MudThemeProvider Theme="@ThemeService.CurrentTheme" IsDarkMode="@ThemeService.IsDarkMode" />
+    <MudDialogProvider />
+    <MudSnackbarProvider />
+    
+    <MudPopoverProvider />
+    <MudBreakpointProvider />
+
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <Authorizing>
+                    <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+                </Authorizing>
+                <NotAuthorized>
+                    @if (context.User.Identity?.IsAuthenticated != true)
+                    {
+                        <RedirectToLogin />
+                    }
+                    else
+                    {
+                        <MudContainer>
+                            <MudPaper Class="pa-4 mt-16" Elevation="3">
+                                <MudText Typo="Typo.h5" Class="mb-4">Acceso no autorizado</MudText>
+                                <MudText Class="mb-4">No tienes permisos para acceder a este recurso.</MudText>
+                                <MudButton Variant="Variant.Filled" 
+                                          Color="Color.Primary" 
+                                          Href="/" 
+                                          StartIcon="@Icons.Material.Filled.Home">
+                                    Volver al inicio
+                                </MudButton>
+                            </MudPaper>
+                        </MudContainer>
+                    }
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <PageTitle>Página no encontrada</PageTitle>
+            <MudLayout>
+                <MudMainContent>
+                    <MudContainer Class="fill-height">
+                        <MudGrid Class="fill-height" AlignItems="AlignItems.Center" Justify="Justify.Center">
+                            <MudItem xs="12" sm="10" md="8" lg="6" xl="4">
+                                <MudPaper Class="pa-8 text-center" Elevation="3">
+                                    <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" 
+                                            Color="Color.Error" 
+                                            Size="Size.Large" 
+                                            Class="mb-4" />
+                                    <MudText Typo="Typo.h4" Class="mb-4">404 - Página no encontrada</MudText>
+                                    <MudText Class="mb-6">Lo sentimos, no pudimos encontrar la página que estás buscando.</MudText>
+                                    <MudButton Variant="Variant.Filled" 
+                                              Color="Color.Primary" 
+                                              Href="/" 
+                                              StartIcon="@Icons.Material.Filled.Home">
+                                        Volver al inicio
+                                    </MudButton>
+                                </MudPaper>
+                            </MudItem>
+                        </MudGrid>
+                    </MudContainer>
+                </MudMainContent>
+            </MudLayout>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await ThemeService.InitializeAsync();
+    }
+}

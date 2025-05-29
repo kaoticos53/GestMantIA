@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GestMantIA.Core.Identity.DTOs;
+using GestMantIA.Core.Identity.Entities;
+using GestMantIA.Shared.Identity.DTOs;
+using GestMantIA.Shared.Identity.DTOs.Responses;
 using GestMantIA.Core.Identity.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -108,6 +110,11 @@ namespace GestMantIA.API.Controllers
                 }
 
                 var createdRole = await _roleService.GetRoleByIdAsync(roleDto.Id);
+                if (createdRole == null)
+                {
+                    _logger.LogError("No se pudo encontrar el rol recién creado con ID: {RoleId}", roleDto.Id);
+                    return Problem("No se pudo recuperar el rol después de la creación.", statusCode: StatusCodes.Status500InternalServerError);
+                }
                 return CreatedAtAction(nameof(GetRoleById), new { id = createdRole.Id }, createdRole);
             }
             catch (Exception ex)
@@ -286,11 +293,12 @@ namespace GestMantIA.API.Controllers
         /// <param name="roleName">Nombre del rol.</param>
         /// <returns>Lista de usuarios con el rol especificado.</returns>
         [HttpGet("{roleName}/users")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserResponseDTO>))]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<IEnumerable<UserResponseDTO>>> GetUsersInRole(string roleName)
+        public async Task<ActionResult<IList<ApplicationUser>>> GetUsersInRole(string roleName)
         {
             try
             {

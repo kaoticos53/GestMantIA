@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GestMantIA.Core.Identity.Results
 {
@@ -15,6 +16,8 @@ namespace GestMantIA.Core.Identity.Results
             FirstName = string.Empty;
             LastName = string.Empty;
             Roles = new List<string>();
+            UserName = string.Empty;
+            FullName = string.Empty;
         }
 
         /// <summary>
@@ -36,6 +39,17 @@ namespace GestMantIA.Core.Identity.Results
         /// Apellido del usuario.
         /// </summary>
         public string LastName { get; set; }
+
+        /// <summary>
+        /// Nombre de usuario (login).
+        /// </summary>
+        [Display(Name = "Nombre de usuario")]
+        public string UserName { get; set; }
+
+        /// <summary>
+        /// Nombre completo del usuario.
+        /// </summary>
+        public string FullName { get; set; }
 
         /// <summary>
         /// Indica si el correo electrónico del usuario ha sido verificado.

@@ -2,21 +2,43 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
+    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+    <PWAManifest>manifest.json</PWAManifest>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <!-- MudBlazor -->
     <PackageReference Include="MudBlazor" />
+    
+    <!-- Autenticación y Estado -->
+    <PackageReference Include="Blazored.LocalStorage" />
+    <PackageReference Include="Blazored.Toast" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
+    <PackageReference Include="System.Net.Http.Json" />
+    
+    <!-- Utilidades -->
   </ItemGroup>
 
   <ItemGroup>
-    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="service-worker.published.js" />
+  </ItemGroup>
+
+    <ItemGroup>
+    <ProjectReference Include="..\GestMantIA.Shared\GestMantIA.Shared.csproj" />
+    <!-- <ProjectReference Include="..\GestMantIA.Core\GestMantIA.Core.csproj" /> --> 
+    <!-- <ProjectReference Include="..\GestMantIA.Infrastructure\GestMantIA.Infrastructure.csproj" /> --> 
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="wwwroot\mudTheme.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

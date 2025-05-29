@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GestMantIA.Core.Identity.DTOs.Requests;
-using GestMantIA.Core.Identity.DTOs.Responses;
-using GestMantIA.Core.Identity.Interfaces;
+using GestMantIA.Shared.Identity.DTOs.Requests;
+using GestMantIA.Shared.Identity.DTOs.Responses;
 using GestMantIA.Core.Shared;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using GestMantIA.Core.Identity.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 
 namespace GestMantIA.API.Controllers
@@ -78,14 +77,14 @@ namespace GestMantIA.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<PagedResult<UserResponseDTO>>> GetAllUsers(
-            [FromQuery] string searchTerm = null,
+            [FromQuery] string? searchTerm = null,
             [FromQuery] bool? activeOnly = null,
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10)
         {
             try
             {
-                var result = await _userService.GetAllUsersAsync(pageNumber, pageSize, searchTerm, activeOnly);
+                var result = await _userService.GetAllUsersAsync(pageNumber, pageSize, searchTerm, activeOnly ?? true);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -163,7 +162,7 @@ namespace GestMantIA.API.Controllers
                     return BadRequest("El ID de la ruta no coincide con el ID del usuario");
                 }
 
-                var user = await _userService.UpdateUserAsync(updateUserDto);
+                var user = await _userService.UpdateUserAsync(userId, updateUserDto);
                 if (user == null)
                 {
                     _logger.LogWarning("No se pudo actualizar el usuario con ID: {UserId}", userId);

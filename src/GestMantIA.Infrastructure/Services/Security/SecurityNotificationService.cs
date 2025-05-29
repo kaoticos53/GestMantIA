@@ -33,13 +33,13 @@ namespace GestMantIA.Infrastructure.Services.Security
         }
 
         public async Task<bool> SendSecurityNotificationAsync(
-            string userId,
+            Guid userId,
             string title,
             string message,
             SecurityNotificationType notificationType,
             Guid? relatedEventId = null)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (userId == Guid.Empty)
                 throw new ArgumentNullException(nameof(userId));
 
             try
@@ -61,7 +61,7 @@ namespace GestMantIA.Infrastructure.Services.Security
 
                 _logger.LogInformation(
                     "Notificación de seguridad enviada al usuario {UserId}: {Title}", 
-                    userId, title);
+                    userId.ToString(), title);
 
                 // Enviar notificación por correo si está habilitado
                 if (_options.EnableEmailNotifications)
@@ -93,7 +93,7 @@ namespace GestMantIA.Infrastructure.Services.Security
                 _logger.LogError(
                     ex, 
                     "Error al enviar notificación de seguridad al usuario {UserId}", 
-                    userId);
+                    userId.ToString());
                 return false;
             }
         }
@@ -206,19 +206,19 @@ namespace GestMantIA.Infrastructure.Services.Security
     public class SecurityNotificationOptions
     {
         /// <summary>
-        /// Nombre de la aplicación para usar en los correos electrónicos.
+        /// Nombre de la aplicación.
         /// </summary>
-        public string ApplicationName { get; set; } = "GestMantIA";
+        public required string ApplicationName { get; set; } = "GestMantIA";
 
         /// <summary>
         /// Dirección de correo electrónico del equipo de seguridad.
         /// </summary>
-        public string SecurityTeamEmail { get; set; }
+        public required string SecurityTeamEmail { get; set; } = string.Empty;
 
         /// <summary>
         /// Dirección de correo electrónico de soporte.
         /// </summary>
-        public string SupportEmail { get; set; } = "soporte@gestmantia.com";
+        public required string SupportEmail { get; set; } = "soporte@gestmantia.com";
 
         /// <summary>
         /// Habilita o deshabilita las notificaciones por correo electrónico.

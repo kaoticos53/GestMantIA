@@ -1,35 +1,27 @@
 using System;
+using Microsoft.AspNetCore.Identity;
 
 namespace GestMantIA.Core.Identity.Entities
 {
     /// <summary>
     /// Clase que representa la relación muchos a muchos entre usuarios y roles.
     /// </summary>
-    public class ApplicationUserRole : BaseEntity
+    public class ApplicationUserRole : IdentityUserRole<Guid>
     {
         /// <summary>
         /// Inicializa una nueva instancia de la clase <see cref="ApplicationUserRole"/>
         /// </summary>
         public ApplicationUserRole()
         {
-            User = null!; // Inicialización forzada, se debe establecer después
-            Role = null!; // Inicialización forzada, se debe establecer después
+            // Inicialización de propiedades de navegación
+            User = null!;
+            Role = null!;
         }
-
-        /// <summary>
-        /// Identificador del usuario.
-        /// </summary>
-        public Guid UserId { get; set; }
 
         /// <summary>
         /// Usuario asociado.
         /// </summary>
         public virtual ApplicationUser User { get; set; }
-
-        /// <summary>
-        /// Identificador del rol.
-        /// </summary>
-        public Guid RoleId { get; set; }
 
         /// <summary>
         /// Rol asociado.

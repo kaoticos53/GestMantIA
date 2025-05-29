@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GestMantIA.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3225c0ddc19a63603330659d687992bb8921e493")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ca56bdd5fd0aea6297b21fe462dd6e98a02aa4f6")]
 [assembly: System.Reflection.AssemblyProductAttribute("GestMantIA.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GestMantIA.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -17,6 +17,10 @@ namespace GestMantIA.Infrastructure.Data.Configurations.Identity
             // Clave primaria
             builder.HasKey(rt => rt.Id);
 
+            // Configuración del ID
+            builder.Property(rt => rt.Id)
+                .ValueGeneratedOnAdd();
+
             // Configuración de propiedades
             builder.Property(rt => rt.Token)
                 .IsRequired()
@@ -26,6 +30,7 @@ namespace GestMantIA.Infrastructure.Data.Configurations.Identity
                 .IsRequired();
 
             builder.Property(rt => rt.CreatedByIp)
+                .IsRequired()
                 .HasMaxLength(50);
 
             builder.Property(rt => rt.RevokedByIp)
@@ -38,11 +43,40 @@ namespace GestMantIA.Infrastructure.Data.Configurations.Identity
             builder.HasIndex(rt => rt.Token)
                 .IsUnique();
 
+            // Índice para la relación con User
+            builder.HasIndex(rt => rt.UserId);
+
             // Configuración de relaciones
             builder.HasOne(rt => rt.User)
                 .WithMany(u => u.RefreshTokens)
                 .HasForeignKey(rt => rt.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            // Configuración del tipo de columna para UserId
+            builder.Property(rt => rt.UserId)
+                .HasColumnType("uuid")
+                .IsRequired();
+
+            // Configuración de fechas
+            builder.Property(rt => rt.Created)
+                .IsRequired();
+
+            builder.Property(rt => rt.Expires)
+                .IsRequired();
+
+            // Configuración de propiedades booleanas
+            builder.Property(rt => rt.IsRevoked)
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            //builder.Property(rt => rt.IsExpired)
+            //    .IsRequired()
+            //    .HasDefaultValue(false);
+
+            //builder.Property(rt => rt.IsActive)
+            //    .IsRequired()
+            //    .HasDefaultValue(true);
         }
     }
 }

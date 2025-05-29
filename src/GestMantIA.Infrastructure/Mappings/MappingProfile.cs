@@ -19,6 +19,7 @@ namespace GestMantIA.Infrastructure.Mappings
                 // Registrar todos los perfiles de mapeo
                 cfg.AddProfile(new UserProfileMapping());
                 cfg.AddProfile(new UserManagementMapping());
+                cfg.AddProfile(new RoleProfileMapping());
                 
                 // Agregar aquí otros perfiles de mapeo según sea necesario
             });

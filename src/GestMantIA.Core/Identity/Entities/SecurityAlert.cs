@@ -9,25 +9,17 @@ namespace GestMantIA.Core.Identity.Entities
     /// Representa una alerta de seguridad que requiere atención del equipo de seguridad.
     /// </summary>
     [Table("SecurityAlerts")]
-    public class SecurityAlert
+    public class SecurityAlert : BaseEntity
     {
         /// <summary>
         /// Inicializa una nueva instancia de la clase <see cref="SecurityAlert"/>
         /// </summary>
         public SecurityAlert()
         {
-            Id = Guid.NewGuid();
             Title = string.Empty;
             Message = string.Empty;
             ResolutionNotes = string.Empty;
-            CreatedAt = DateTimeOffset.UtcNow;
         }
-
-        /// <summary>
-        /// Identificador único de la alerta.
-        /// </summary>
-        [Key]
-        public Guid Id { get; set; }
 
         /// <summary>
         /// Título de la alerta.
@@ -58,11 +50,6 @@ namespace GestMantIA.Core.Identity.Entities
         /// </summary>
         public bool IsResolved { get; set; }
         /// <summary>
-        /// Fecha y hora en que se creó la alerta.
-        /// </summary>
-        public DateTimeOffset CreatedAt { get; set; }
-
-        /// <summary>
         /// Fecha y hora en que se resolvió la alerta (si aplica).
         /// </summary>
         public DateTimeOffset? ResolvedAt { get; set; }
@@ -75,7 +62,7 @@ namespace GestMantIA.Core.Identity.Entities
         /// <summary>
         /// ID del usuario que resolvió la alerta (si aplica).
         /// </summary>
-        public string? ResolvedById { get; set; }
+        public Guid? ResolvedById { get; set; }
 
         /// <summary>
         /// Usuario que resolvió la alerta (si aplica).
@@ -88,7 +75,7 @@ namespace GestMantIA.Core.Identity.Entities
         /// </summary>
         /// <param name="resolvedById">ID del usuario que resuelve la alerta.</param>
         /// <param name="notes">Notas adicionales sobre la resolución.</param>
-        public void MarkAsResolved(string resolvedById, string notes = null)
+        public void MarkAsResolved(Guid resolvedById, string? notes = null)
         {
             if (!IsResolved)
             {

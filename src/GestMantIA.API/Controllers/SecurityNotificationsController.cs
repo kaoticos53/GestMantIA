@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GestMantIA.Core.Identity.DTOs;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using GestMantIA.Shared.Identity.DTOs;
 using GestMantIA.Core.Identity.Entities;
 using GestMantIA.Core.Identity.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using GestMantIA.Core.Shared;
 using Microsoft.Extensions.Logging;
 
 namespace GestMantIA.API.Controllers
@@ -61,9 +61,14 @@ namespace GestMantIA.API.Controllers
                 page = Math.Max(1, page);
                 pageSize = Math.Clamp(pageSize, 1, 50);
 
+                if (!Guid.TryParse(userId, out var userGuid))
+                {
+                    return BadRequest("El ID de usuario no es válido.");
+                }
+
                 // Obtener notificaciones del usuario
                 var (notifications, totalCount) = await _securityLogger.GetUserSecurityLogsAsync(
-                    userId, 
+                    userGuid, 
                     page, 
                     pageSize);
 
@@ -80,9 +85,8 @@ namespace GestMantIA.API.Controllers
                         RelatedEventId = n.Id
                     }),
                     TotalCount = totalCount,
-                    Page = page,
-                    PageSize = pageSize,
-                    TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+                    PageNumber = page,
+                    PageSize = pageSize
                 };
 
                 return Ok(result);
@@ -105,7 +109,7 @@ namespace GestMantIA.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> MarkAsRead(Guid id)
+        public IActionResult MarkAsRead(Guid id)
         {
             try
             {
@@ -137,7 +141,7 @@ namespace GestMantIA.API.Controllers
         [HttpGet("unread/count")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<UnreadNotificationsCountDto>> GetUnreadCount()
+        public ActionResult<UnreadNotificationsCountDto> GetUnreadCount()
         {
             try
             {
@@ -218,12 +222,12 @@ namespace GestMantIA.API.Controllers
         /// <summary>
         /// Título de la notificación.
         /// </summary>
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         /// <summary>
         /// Mensaje detallado de la notificación.
         /// </summary>
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
 
         /// <summary>
         /// Tipo de notificación.
@@ -255,37 +259,5 @@ namespace GestMantIA.API.Controllers
         /// Cantidad de notificaciones no leídas.
         /// </summary>
         public int Count { get; set; }
-    }
-
-    /// <summary>
-    /// Resultado paginado genérico.
-    /// </summary>
-    /// <typeparam name="T">Tipo de los elementos.</typeparam>
-    public class PagedResult<T>
-    {
-        /// <summary>
-        /// Elementos de la página actual.
-        /// </summary>
-        public IEnumerable<T> Items { get; set; }
-
-        /// <summary>
-        /// Número total de elementos.
-        /// </summary>
-        public int TotalCount { get; set; }
-
-        /// <summary>
-        /// Número de página actual (comenzando en 1).
-        /// </summary>
-        public int Page { get; set; }
-
-        /// <summary>
-        /// Tamaño de la página.
-        /// </summary>
-        public int PageSize { get; set; }
-
-        /// <summary>
-        /// Número total de páginas.
-        /// </summary>
-        public int TotalPages { get; set; }
     }
 }

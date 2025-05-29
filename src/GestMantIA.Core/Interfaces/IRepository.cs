@@ -18,7 +18,7 @@ namespace GestMantIA.Core.Interfaces
         /// <param name="id">Identificador de la entidad</param>
         /// <param name="cancellationToken">Token de cancelación</param>
         /// <returns>La entidad encontrada o null si no existe</returns>
-        Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Obtiene todas las entidades.

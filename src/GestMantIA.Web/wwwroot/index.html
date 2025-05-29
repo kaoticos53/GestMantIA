@@ -1,36 +1,143 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es" data-theme="light">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GestMantIA.Web</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="GestMantIA - Sistema de Gestión de Mantenimiento Inteligente" />
+    <title>GestMantIA - Panel de Administración</title>
     <base href="/" />
-    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/app.css" />
-    <link rel="icon" type="image/png" href="favicon.png" />
+    
+    <!-- Preconexión a orígenes externos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    
+    <!-- Preload de fuentes críticas -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    
+    <!-- Hojas de estilo -->
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <link href="css/app.min.css" rel="stylesheet" />
     <link href="GestMantIA.Web.styles.css" rel="stylesheet" />
-    <link href="manifest.webmanifest" rel="manifest" />
-    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
-    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    
+    <!-- Meta tags para PWA -->
+    <meta name="theme-color" content="#2d3436">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GestMantIA">
+    <meta name="application-name" content="GestMantIA">
+    <meta name="msapplication-TileColor" content="#2d3436">
+    
+    <!-- Preload de recursos críticos -->
+    <link rel="preload" href="_framework/blazor.webassembly.js" as="script">
+    <link rel="preload" href="_content/MudBlazor/MudBlazor.min.js" as="script">
+    
+    <!-- Scripts para la carga inicial -->
+    <script>
+        // Función para manejar el tema oscuro/claro del sistema
+        function getSystemThemePreference() {
+            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        // Aplicar tema inicial basado en la preferencia del sistema
+        const savedTheme = localStorage.getItem('theme') || getSystemThemePreference();
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        
+        // Actualizar el color de la barra de direcciones en móviles
+        const updateThemeColor = (theme) => {
+            const themeColor = theme === 'dark' ? '#1a1a1a' : '#f5f6fa';
+            document.querySelector('meta[name="theme-color"]').content = themeColor;
+        };
+        
+        updateThemeColor(savedTheme);
+        
+        // Escuchar cambios en la preferencia de tema del sistema
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (!localStorage.getItem('theme')) {
+                const theme = e.matches ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', theme);
+                updateThemeColor(theme);
+            }
+        });
+    </script>
 </head>
 
-<body>
+<body class="mud-typography">
+    <!-- Cargador inicial -->
     <div id="app">
-        <svg class="loading-progress">
-            <circle r="40%" cx="50%" cy="50%" />
-            <circle r="40%" cx="50%" cy="50%" />
-        </svg>
-        <div class="loading-progress-text"></div>
+        <div class="mud-progress-circular mud-progress-indeterminate mud-primary-text" 
+             style="width: 48px; height: 48px; position: fixed; top: 50%; left: 50%; margin: -24px 0 0 -24px;">
+            <svg class="mud-progress-circular-svg" viewBox="22 22 44 44">
+                <circle class="mud-progress-circular-circle mud-progress-circular-indeterminate" 
+                        cx="44" cy="44" r="20.2" fill="none" stroke-width="3.6"></circle>
+            </svg>
+        </div>
     </div>
 
-    <div id="blazor-error-ui">
-        An unhandled error has occurred.
-        <a href="." class="reload">Reload</a>
-        <span class="dismiss">🗙</span>
+    <!-- UI de error de Blazor -->
+    <div id="blazor-error-ui" style="display: none;">
+        <div class="mud-alert mud-alert-border mud-alert-border-left mud-elevation-5" 
+             style="position: fixed; bottom: 20px; right: 20px; max-width: 400px; z-index: 2000;">
+            <div class="mud-alert-message">
+                <span class="mud-alert-message-text">
+                    Se ha producido un error inesperado. Por favor, recarga la página.
+                </span>
+            </div>
+            <div class="mud-alert-actions">
+                <button class="mud-button-root mud-button mud-button-text mud-ripple mud-ripple-icon" 
+                        onclick="location.reload()">
+                    <span class="mud-button-label">Recargar</span>
+                </button>
+                <button class="mud-button-root mud-icon-button mud-ripple mud-ripple-icon mud-icon-button-size-small" 
+                        onclick="document.getElementById('blazor-error-ui').style.display = 'none';">
+                    <span class="mud-icon-button-label">
+                        <i class="mud-icon-root mud-svg-icon mud-icon-size-medium">
+                            <svg class="mud-icon-root mud-svg-icon mud-icon-size-medium" 
+                                 focusable="false" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+                            </svg>
+                        </i>
+                    </span>
+                </button>
+            </div>
+        </div>
     </div>
+
+    <!-- Scripts de Blazor y autenticación -->
+    <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js" 
+            asp-fallback-src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.min.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
-    <script>navigator.serviceWorker.register('service-worker.js');</script>
+    
+    <!-- Scripts de MudBlazor -->
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    
+    <!-- Script para el manejo del tema -->
+    <script>
+        // Función para que Blazor llame para cambiar el tema
+        window.mudThemeManager = {
+            applyTheme: function (theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+                
+                // Actualizar el color de la barra de direcciones en móviles
+                updateThemeColor(theme);
+            }
+        };
+        
+        // Inicialización de componentes de MudBlazor
+        window.mudInit = {
+            initTooltips: function () {
+                // Inicialización de tooltips si es necesario
+            }
+        };
+        
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            mudInit.initTooltips();
+        });
+    </script>
 </body>
 
 </html>

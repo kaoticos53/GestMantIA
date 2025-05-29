@@ -19,7 +19,7 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// <param name="relatedEventId">ID del evento relacionado (opcional).</param>
         /// <returns>True si la notificación se envió correctamente.</returns>
         Task<bool> SendSecurityNotificationAsync(
-            string userId,
+            Guid userId,
             string title,
             string message,
             SecurityNotificationType notificationType,

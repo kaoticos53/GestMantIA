@@ -12,75 +12,37 @@ namespace GestMantIA.Core.Identity.Entities
     /// <summary>
     /// Clase que representa a un usuario en el sistema.
     /// </summary>
-    public class ApplicationUser : IdentityUser<string>
+    public class ApplicationUser : IdentityUser<Guid>
     {
         /// <summary>
         /// Inicializa una nueva instancia de la clase <see cref="ApplicationUser"/>
         /// </summary>
         public ApplicationUser()
         {
-            Username = string.Empty;
-            Email = string.Empty;
-            PasswordHash = string.Empty;
-            PhoneNumber = string.Empty;
             LockoutReason = string.Empty;
             FullName = string.Empty;
+            FirstName = string.Empty;
+            LastName = string.Empty;
             UserRoles = new HashSet<ApplicationUserRole>();
             RefreshTokens = new HashSet<RefreshToken>();
+            CreatedAt = DateTime.UtcNow;
         }
 
-        /// <summary>
-        /// Nombre de usuario para iniciar sesión.
-        /// </summary>
-        [Required]
-        [StringLength(50)]
-        public string Username { get; set; }
-
-        /// <summary>
-        /// Correo electrónico del usuario.
-        /// </summary>
-        [Required]
-        [EmailAddress]
-        [StringLength(100)]
-        public string Email { get; set; }
-
-        /// <summary>
-        /// Hash de la contraseña del usuario.
-        /// </summary>
-        [JsonIgnore]
-        public string PasswordHash { get; set; }
-
-        /// <summary>
-        /// Número de teléfono del usuario.
-        /// </summary>
-        [Phone]
-        [StringLength(20)]
-        public string PhoneNumber { get; set; }
-
-        /// <summary>
-        /// Indica si el correo electrónico ha sido confirmado.
-        /// </summary>
-        public bool EmailConfirmed { get; set; } = false;
-
-        /// <summary>
-        /// Indica si el número de teléfono ha sido confirmado.
-        /// </summary>
-        public bool PhoneNumberConfirmed { get; set; } = false;
-
-        /// <summary>
-        /// Indica si la autenticación de dos factores está habilitada para este usuario.
-        /// </summary>
-        public bool TwoFactorEnabled { get; set; } = false;
-
-        /// <summary>
-        /// Fecha de bloqueo del usuario, si está bloqueado.
-        /// </summary>
-        public DateTimeOffset? LockoutEnd { get; set; }
-        
-        /// <summary>
-        /// Indica si el usuario puede ser bloqueado.
-        /// </summary>
-        public bool LockoutEnabled { get; set; } = true;
+        // Propiedades de IdentityUser<Guid> que ya están definidas en la clase base:
+        // - UserName
+        // - Email
+        // - PasswordHash
+        // - PhoneNumber
+        // - EmailConfirmed
+        // - PhoneNumberConfirmed
+        // - TwoFactorEnabled
+        // - LockoutEnd
+        // - LockoutEnabled
+        // - AccessFailedCount
+        // - SecurityStamp
+        // - ConcurrencyStamp
+        // - NormalizedUserName
+        // - NormalizedEmail
 
         /// <summary>
         /// Indica si el usuario está activo en el sistema.
@@ -98,15 +60,47 @@ namespace GestMantIA.Core.Identity.Entities
         public DateTime? LockoutDate { get; set; }
         
         /// <summary>
-        /// Número de intentos fallidos de inicio de sesión.
-        /// </summary>
-        public int AccessFailedCount { get; set; } = 0;
-
-        /// <summary>
         /// Nombre completo del usuario.
         /// </summary>
         [StringLength(100)]
         public string FullName { get; set; }
+
+        /// <summary>
+        /// Nombre del usuario.
+        /// </summary>
+        [StringLength(50)]
+        public string FirstName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Apellido del usuario.
+        /// </summary>
+        [StringLength(50)]
+        public string LastName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Fecha y hora de creación del usuario.
+        /// </summary>
+        public DateTime CreatedAt { get; set; }
+
+        /// <summary>
+        /// Fecha y hora de la última modificación del usuario.
+        /// </summary>
+        public DateTime? UpdatedAt { get; set; }
+
+        /// <summary>
+        /// Indica si el usuario ha sido eliminado (borrado lógico).
+        /// </summary>
+        public bool IsDeleted { get; set; } = false;
+
+        /// <summary>
+        /// Fecha y hora del último inicio de sesión del usuario.
+        /// </summary>
+        public DateTime? LastLoginDate { get; set; }
+
+        /// <summary>
+        /// Fecha en que se eliminó el usuario (borrado lógico).
+        /// </summary>
+        public DateTime? DeletedAt { get; set; }
 
         /// <summary>
         /// Relación con los roles del usuario.
@@ -117,32 +111,5 @@ namespace GestMantIA.Core.Identity.Entities
         /// Tokens de actualización asociados al usuario.
         /// </summary>
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
-
-        /// <summary>
-        /// Convierte el usuario a una lista de claims para el token JWT.
-        /// </summary>
-        /// <returns>Lista de claims del usuario.</returns>
-        public virtual IEnumerable<Claim> ToClaims()
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, Id.ToString()),
-                new Claim(ClaimTypes.Name, Username),
-                new Claim(ClaimTypes.Email, Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
-            };
-
-            // Agregar roles como claims
-            if (UserRoles != null)
-            {
-                foreach (var role in UserRoles.Select(ur => ur.Role))
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, role.Name));
-                }
-            }
-
-            return claims;
-        }
     }
 }

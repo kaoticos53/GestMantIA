@@ -9,19 +9,13 @@ namespace GestMantIA.Core.Identity.Entities
     /// Representa una notificación de seguridad enviada a un usuario.
     /// </summary>
     [Table("SecurityNotifications")]
-    public class SecurityNotification
+    public class SecurityNotification : BaseEntity
     {
-        /// <summary>
-        /// Identificador único de la notificación.
-        /// </summary>
-        [Key]
-        public Guid Id { get; set; }
-
         /// <summary>
         /// ID del usuario destinatario de la notificación.
         /// </summary>
         [Required]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Usuario destinatario de la notificación.
@@ -57,11 +51,6 @@ namespace GestMantIA.Core.Identity.Entities
         /// Indica si la notificación ha sido leída por el usuario.
         /// </summary>
         public bool IsRead { get; set; }
-
-        /// <summary>
-        /// Fecha y hora en que se creó la notificación.
-        /// </summary>
-        public DateTimeOffset CreatedAt { get; set; }
 
         /// <summary>
         /// Fecha y hora en que el usuario leyó la notificación (si aplica).

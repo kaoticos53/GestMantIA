@@ -8,15 +8,12 @@ namespace GestMantIA.Core.Identity.Entities
     /// Registra eventos de seguridad relevantes en el sistema.
     /// </summary>
     [Table("SecurityLogs")]
-    public class SecurityLog
+    public class SecurityLog : BaseEntity
     {
-        [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
-
         /// <summary>
         /// ID del usuario relacionado al evento (opcional, puede ser nulo para eventos del sistema).
         /// </summary>
-        public string? UserId { get; set; }
+        public Guid? UserId { get; set; }
 
         /// <summary>
         /// Usuario relacionado al evento.
@@ -60,10 +57,6 @@ namespace GestMantIA.Core.Identity.Entities
         /// </summary>
         public bool Succeeded { get; set; } = true;
 
-        /// <summary>
-        /// Fecha y hora en que ocurrió el evento.
-        /// </summary>
-        public DateTimeOffset Timestamp { get; set; } = DateTimeOffset.UtcNow;
     }
 
     /// <summary>

@@ -1,0 +1,197 @@
+@page "/auth/register"
+@page "/register"
+
+@using GestMantIA.Web.Models
+@using Microsoft.AspNetCore.Components.Web
+@using MudBlazor
+@using GestMantIA.Web.Services
+@using GestMantIA.Web.Services.Interfaces
+
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+@inject ILayoutService LayoutService
+@inject ISnackbar Snackbar
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Small" Class="fill-height">
+            <MudGrid Class="fill-height" AlignItems="AlignItems.Center" Justify="Justify.Center">
+                <MudItem xs="12" sm="10" md="8" lg="6" xl="4">
+                    <MudCard Class="pa-4">
+                        <MudCardHeader>
+                            <MudAvatar Size="Size.Large" Class="mx-auto mb-4" Color="Color.Primary">
+                                <MudIcon Icon="@Icons.Material.Filled.PersonAdd" Size="Size.Large" />
+                            </MudAvatar>
+                            <MudText Typo="Typo.h4" Class="text-center mb-2">Crear Cuenta</MudText>
+                            <MudText Class="text-center text-secondary mb-4">Completa el formulario para registrarte</MudText>
+                        </MudCardHeader>
+
+                        <MudCardContent>
+                            <MudForm Model="@_registerModel" OnValidSubmit="HandleRegister">
+                                    <MudGrid>
+                                        <MudItem xs="12" sm="6" Class="pr-sm-2">
+                                            <MudTextField @bind-Value="_registerModel.FirstName"
+                                                        Label="Nombre"
+                                                        Required="true"
+                                                        RequiredError="El nombre es obligatorio"
+                                                        Adornment="@Adornment.Start"
+                                                        AdornmentIcon="@Icons.Material.Filled.Person"
+                                                        Class="mb-4" />
+                                        </MudItem>
+                                        <MudItem xs="12" sm="6" Class="pl-sm-2">
+                                            <MudTextField @bind-Value="_registerModel.LastName"
+                                                        Label="Apellidos"
+                                                        Required="true"
+                                                        RequiredError="Los apellidos son obligatorios"
+                                                        Adornment="@Adornment.Start"
+                                                        AdornmentIcon="@Icons.Material.Filled.PersonOutline"
+                                                        Class="mb-4" />
+                                        </MudItem>
+                                    </MudGrid>
+
+                                    <MudTextField @bind-Value="_registerModel.UserName"
+                                                Label="Nombre de Usuario"
+                                                Required="true"
+                                                RequiredError="El nombre de usuario es obligatorio"
+                                                Adornment="@Adornment.Start"
+                                                AdornmentIcon="@Icons.Material.Filled.AlternateEmail"
+                                                Class="mb-4" />
+
+                                    <MudTextField @bind-Value="_registerModel.Email"
+                                                Label="Correo Electrónico"
+                                                InputType="InputType.Email"
+                                                Required="true"
+                                                RequiredError="El correo electrónico es obligatorio"
+                                                Adornment="@Adornment.Start"
+                                                AdornmentIcon="@Icons.Material.Filled.Email"
+                                                Class="mb-4" />
+
+                                    <MudTextField @bind-Value="_registerModel.Password"
+                                                Label="Contraseña"
+                                                InputType="InputType.Password"
+                                                Required="true"
+                                                RequiredError="La contraseña es obligatoria"
+                                                Adornment="@Adornment.Start"
+                                                AdornmentIcon="@Icons.Material.Filled.Lock"
+                                                Class="mb-4"
+                                                HelperText="La contraseña debe tener al menos 6 caracteres">
+                                    </MudTextField>
+
+                                    <MudTextField @bind-Value="_registerModel.ConfirmPassword"
+                                                Label="Confirmar Contraseña"
+                                                InputType="InputType.Password"
+                                                Required="true"
+                                                RequiredError="Debes confirmar la contraseña"
+                                                Adornment="@Adornment.Start"
+                                                AdornmentIcon="@Icons.Material.Filled.Lock"
+                                                Class="mb-4" />
+
+                                    @if (!string.IsNullOrEmpty(_errorMessage))
+                                    {
+                                        <MudAlert Severity="Severity.Error" Class="mb-4">
+                                            @_errorMessage
+                                        </MudAlert>
+                                    }
+                                    else if (!string.IsNullOrEmpty(_successMessage))
+                                    {
+                                        <MudAlert Severity="Severity.Success" Class="mb-4">
+                                            @_successMessage
+                                        </MudAlert>
+                                    }
+
+                                    <MudButton ButtonType="ButtonType.Submit"
+                                             Variant="Variant.Filled"
+                                             Color="Color.Primary"
+                                             FullWidth="true"
+                                             Class="mt-2 mb-3"
+                                             Disabled="@_isLoading">
+                                        @if (_isLoading)
+                                        {
+                                            <MudProgressCircular Color="Color.Inherit" Size="Size.Small" Indeterminate="true" Class="me-2" />
+                                        }
+                                        Registrarse
+                                    </MudButton>
+                            </MudForm>
+                        </MudCardContent>
+
+                        <MudCardActions Class="flex-column">
+                            <MudText Class="text-center mt-2 mb-0">
+                                ¿Ya tienes una cuenta? 
+                                <MudLink Href="/auth/login" Color="Color.Primary">Inicia sesión</MudLink>
+                            </MudText>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private RegisterModel _registerModel = new();
+    private string _errorMessage = string.Empty;
+    private string _successMessage = string.Empty;
+    private bool _isLoading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LayoutService.SetTitleAsync("Registro de Usuario");
+        
+        // Si ya está autenticado, redirigir al dashboard
+        if (await AuthService.IsAuthenticatedAsync())
+        {
+            NavigationManager.NavigateTo("/dashboard");
+        }
+    }
+
+    private async Task HandleRegister()
+    {
+        _isLoading = true;
+        _errorMessage = string.Empty;
+        _successMessage = string.Empty;
+
+        try
+        {
+            // Validar que las contraseñas coincidan
+            if (_registerModel.Password != _registerModel.ConfirmPassword)
+            {
+                _errorMessage = "Las contraseñas no coinciden. Por favor, verifica e inténtalo de nuevo.";
+                Snackbar.Add(_errorMessage, Severity.Error);
+                return;
+            }
+
+            var result = await AuthService.RegisterAsync(_registerModel);
+
+            if (result.Success)
+            {
+                _successMessage = "¡Registro exitoso! Por favor, revisa tu correo electrónico para verificar tu cuenta.";
+                Snackbar.Add(_successMessage, Severity.Success);
+                _registerModel = new RegisterModel();
+                
+                // Redirigir al login después de 3 segundos
+                await Task.Delay(3000);
+                NavigationManager.NavigateTo("/auth/login");
+            }
+            else
+            {
+                _errorMessage = result.Message ?? "Error al registrar el usuario. Por favor, inténtalo de nuevo.";
+                Snackbar.Add(_errorMessage, Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = "Ocurrió un error inesperado. Por favor, inténtalo de nuevo más tarde.";
+            Snackbar.Add(_errorMessage, Severity.Error);
+            Console.Error.WriteLine($"Error en el registro: {ex.Message}");
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+}

@@ -1,4 +1,6 @@
-using GestMantIA.Core.Identity.DTOs;
+using GestMantIA.Core.Identity.Entities;
+using GestMantIA.Shared.Identity.DTOs;
+using GestMantIA.Shared.Identity.DTOs.Responses;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,7 +23,7 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// </summary>
         /// <param name="roleId">ID del rol.</param>
         /// <returns>El rol si existe, de lo contrario null.</returns>
-        Task<RoleDTO> GetRoleByIdAsync(string roleId);
+        Task<RoleDTO?> GetRoleByIdAsync(string roleId);
 
         /// <summary>
         /// Crea un nuevo rol.
@@ -72,7 +74,7 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// </summary>
         /// <param name="roleName">Nombre del rol.</param>
         /// <returns>Lista de usuarios con el rol especificado.</returns>
-        Task<IEnumerable<UserResponseDTO>> GetUsersInRoleAsync(string roleName);
+        Task<IList<ApplicationUser>> GetUsersInRoleAsync(string roleName);
 
         /// <summary>
         /// Verifica si un usuario tiene un rol específico.

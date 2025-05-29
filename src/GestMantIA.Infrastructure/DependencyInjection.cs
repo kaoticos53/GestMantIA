@@ -1,16 +1,21 @@
+using System.Text;
+using GestMantIA.Core.Identity;
 using GestMantIA.Core.Identity.Entities;
 using GestMantIA.Core.Identity.Interfaces;
 using GestMantIA.Core.Interfaces;
 using GestMantIA.Infrastructure.Data;
-using GestMantIA.Core.Identity;
+using GestMantIA.Infrastructure.Services;
 using GestMantIA.Infrastructure.Services.Auth;
+using GestMantIA.Infrastructure.Services.Email;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using GestMantIA.Infrastructure.Services.Email;
-using System.Text;
+using GestMantIA.Core.Configuration;
+using GestMantIA.Infrastructure.Identity.Factories;
 
 namespace GestMantIA.Infrastructure
 {
@@ -27,56 +32,72 @@ namespace GestMantIA.Infrastructure
         /// <returns>La colección de servicios para encadenamiento</returns>
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            // Configurar el contexto de base de datos de autenticación
-            services.AddDbContext<ApplicationDbContext>((sp, options) =>
-            {
-                var connectionString = configuration.GetConnectionString("IdentityConnection") ?? 
-                                     configuration.GetConnectionString("DefaultConnection");
-                options.UseNpgsql(
-                    connectionString,
-                    b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
-            });
+            services.AddIdentityServices(configuration);
+            services.AddApplicationUtilities(configuration);
 
-            // Configurar el contexto de base de datos principal
-            services.AddDbContext<GestMantIADbContext>((sp, options) =>
-            {
-                var connectionString = configuration.GetConnectionString("DefaultConnection");
-                options.UseNpgsql(
-                    connectionString,
-                    b => b.MigrationsAssembly(typeof(GestMantIADbContext).Assembly.FullName));
-            });
+            return services;
+        }
 
-            // Configurar Identity
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+        private static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            // Configurar Identity con Guid como tipo de clave
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+            {
+                // Configuración de opciones de usuario
+                options.User.RequireUniqueEmail = true;
+                
+                // Configuración de opciones de contraseña
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                
+                // Configuración de bloqueo de cuenta
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+                
+                // Configuración de inicio de sesión
+                options.SignIn.RequireConfirmedEmail = true;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+                options.SignIn.RequireConfirmedAccount = true;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddClaimsPrincipalFactory<CustomUserClaimsPrincipalFactory>() // Registrar la factoría personalizada
+            .AddDefaultTokenProviders()
+            .AddUserManager<UserManager<ApplicationUser>>()
+            .AddRoleManager<RoleManager<ApplicationRole>>()
+            .AddSignInManager<SignInManager<ApplicationUser>>();
+            
+            // Configurar el almacenamiento de tokens
+            services.Configure<DataProtectionTokenProviderOptions>(options =>
+            {
+                options.TokenLifespan = TimeSpan.FromHours(2);
+            });
 
             // La configuración de autenticación JWT se ha movido a Program.cs
 
             // Configurar servicios de autenticación
-            services.AddScoped<IJwtTokenService, JwtTokenService>();
+            services.AddScoped<ITokenService, JwtTokenService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IRoleService, RoleService>();
-            // Configurar AutoMapper con perfiles personalizados
-            var mapperConfig = Mappings.MappingProfile.ConfigureAutoMapper();
-            var mapper = mapperConfig.CreateMapper();
-            services.AddSingleton(mapper);
+            services.AddScoped<Core.Identity.Interfaces.IUserService, UserService>();
+            services.AddScoped<Core.Identity.Interfaces.IRoleService, RoleService>();
 
-            // Registrar Unit of Work
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            return services;
+        }
 
-
+        private static IServiceCollection AddApplicationUtilities(this IServiceCollection services, IConfiguration configuration)
+        {
             // Configurar el servicio de correo electrónico
             // En desarrollo, usamos DevelopmentEmailService que solo registra los correos
             // En producción, se debe configurar un servicio real de envío de correos
             services.AddTransient<IEmailService, DevelopmentEmailService>();
-
-            // Registrar los DbContext como fábricas para inyección en constructores
-            services.AddScoped<DbContext>(provider => provider.GetRequiredService<GestMantIADbContext>());
-            services.AddScoped<ApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+            
+            // TODO: Registrar aquí otros servicios de utilidad general de infraestructura si es necesario
 
             return services;
         }
+
     }
 }

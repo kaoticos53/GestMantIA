@@ -701,7 +701,7 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Abstractions/8.10.0": {
+      "Microsoft.IdentityModel.Abstractions/8.11.0": {
         "type": "package",
         "compile": {
           "lib/net9.0/Microsoft.IdentityModel.Abstractions.dll": {
@@ -714,10 +714,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.JsonWebTokens/8.10.0": {
+      "Microsoft.IdentityModel.JsonWebTokens/8.11.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "8.10.0"
+          "Microsoft.IdentityModel.Tokens": "8.11.0"
         },
         "compile": {
           "lib/net9.0/Microsoft.IdentityModel.JsonWebTokens.dll": {
@@ -730,10 +730,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Logging/8.10.0": {
+      "Microsoft.IdentityModel.Logging/8.11.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "8.10.0"
+          "Microsoft.IdentityModel.Abstractions": "8.11.0"
         },
         "compile": {
           "lib/net9.0/Microsoft.IdentityModel.Logging.dll": {
@@ -746,11 +746,11 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Tokens/8.10.0": {
+      "Microsoft.IdentityModel.Tokens/8.11.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0",
-          "Microsoft.IdentityModel.Logging": "8.10.0"
+          "Microsoft.IdentityModel.Logging": "8.11.0"
         },
         "compile": {
           "lib/net9.0/Microsoft.IdentityModel.Tokens.dll": {
@@ -823,11 +823,11 @@
           "lib/netcoreapp2.1/_._": {}
         }
       },
-      "System.IdentityModel.Tokens.Jwt/8.10.0": {
+      "System.IdentityModel.Tokens.Jwt/8.11.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "8.10.0",
-          "Microsoft.IdentityModel.Tokens": "8.10.0"
+          "Microsoft.IdentityModel.JsonWebTokens": "8.11.0",
+          "Microsoft.IdentityModel.Tokens": "8.11.0"
         },
         "compile": {
           "lib/net9.0/System.IdentityModel.Tokens.Jwt.dll": {
@@ -945,6 +945,16 @@
             "assetType": "runtime",
             "rid": "browser"
           }
+        }
+      },
+      "GestMantIA.Shared/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/GestMantIA.Shared.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/GestMantIA.Shared.dll": {}
         }
       }
     }
@@ -1781,10 +1791,10 @@
         "microsoft.extensions.webencoders.nuspec"
       ]
     },
-    "Microsoft.IdentityModel.Abstractions/8.10.0": {
-      "sha512": "JxKG5YRBB3b6kSGFec7sbIOngEzPxu4EKPBEIdj/l0ufS1Qhc4wLxAPGJYGhEYOomTbDWaA+ZKVEaJNU+2iWUQ==",
+    "Microsoft.IdentityModel.Abstractions/8.11.0": {
+      "sha512": "X92UuBmvHYtsVrD+R+senFn6wOtSVtliSZNTZI8oHD+WqhYLmLNlHH6avYcbXqEznozxshSYzD/DVAuz54jjtg==",
       "type": "package",
-      "path": "microsoft.identitymodel.abstractions/8.10.0",
+      "path": "microsoft.identitymodel.abstractions/8.11.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1801,14 +1811,14 @@
         "lib/net9.0/Microsoft.IdentityModel.Abstractions.xml",
         "lib/netstandard2.0/Microsoft.IdentityModel.Abstractions.dll",
         "lib/netstandard2.0/Microsoft.IdentityModel.Abstractions.xml",
-        "microsoft.identitymodel.abstractions.8.10.0.nupkg.sha512",
+        "microsoft.identitymodel.abstractions.8.11.0.nupkg.sha512",
         "microsoft.identitymodel.abstractions.nuspec"
       ]
     },
-    "Microsoft.IdentityModel.JsonWebTokens/8.10.0": {
-      "sha512": "6YcL0exWuiHBUmQIkcocQ0x0mvvNewKbmpJpsZw4uzbweotSmAmb0pOK3CdIDYq31atjxrVOvlfF51+0FmrI5g==",
+    "Microsoft.IdentityModel.JsonWebTokens/8.11.0": {
+      "sha512": "rLvApg2vqs/Kz5kVHwHUMAe3owInYrsPX8QP8CQktubX9R63P+J47nR/IOS4n6ddJCvGInUGRBKqcBGJtuA4Rw==",
       "type": "package",
-      "path": "microsoft.identitymodel.jsonwebtokens/8.10.0",
+      "path": "microsoft.identitymodel.jsonwebtokens/8.11.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1825,14 +1835,14 @@
         "lib/net9.0/Microsoft.IdentityModel.JsonWebTokens.xml",
         "lib/netstandard2.0/Microsoft.IdentityModel.JsonWebTokens.dll",
         "lib/netstandard2.0/Microsoft.IdentityModel.JsonWebTokens.xml",
-        "microsoft.identitymodel.jsonwebtokens.8.10.0.nupkg.sha512",
+        "microsoft.identitymodel.jsonwebtokens.8.11.0.nupkg.sha512",
         "microsoft.identitymodel.jsonwebtokens.nuspec"
       ]
     },
-    "Microsoft.IdentityModel.Logging/8.10.0": {
-      "sha512": "BnkYC9lKYOL3zk7pmle9VJWAzSTPCjkvLyoKPmr4suFZo2hG3YYnFrffjUgdKHIUlyhcd1eHsBHMkfa1S3o/tA==",
+    "Microsoft.IdentityModel.Logging/8.11.0": {
+      "sha512": "/JNOMdYOQ4Tgbdwu9GbEcRJEpzakizuECCE8dCgY5lKXyqZUdAKXyeq4zITgS81eZYThqjhQZUYaJxOPofbmrg==",
       "type": "package",
-      "path": "microsoft.identitymodel.logging/8.10.0",
+      "path": "microsoft.identitymodel.logging/8.11.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1849,14 +1859,14 @@
         "lib/net9.0/Microsoft.IdentityModel.Logging.xml",
         "lib/netstandard2.0/Microsoft.IdentityModel.Logging.dll",
         "lib/netstandard2.0/Microsoft.IdentityModel.Logging.xml",
-        "microsoft.identitymodel.logging.8.10.0.nupkg.sha512",
+        "microsoft.identitymodel.logging.8.11.0.nupkg.sha512",
         "microsoft.identitymodel.logging.nuspec"
       ]
     },
-    "Microsoft.IdentityModel.Tokens/8.10.0": {
-      "sha512": "lKS/JCsPnw422g0uk4+iOIJA2Uvq3v6QydDEiOdCFGN1ge/lSeSb8ruZLGLOBMPdN4snSGGn21p92VDuHt4pew==",
+    "Microsoft.IdentityModel.Tokens/8.11.0": {
+      "sha512": "E0iKSD9vv9X+tbHGriMTLkSNK/OOjxOPuf1dt9q32d25Ig+OZaidUqDoUTSS3mWTvPw+x5oXrCTHtDatbzRzTQ==",
       "type": "package",
-      "path": "microsoft.identitymodel.tokens/8.10.0",
+      "path": "microsoft.identitymodel.tokens/8.11.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1873,7 +1883,7 @@
         "lib/net9.0/Microsoft.IdentityModel.Tokens.xml",
         "lib/netstandard2.0/Microsoft.IdentityModel.Tokens.dll",
         "lib/netstandard2.0/Microsoft.IdentityModel.Tokens.xml",
-        "microsoft.identitymodel.tokens.8.10.0.nupkg.sha512",
+        "microsoft.identitymodel.tokens.8.11.0.nupkg.sha512",
         "microsoft.identitymodel.tokens.nuspec"
       ]
     },
@@ -1967,10 +1977,10 @@
         "system.buffers.nuspec"
       ]
     },
-    "System.IdentityModel.Tokens.Jwt/8.10.0": {
-      "sha512": "UYIcKbMifWTg1CdljV3YSr7X4MKGSjUwLMKNLuSNKOsF65NvDPez0917YSDOr3tXF1GTZKCkfbZwYyPsW2owsQ==",
+    "System.IdentityModel.Tokens.Jwt/8.11.0": {
+      "sha512": "fDPoJMD4/puOlYaOESFCZNKy8X5Cw7URr9ibcHe0Qq3SrGhku9xVSxeXSNAP9RRahFQ/GbLfqO9AN1XD3Nxacw==",
       "type": "package",
-      "path": "system.identitymodel.tokens.jwt/8.10.0",
+      "path": "system.identitymodel.tokens.jwt/8.11.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1987,7 +1997,7 @@
         "lib/net9.0/System.IdentityModel.Tokens.Jwt.xml",
         "lib/netstandard2.0/System.IdentityModel.Tokens.Jwt.dll",
         "lib/netstandard2.0/System.IdentityModel.Tokens.Jwt.xml",
-        "system.identitymodel.tokens.jwt.8.10.0.nupkg.sha512",
+        "system.identitymodel.tokens.jwt.8.11.0.nupkg.sha512",
         "system.identitymodel.tokens.jwt.nuspec"
       ]
     },
@@ -2188,6 +2198,11 @@
         "system.text.encodings.web.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "GestMantIA.Shared/1.0.0": {
+      "type": "project",
+      "path": "../GestMantIA.Shared/GestMantIA.Shared.csproj",
+      "msbuildProject": "../GestMantIA.Shared/GestMantIA.Shared.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -2195,9 +2210,10 @@
       "Ardalis.GuardClauses >= 5.0.0",
       "AutoMapper >= 14.0.0",
       "FluentValidation >= 12.0.0",
+      "GestMantIA.Shared >= 1.0.0",
       "Microsoft.AspNetCore.Identity >= 2.3.1",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 9.0.5",
-      "System.IdentityModel.Tokens.Jwt >= 8.10.0"
+      "System.IdentityModel.Tokens.Jwt >= 8.11.0"
     ]
   },
   "packageFolders": {
@@ -2234,7 +2250,11 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Shared\\GestMantIA.Shared.csproj": {
+              "projectPath": "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Shared\\GestMantIA.Shared.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -2247,7 +2267,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.200"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net9.0": {
@@ -2280,44 +2300,52 @@
           },
           "System.IdentityModel.Tokens.Jwt": {
             "target": "Package",
-            "version": "[8.10.0, )",
+            "version": "[8.11.0, )",
             "versionCentrallyManaged": true
           }
         },
         "centralPackageVersions": {
           "Ardalis.GuardClauses": "5.0.0",
           "AutoMapper": "14.0.0",
-          "coverlet.collector": "6.0.0",
+          "Blazored.LocalStorage": "4.5.0",
+          "Blazored.Toast": "4.2.1",
+          "coverlet.collector": "6.0.4",
           "coverlet.msbuild": "6.0.4",
-          "FluentAssertions": "8.2.0",
+          "EfCore.SchemaCompare": "9.0.0",
+          "FluentAssertions": "8.3.0",
           "FluentValidation": "12.0.0",
           "FluentValidation.DependencyInjectionExtensions": "12.0.0",
-          "IdentityModel": "6.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.5",
-          "Microsoft.AspNetCore.Components.WebAssembly": "9.0.4",
-          "Microsoft.AspNetCore.Components.WebAssembly.DevServer": "9.0.4",
+          "Microsoft.AspNetCore.Components.Authorization": "9.0.5",
+          "Microsoft.AspNetCore.Components.WebAssembly": "9.0.5",
+          "Microsoft.AspNetCore.Components.WebAssembly.Authentication": "9.0.5",
+          "Microsoft.AspNetCore.Components.WebAssembly.DevServer": "9.0.5",
+          "Microsoft.AspNetCore.Diagnostics.HealthChecks": "2.2.0",
           "Microsoft.AspNetCore.Identity": "2.3.1",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.5",
           "Microsoft.AspNetCore.Mvc.Testing": "9.0.5",
           "Microsoft.AspNetCore.OpenApi": "9.0.5",
           "Microsoft.AspNetCore.TestHost": "9.0.5",
+          "Microsoft.AspNetCore.WebUtilities": "9.0.5",
           "Microsoft.EntityFrameworkCore": "9.0.5",
           "Microsoft.EntityFrameworkCore.Design": "9.0.5",
           "Microsoft.EntityFrameworkCore.Relational": "9.0.5",
           "Microsoft.EntityFrameworkCore.SqlServer": "9.0.5",
           "Microsoft.EntityFrameworkCore.Tools": "9.0.5",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "9.0.0-rc.2.24474.3",
           "Microsoft.Extensions.Identity.Core": "9.0.5",
-          "Microsoft.NET.Test.Sdk": "17.9.0",
+          "Microsoft.NET.Test.Sdk": "17.14.0",
           "Moq": "4.20.72",
           "MudBlazor": "8.6.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
           "Serilog.AspNetCore": "9.0.0",
-          "Serilog.Sinks.Console": "5.0.1",
-          "Serilog.Sinks.File": "5.0.0",
-          "Swashbuckle.AspNetCore": "8.1.1",
-          "System.IdentityModel.Tokens.Jwt": "8.10.0",
-          "xunit": "2.8.1",
-          "xunit.runner.visualstudio": "2.8.1"
+          "Serilog.Sinks.Console": "6.0.0",
+          "Serilog.Sinks.File": "7.0.0",
+          "Swashbuckle.AspNetCore": "8.1.2",
+          "System.IdentityModel.Tokens.Jwt": "8.11.0",
+          "System.Net.Http.Json": "9.0.5",
+          "xunit": "2.9.3",
+          "xunit.runner.visualstudio": "3.1.0"
         },
         "imports": [
           "net461",
@@ -2335,7 +2363,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

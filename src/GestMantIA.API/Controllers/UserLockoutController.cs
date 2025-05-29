@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using GestMantIA.Core.Identity.DTOs;
+using Microsoft.AspNetCore.Mvc;
+using GestMantIA.Shared.Identity.DTOs;
 using GestMantIA.Core.Identity.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace GestMantIA.API.Controllers
@@ -44,7 +44,7 @@ namespace GestMantIA.API.Controllers
         public async Task<IActionResult> LockUser(
             [FromRoute] string userId,
             [FromQuery] int? durationMinutes = null,
-            [FromQuery] string reason = null)
+            [FromQuery] string? reason = null)
         {
             try
             {

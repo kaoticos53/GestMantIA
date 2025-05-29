@@ -15,7 +15,7 @@ namespace GestMantIA.Infrastructure.Data
     {
         private readonly DbContext _context;
         private bool _disposed;
-        private IDbContextTransaction _transaction;
+        private IDbContextTransaction? _transaction;
         private readonly ConcurrentDictionary<Type, object> _repositories;
 
         /// <summary>

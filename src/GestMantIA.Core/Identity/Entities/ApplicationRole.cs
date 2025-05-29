@@ -8,34 +8,35 @@ namespace GestMantIA.Core.Identity.Entities
     /// <summary>
     /// Clase que representa un rol en el sistema.
     /// </summary>
-    public class ApplicationRole : IdentityRole<string>
+    public class ApplicationRole : IdentityRole<Guid>
     {
-        public ApplicationRole()
+        public ApplicationRole() : base()
         {
-            Name = string.Empty;
-            NormalizedName = string.Empty;
+            Id = Guid.NewGuid();
             Description = string.Empty;
             UserRoles = new HashSet<ApplicationUserRole>();
             RolePermissions = new HashSet<ApplicationRolePermission>();
+            CreatedAt = DateTime.UtcNow;
         }
 
         /// <summary>
-        /// Nombre del rol (ejemplo: "Admin", "User", etc.).
+        /// Constructor con nombre del rol
         /// </summary>
-        [Required]
-        [StringLength(50)]
-        public string Name { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Nombre normalizado del rol (en mayúsculas para búsquedas sin distinción de mayúsculas/minúsculas).
-        /// </summary>
-        public string NormalizedName { get; set; } = string.Empty;
+        /// <param name="roleName">Nombre del rol</param>
+        public ApplicationRole(string roleName) : base(roleName)
+        {
+            Id = Guid.NewGuid();
+            Description = string.Empty;
+            UserRoles = new HashSet<ApplicationUserRole>();
+            RolePermissions = new HashSet<ApplicationRolePermission>();
+            CreatedAt = DateTime.UtcNow;
+        }
 
         /// <summary>
         /// Descripción del rol.
         /// </summary>
         [StringLength(200)]
-        public string Description { get; set; } = string.Empty;
+        public string Description { get; set; }
 
         /// <summary>
         /// Relación con los usuarios que tienen este rol.
@@ -48,11 +49,21 @@ namespace GestMantIA.Core.Identity.Entities
         public virtual ICollection<ApplicationRolePermission> RolePermissions { get; set; }
 
         /// <summary>
+        /// Fecha y hora de creación del rol.
+        /// </summary>
+        public DateTime CreatedAt { get; set; }
+
+        /// <summary>
+        /// Fecha y hora de la última modificación del rol.
+        /// </summary>
+        public DateTime? UpdatedAt { get; set; }
+        
+        /// <summary>
         /// Normaliza el nombre del rol (a mayúsculas).
         /// </summary>
-        public void NormalizeName()
+        public new void NormalizeName()
         {
-            NormalizedName = Name?.ToUpperInvariant();
+            base.NormalizedName = Name?.ToUpperInvariant() ?? string.Empty;
         }
     }
 }

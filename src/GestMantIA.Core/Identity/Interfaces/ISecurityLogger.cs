@@ -22,7 +22,7 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// <param name="succeeded">Indica si el evento fue exitoso.</param>
         /// <returns>El registro de seguridad creado.</returns>
         Task<SecurityLog> LogSecurityEventAsync(
-            string? userId,
+            Guid? userId,
             string eventType,
             string description,
             string? ipAddress = null,
@@ -38,7 +38,7 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// <param name="pageSize">Tamaño de la página.</param>
         /// <returns>Lista paginada de eventos de seguridad.</returns>
         Task<(IEnumerable<SecurityLog> Logs, int TotalCount)> GetUserSecurityLogsAsync(
-            string userId,
+            Guid userId,
             int page = 1,
             int pageSize = 20);
 
@@ -68,7 +68,7 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// <param name="userAgent">Agente de usuario actual.</param>
         /// <returns>True si se detectó actividad sospechosa.</returns>
         Task<bool> DetectSuspiciousActivityAsync(
-            string userId,
+            Guid userId,
             string? ipAddress = null,
             string? userAgent = null);
 
@@ -78,13 +78,13 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// <param name="userId">ID del usuario.</param>
         /// <param name="deviceId">Identificador del dispositivo.</param>
         /// <returns>True si el dispositivo es conocido.</returns>
-        Task<bool> IsKnownDeviceAsync(string userId, string deviceId);
+        Task<bool> IsKnownDeviceAsync(Guid userId, string deviceId);
 
         /// <summary>
         /// Obtiene los dispositivos conocidos de un usuario.
         /// </summary>
         /// <param name="userId">ID del usuario.</param>
-        /// <returns>Lista de dispositivos conocidos.</returns>
-        Task<IEnumerable<SecurityLog>> GetKnownDevicesAsync(string userId);
+        /// <returns>Una colección de objetos SecurityLog, donde cada uno representa el último inicio de sesión desde un dispositivo conocido.</returns>
+        Task<List<SecurityLog>> GetKnownDevicesAsync(Guid userId);
     }
 }
