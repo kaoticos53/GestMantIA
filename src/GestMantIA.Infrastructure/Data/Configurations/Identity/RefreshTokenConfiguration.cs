@@ -46,6 +46,8 @@ namespace GestMantIA.Infrastructure.Data.Configurations.Identity
             // Índice para la relación con User
             builder.HasIndex(rt => rt.UserId);
 
+            builder.HasIndex(rt => rt.CreatedAt);
+
             // Configuración de relaciones
             builder.HasOne(rt => rt.User)
                 .WithMany(u => u.RefreshTokens)
@@ -59,7 +61,7 @@ namespace GestMantIA.Infrastructure.Data.Configurations.Identity
                 .IsRequired();
 
             // Configuración de fechas
-            builder.Property(rt => rt.Created)
+            builder.Property(rt => rt.CreatedAt)
                 .IsRequired();
 
             builder.Property(rt => rt.Expires)

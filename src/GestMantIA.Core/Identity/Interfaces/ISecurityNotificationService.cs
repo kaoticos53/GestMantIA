@@ -1,7 +1,3 @@
-using System;
-using System.Threading.Tasks;
-using GestMantIA.Core.Identity.Entities;
-
 namespace GestMantIA.Core.Identity.Interfaces
 {
     /// <summary>
@@ -59,19 +55,19 @@ namespace GestMantIA.Core.Identity.Interfaces
     {
         /// <summary>Notificación informativa.</summary>
         Information,
-        
+
         /// <summary>Alerta de seguridad.</summary>
         SecurityAlert,
-        
+
         /// <summary>Actividad sospechosa detectada.</summary>
         SuspiciousActivity,
-        
+
         /// <summary>Nuevo inicio de sesión.</summary>
         NewLogin,
-        
+
         /// <summary>Cambio en la configuración de seguridad.</summary>
         SecuritySettingsChanged,
-        
+
         /// <summary>Dispositivo no reconocido.</summary>
         UnrecognizedDevice
     }
@@ -83,13 +79,13 @@ namespace GestMantIA.Core.Identity.Interfaces
     {
         /// <summary>Baja prioridad.</summary>
         Low,
-        
+
         /// <summary>Prioridad media.</summary>
         Medium,
-        
+
         /// <summary>Alta prioridad.</summary>
         High,
-        
+
         /// <summary>Crítico - requiere atención inmediata.</summary>
         Critical
     }

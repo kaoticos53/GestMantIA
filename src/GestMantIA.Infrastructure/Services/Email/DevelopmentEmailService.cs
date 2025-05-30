@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using GestMantIA.Core.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -21,10 +18,10 @@ namespace GestMantIA.Infrastructure.Services.Email
         public DevelopmentEmailService(ILogger<DevelopmentEmailService> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            
+
             // Directorio para guardar los correos simulados
             _emailsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "TempEmails");
-            
+
             // Asegurarse de que el directorio existe
             if (!Directory.Exists(_emailsDirectory))
             {
@@ -72,7 +69,7 @@ namespace GestMantIA.Infrastructure.Services.Email
                 </html>";
 
                 await File.WriteAllTextAsync(filePath, emailContent);
-                
+
                 _logger.LogInformation("Correo simulado guardado en: {FilePath}", filePath);
                 return true;
             }

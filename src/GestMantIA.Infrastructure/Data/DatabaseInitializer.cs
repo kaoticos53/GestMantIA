@@ -1,17 +1,12 @@
+using GestMantIA.Application.Interfaces; // Added for IDatabaseInitializer
+using GestMantIA.Core.Configuration;
+using GestMantIA.Core.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using GestMantIA.Core.Configuration;
-using GestMantIA.Core.Identity.Entities;
 
 namespace GestMantIA.Infrastructure.Data;
-
-public interface IDatabaseInitializer
-{
-    Task InitializeDatabaseAsync(CancellationToken cancellationToken = default);
-    Task SeedDataAsync(CancellationToken cancellationToken = default);
-}
 
 public class DatabaseInitializer : IDatabaseInitializer
 {
@@ -59,12 +54,12 @@ public class DatabaseInitializer : IDatabaseInitializer
             await SeedRolesAsync();
             await SeedAdminUserAsync();
             await SeedRegularUserAsync();
-            
+
             if (_seedDataSettings.SampleData.Enable)
             {
                 await SeedSampleDataAsync();
             }
-            
+
             _logger.LogInformation("Datos iniciales insertados correctamente");
         }
         catch (Exception ex)
@@ -76,7 +71,7 @@ public class DatabaseInitializer : IDatabaseInitializer
 
     private async Task SeedRolesAsync()
     {
-        var adminRole = new ApplicationRole("Administrator")
+        var adminRole = new ApplicationRole("Admin")
         {
             Description = "Administrador del sistema con acceso completo"
         };
@@ -102,7 +97,7 @@ public class DatabaseInitializer : IDatabaseInitializer
     private async Task SeedAdminUserAsync()
     {
         var adminUser = await _userManager.FindByEmailAsync(_seedDataSettings.AdminUser.Email);
-        
+
         if (adminUser == null)
         {
             adminUser = new ApplicationUser
@@ -114,15 +109,14 @@ public class DatabaseInitializer : IDatabaseInitializer
                 PhoneNumber = _seedDataSettings.AdminUser.PhoneNumber,
                 EmailConfirmed = true,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow,
                 LastLoginDate = DateTime.UtcNow
             };
 
             var result = await _userManager.CreateAsync(adminUser, _seedDataSettings.AdminUser.Password);
-            
+
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(adminUser, "Administrator");
+                await _userManager.AddToRoleAsync(adminUser, "Admin");
                 _logger.LogInformation("Usuario administrador creado correctamente: {Email}", adminUser.Email);
             }
             else
@@ -136,7 +130,7 @@ public class DatabaseInitializer : IDatabaseInitializer
     private async Task SeedRegularUserAsync()
     {
         var regularUser = await _userManager.FindByEmailAsync(_seedDataSettings.RegularUser.Email);
-        
+
         if (regularUser == null)
         {
             regularUser = new ApplicationUser
@@ -148,12 +142,11 @@ public class DatabaseInitializer : IDatabaseInitializer
                 PhoneNumber = _seedDataSettings.RegularUser.PhoneNumber,
                 EmailConfirmed = true,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow,
                 LastLoginDate = DateTime.UtcNow
             };
 
             var result = await _userManager.CreateAsync(regularUser, _seedDataSettings.RegularUser.Password);
-            
+
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(regularUser, "User");
@@ -170,10 +163,10 @@ public class DatabaseInitializer : IDatabaseInitializer
     private Task SeedSampleDataAsync()
     {
         _logger.LogInformation("Iniciando la inserción de datos de ejemplo...");
-        
+
         // Aquí puedes agregar la lógica para insertar datos de ejemplo adicionales
         // como clientes, órdenes de trabajo, etc.
-        
+
         _logger.LogInformation("Datos de ejemplo insertados correctamente");
         return Task.CompletedTask;
     }

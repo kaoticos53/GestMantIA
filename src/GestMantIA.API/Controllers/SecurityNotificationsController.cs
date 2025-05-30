@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using GestMantIA.Shared.Identity.DTOs;
 using GestMantIA.Core.Identity.Entities;
 using GestMantIA.Core.Identity.Interfaces;
 using GestMantIA.Core.Shared;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GestMantIA.API.Controllers
 {
@@ -68,8 +62,8 @@ namespace GestMantIA.API.Controllers
 
                 // Obtener notificaciones del usuario
                 var (notifications, totalCount) = await _securityLogger.GetUserSecurityLogsAsync(
-                    userGuid, 
-                    page, 
+                    userGuid,
+                    page,
                     pageSize);
 
                 var result = new PagedResult<SecurityNotificationDto>
@@ -81,7 +75,7 @@ namespace GestMantIA.API.Controllers
                         Message = n.Description,
                         Type = MapToNotificationType(n.EventType),
                         IsRead = n.Succeeded,
-                        CreatedAt = n.Timestamp,
+                        CreatedAt = n.CreatedAt,
                         RelatedEventId = n.Id
                     }),
                     TotalCount = totalCount,
@@ -95,7 +89,7 @@ namespace GestMantIA.API.Controllers
             {
                 _logger.LogError(ex, "Error al obtener las notificaciones de seguridad");
                 return StatusCode(
-                    StatusCodes.Status500InternalServerError, 
+                    StatusCodes.Status500InternalServerError,
                     "Ocurrió un error al obtener las notificaciones de seguridad.");
             }
         }
@@ -122,14 +116,14 @@ namespace GestMantIA.API.Controllers
                 // En una implementación real, actualizaríamos el estado de la notificación
                 // Por ahora, solo registramos la acción
                 _logger.LogInformation("Notificación {NotificationId} marcada como leída por el usuario {UserId}", id, userId);
-                
+
                 return Ok(new { Message = "Notificación marcada como leída." });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al marcar la notificación {NotificationId} como leída", id);
                 return StatusCode(
-                    StatusCodes.Status500InternalServerError, 
+                    StatusCodes.Status500InternalServerError,
                     "Ocurrió un error al marcar la notificación como leída.");
             }
         }
@@ -154,14 +148,14 @@ namespace GestMantIA.API.Controllers
                 // En una implementación real, contaríamos las notificaciones no leídas
                 // Por ahora, devolvemos un valor simulado
                 var count = new Random().Next(0, 10);
-                
+
                 return Ok(new UnreadNotificationsCountDto { Count = count });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al obtener el contador de notificaciones no leídas");
                 return StatusCode(
-                    StatusCodes.Status500InternalServerError, 
+                    StatusCodes.Status500InternalServerError,
                     "Ocurrió un error al obtener el contador de notificaciones no leídas.");
             }
         }

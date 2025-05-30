@@ -1,13 +1,9 @@
-using System;
-using System.Threading.Tasks;
-using GestMantIA.Shared.Identity.DTOs;
-using GestMantIA.Shared.Identity.DTOs.Responses;
 using GestMantIA.Core.Identity.Interfaces;
 using GestMantIA.Core.Shared;
+using GestMantIA.Shared.Identity.DTOs;
+using GestMantIA.Shared.Identity.DTOs.Responses;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GestMantIA.API.Controllers
 {
@@ -105,7 +101,7 @@ namespace GestMantIA.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateUserProfile(
-            string userId, 
+            string userId,
             [FromBody] UpdateProfileDTO updateDto)
         {
             try

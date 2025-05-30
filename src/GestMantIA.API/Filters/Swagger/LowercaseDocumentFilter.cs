@@ -1,7 +1,5 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
-using System.Linq;
 
 namespace GestMantIA.API.Filters.Swagger
 {
@@ -18,7 +16,7 @@ namespace GestMantIA.API.Filters.Swagger
                 entry => entry.Value);
 
             swaggerDoc.Paths = new OpenApiPaths();
-            
+
             foreach (var path in paths)
             {
                 swaggerDoc.Paths.Add(path.Key, path.Value);

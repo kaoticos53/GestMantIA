@@ -18,8 +18,8 @@ namespace GestMantIA.API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(new 
-            { 
+            return Ok(new
+            {
                 status = "OK",
                 timestamp = DateTime.UtcNow,
                 environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development"

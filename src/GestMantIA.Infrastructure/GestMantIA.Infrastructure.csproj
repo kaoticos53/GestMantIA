@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GestMantIA.Core\GestMantIA.Core.csproj" />
     <ProjectReference Include="..\GestMantIA.Shared\GestMantIA.Shared.csproj" />
+    <ProjectReference Include="..\GestMantIA.Application\GestMantIA.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +27,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Identity.Core" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

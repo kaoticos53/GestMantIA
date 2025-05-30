@@ -1,14 +1,9 @@
+using System.Text;
 using GestMantIA.Core.Identity.Entities;
 using GestMantIA.Infrastructure.Data; // For ApplicationDbContext
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using System;
-using System.Threading.Tasks; // For Task.CompletedTask
-using Microsoft.AspNetCore.Http; // For StatusCodes and context.Response
 
 namespace GestMantIA.API.Extensions
 {
@@ -18,7 +13,7 @@ namespace GestMantIA.API.Extensions
         {
             // Configuración de JWT - Lectura de settings
             var jwtSettings = configuration.GetSection("JwtSettings");
-            var secretKey = jwtSettings["SecretKey"] ?? 
+            var secretKey = jwtSettings["SecretKey"] ??
                 throw new InvalidOperationException("JWT Secret Key no configurada. Verifica la configuración de la aplicación.");
             var issuer = jwtSettings["Issuer"] ?? "GestMantIA.API";
             var audience = jwtSettings["Audience"] ?? "GestMantIA.Clients";
@@ -69,12 +64,13 @@ namespace GestMantIA.API.Extensions
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = issuer, 
-                    ValidAudience = audience, 
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)), 
-                    ClockSkew = TimeSpan.Zero 
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                    ClockSkew = TimeSpan.Zero,
+                    RoleClaimType = "role", // Usar el claim plano 'role' para autorización de roles con Swagger y JWT
                 };
-                
+
                 jwtOptions.Events = new JwtBearerEvents
                 {
                     OnAuthenticationFailed = context =>
@@ -88,12 +84,12 @@ namespace GestMantIA.API.Extensions
                     OnChallenge = context =>
                     {
                         // Skip the default logic.
-                        context.HandleResponse(); 
+                        context.HandleResponse();
                         if (context.AuthenticateFailure != null)
                         {
                             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                             context.Response.ContentType = "application/json";
-                            var authFailureResult = System.Text.Json.JsonSerializer.Serialize(new 
+                            var authFailureResult = System.Text.Json.JsonSerializer.Serialize(new
                             {
                                 error = "No autorizado. El token no es válido o ha expirado.",
                                 tokenExpired = context.AuthenticateFailure is SecurityTokenExpiredException
@@ -118,7 +114,7 @@ namespace GestMantIA.API.Extensions
                     }
                 };
             });
-            
+
             // Es posible que se necesite una llamada genérica a AddAuthorization si no está ya presente
             // services.AddAuthorization(); // Esta línea se añade si es necesaria y no para las políticas específicas
 

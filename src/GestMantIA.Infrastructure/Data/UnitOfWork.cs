@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
 using GestMantIA.Core.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using GestMantIA.Infrastructure.Features.UserManagement.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace GestMantIA.Infrastructure.Data
@@ -13,16 +10,17 @@ namespace GestMantIA.Infrastructure.Data
     /// </summary>
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly DbContext _context;
+        private readonly ApplicationDbContext _context;
         private bool _disposed;
         private IDbContextTransaction? _transaction;
         private readonly ConcurrentDictionary<Type, object> _repositories;
+        private GestMantIA.Core.Identity.Interfaces.IUserRepository _userRepository = null!;
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase <see cref="UnitOfWork"/>.
         /// </summary>
         /// <param name="context">Contexto de base de datos</param>
-        public UnitOfWork(DbContext context)
+        public UnitOfWork(ApplicationDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _repositories = new ConcurrentDictionary<Type, object>();
@@ -31,8 +29,11 @@ namespace GestMantIA.Infrastructure.Data
         /// <inheritdoc />
         public IRepository<T> Repository<T>() where T : class
         {
-            return (IRepository<T>)_repositories.GetOrAdd(typeof(T), _ => new Repositories.Repository<T>(_context));
+            return (IRepository<T>)_repositories.GetOrAdd(typeof(T), _ => new Repository<T>(_context));
         }
+
+        public GestMantIA.Core.Identity.Interfaces.IUserRepository UserRepository =>
+            _userRepository ??= new UserRepository(_context);
 
         /// <inheritdoc />
         public async Task<int> CompleteAsync(CancellationToken cancellationToken = default)

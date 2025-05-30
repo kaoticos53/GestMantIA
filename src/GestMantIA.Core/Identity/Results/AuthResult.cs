@@ -38,13 +38,13 @@ namespace GestMantIA.Core.Identity.Results
                 Succeeded = true,
                 Message = message ?? "Operación completada con éxito"
             };
-            
+
             // Asegurarse de que la lista de errores esté inicializada
             if (result.Errors == null)
             {
                 result.Errors = new List<string>();
             }
-            
+
             return result;
         }
 
@@ -61,13 +61,13 @@ namespace GestMantIA.Core.Identity.Results
                 Succeeded = false,
                 Message = message ?? "Error en la operación"
             };
-            
+
             // Inicializar la lista de errores si es nula
             if (result.Errors == null)
             {
                 result.Errors = new List<string>();
             }
-            
+
             // Agregar los errores si existen
             if (errors != null)
             {
@@ -79,7 +79,7 @@ namespace GestMantIA.Core.Identity.Results
                     }
                 }
             }
-            
+
             return result;
         }
     }

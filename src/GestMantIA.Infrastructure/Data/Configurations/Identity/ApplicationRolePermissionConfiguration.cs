@@ -16,10 +16,10 @@ namespace GestMantIA.Infrastructure.Data.Configurations.Identity
 
             // Clave primaria compuesta
             builder.HasKey(rp => new { rp.RoleId, rp.PermissionId });
-            
+
             // Índice para la relación con Role
             builder.HasIndex(rp => rp.RoleId);
-            
+
             // Índice para la relación con Permission
             builder.HasIndex(rp => rp.PermissionId);
 
@@ -35,12 +35,12 @@ namespace GestMantIA.Infrastructure.Data.Configurations.Identity
                 .HasForeignKey(rp => rp.PermissionId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
-                
+
             // Configuración de tipos de columna
             builder.Property(rp => rp.RoleId)
                 .HasColumnType("uuid")
                 .IsRequired();
-                
+
             builder.Property(rp => rp.PermissionId)
                 .HasColumnType("uuid")
                 .IsRequired();

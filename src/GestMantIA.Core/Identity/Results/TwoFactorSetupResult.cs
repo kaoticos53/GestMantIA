@@ -1,6 +1,3 @@
-using System;
-using GestMantIA.Core.Identity.Results;
-
 namespace GestMantIA.Core.Identity.Results
 {
     /// <summary>

@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using GestMantIA.Web.Models;
 
 namespace GestMantIA.Web.Services.Interfaces

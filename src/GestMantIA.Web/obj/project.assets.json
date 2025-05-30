@@ -569,7 +569,7 @@
           "build/Microsoft.NET.Sdk.WebAssembly.Pack.targets": {}
         }
       },
-      "MudBlazor/8.6.0": {
+      "MudBlazor/8.7.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.AspNetCore.Components": "9.0.1",
@@ -1189,7 +1189,7 @@
           "build/Microsoft.NET.Sdk.WebAssembly.Pack.targets": {}
         }
       },
-      "MudBlazor/8.6.0": {
+      "MudBlazor/8.7.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.AspNetCore.Components": "9.0.1",
@@ -2262,10 +2262,10 @@
         "tools/net9.0/Microsoft.NET.WebAssembly.Webcil.dll"
       ]
     },
-    "MudBlazor/8.6.0": {
-      "sha512": "vJROmWdTjiBmyiZBSbD8RcYVFfLbNMEQpKoCOMfY2628KbOLGVcnH1RBziHGyJH9pqc99UoCQS81XLm8X+49ug==",
+    "MudBlazor/8.7.0": {
+      "sha512": "dgQ2MsgJAA1y6S0KmaOcGQWIHkJKA6XedC8X4VKXGRRcS3CFtgcytzT4LAxNoklNBqeveOyiHNEk6CG8a7YHYQ==",
       "type": "package",
-      "path": "mudblazor/8.6.0",
+      "path": "mudblazor/8.7.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2283,7 +2283,7 @@
         "lib/net8.0/MudBlazor.xml",
         "lib/net9.0/MudBlazor.dll",
         "lib/net9.0/MudBlazor.xml",
-        "mudblazor.8.6.0.nupkg.sha512",
+        "mudblazor.8.7.0.nupkg.sha512",
         "mudblazor.nuspec",
         "staticwebassets/MudBlazor.min.css",
         "staticwebassets/MudBlazor.min.js"
@@ -2335,7 +2335,7 @@
       "Microsoft.AspNetCore.WebUtilities >= 9.0.5",
       "Microsoft.NET.ILLink.Tasks >= 9.0.5",
       "Microsoft.NET.Sdk.WebAssembly.Pack >= 9.0.5",
-      "MudBlazor >= 8.6.0",
+      "MudBlazor >= 8.7.0",
       "System.Net.Http.Json >= 9.0.5"
     ]
   },
@@ -2446,7 +2446,7 @@
           },
           "MudBlazor": {
             "target": "Package",
-            "version": "[8.6.0, )",
+            "version": "[8.7.0, )",
             "versionCentrallyManaged": true
           },
           "System.Net.Http.Json": {
@@ -2466,12 +2466,12 @@
           "FluentAssertions": "8.3.0",
           "FluentValidation": "12.0.0",
           "FluentValidation.DependencyInjectionExtensions": "12.0.0",
+          "MediatR": "12.5.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.5",
           "Microsoft.AspNetCore.Components.Authorization": "9.0.5",
           "Microsoft.AspNetCore.Components.WebAssembly": "9.0.5",
           "Microsoft.AspNetCore.Components.WebAssembly.Authentication": "9.0.5",
           "Microsoft.AspNetCore.Components.WebAssembly.DevServer": "9.0.5",
-          "Microsoft.AspNetCore.Diagnostics.HealthChecks": "2.2.0",
           "Microsoft.AspNetCore.Identity": "2.3.1",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.5",
           "Microsoft.AspNetCore.Mvc.Testing": "9.0.5",
@@ -2480,14 +2480,18 @@
           "Microsoft.AspNetCore.WebUtilities": "9.0.5",
           "Microsoft.EntityFrameworkCore": "9.0.5",
           "Microsoft.EntityFrameworkCore.Design": "9.0.5",
+          "Microsoft.EntityFrameworkCore.InMemory": "9.0.5",
           "Microsoft.EntityFrameworkCore.Relational": "9.0.5",
           "Microsoft.EntityFrameworkCore.SqlServer": "9.0.5",
           "Microsoft.EntityFrameworkCore.Tools": "9.0.5",
-          "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "9.0.0-rc.2.24474.3",
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.5",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.5",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "9.0.5",
           "Microsoft.Extensions.Identity.Core": "9.0.5",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.5",
           "Microsoft.NET.Test.Sdk": "17.14.0",
           "Moq": "4.20.72",
-          "MudBlazor": "8.6.0",
+          "MudBlazor": "8.7.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
           "Serilog.AspNetCore": "9.0.0",
           "Serilog.Sinks.Console": "6.0.0",
@@ -2509,6 +2513,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.Net.Sdk.Compilers.Toolset",
+            "version": "[9.0.300, 9.0.300]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"

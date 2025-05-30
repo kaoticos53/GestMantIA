@@ -2,10 +2,12 @@ D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\bin\Debug\net9.0\GestMa
 D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\bin\Debug\net9.0\GestMantIA.Infrastructure.runtimeconfig.json
 D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\bin\Debug\net9.0\GestMantIA.Infrastructure.dll
 D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\bin\Debug\net9.0\GestMantIA.Infrastructure.pdb
+D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\bin\Debug\net9.0\GestMantIA.Application.dll
 D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\bin\Debug\net9.0\GestMantIA.Core.dll
 D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\bin\Debug\net9.0\GestMantIA.Shared.dll
 D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\bin\Debug\net9.0\GestMantIA.Core.pdb
 D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\bin\Debug\net9.0\GestMantIA.Shared.pdb
+D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\bin\Debug\net9.0\GestMantIA.Application.pdb
 D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\obj\Debug\net9.0\GestMantIA.Infrastructure.csproj.AssemblyReference.cache
 D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\obj\Debug\net9.0\GestMantIA.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
 D:\source\Repos\GestMantIA\src\GestMantIA.Infrastructure\obj\Debug\net9.0\GestMantIA.Infrastructure.AssemblyInfoInputs.cache

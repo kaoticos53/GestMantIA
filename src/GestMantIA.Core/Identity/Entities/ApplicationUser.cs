@@ -1,18 +1,13 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Claims;
-using System.Text.Json.Serialization;
+using GestMantIA.Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace GestMantIA.Core.Identity.Entities
 {
     /// <summary>
     /// Clase que representa a un usuario en el sistema.
     /// </summary>
-    public class ApplicationUser : IdentityUser<Guid>
+    public class ApplicationUser : IdentityUser<Guid>, IAuditableEntity
     {
         /// <summary>
         /// Inicializa una nueva instancia de la clase <see cref="ApplicationUser"/>
@@ -53,12 +48,12 @@ namespace GestMantIA.Core.Identity.Entities
         /// Razón del bloqueo del usuario (si está bloqueado).
         /// </summary>
         public string LockoutReason { get; set; }
-        
+
         /// <summary>
         /// Fecha en que se produjo el bloqueo del usuario.
         /// </summary>
         public DateTime? LockoutDate { get; set; }
-        
+
         /// <summary>
         /// Nombre completo del usuario.
         /// </summary>
@@ -98,9 +93,14 @@ namespace GestMantIA.Core.Identity.Entities
         public DateTime? LastLoginDate { get; set; }
 
         /// <summary>
-        /// Fecha en que se eliminó el usuario (borrado lógico).
+        /// Fecha en que se marcó como eliminado.
         /// </summary>
         public DateTime? DeletedAt { get; set; }
+
+        /// <summary>
+        /// Identificador del usuario que marcó como eliminado.
+        /// </summary>
+        public Guid? DeletedBy { get; set; }
 
         /// <summary>
         /// Relación con los roles del usuario.

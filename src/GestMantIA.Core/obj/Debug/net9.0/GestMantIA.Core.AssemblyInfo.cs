@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GestMantIA.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ca56bdd5fd0aea6297b21fe462dd6e98a02aa4f6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b3f31b508a3628c147b5d825f76b02e5fe04cde0")]
 [assembly: System.Reflection.AssemblyProductAttribute("GestMantIA.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GestMantIA.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,19 +1,15 @@
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using System.Text.Json;
+using Blazored.LocalStorage;
+using Blazored.Toast;
 using GestMantIA.Web;
 using GestMantIA.Web.Services;
 using GestMantIA.Web.Services.Interfaces;
-using Blazored.LocalStorage;
-using Blazored.Toast;
-// using Microsoft.AspNetCore.Components.WebAssembly.Authentication; // Comentado si no se usa directamente o si CustomAuthStateProvider lo maneja todo
-using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http;
-using System;
-using Microsoft.Extensions.Configuration;
-using MudBlazor.Services;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
-using System.Text.Json;
+// using Microsoft.AspNetCore.Components.WebAssembly.Authentication; // Comentado si no se usa directamente o si CustomAuthStateProvider lo maneja todo
+using MudBlazor.Services;
 // using GestMantIA.Web.Models; // Si no se usa directamente aquí
 // using GestMantIA.Core.Identity.Interfaces; // Se eliminará si no hay dependencias directas válidas aquí
 // using GestMantIA.Infrastructure.Services; // Eliminado
@@ -38,7 +34,7 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.HideTransitionDuration = 500;
     config.SnackbarConfiguration.ShowTransitionDuration = 500;
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
-    
+
     // Configuración del tema
     config.SnackbarConfiguration.BackgroundBlurred = true;
     config.SnackbarConfiguration.MaxDisplayedSnackbars = 5;
@@ -49,9 +45,9 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 
 // Configuración de HttpClient
-builder.Services.AddScoped(sp => new HttpClient 
-{ 
-    BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) 
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
 });
 
 // Configuración de servicios personalizados

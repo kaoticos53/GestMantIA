@@ -1,7 +1,6 @@
+using System.Reflection;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace GestMantIA.API.Extensions
 {

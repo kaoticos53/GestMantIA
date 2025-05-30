@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
 using GestMantIA.Core.Identity.Entities;
 using GestMantIA.Core.Identity.Interfaces;
 using GestMantIA.Infrastructure.Data;
@@ -47,7 +43,7 @@ namespace GestMantIA.Infrastructure.Services.Security
                     UserAgent = userAgent,
                     AdditionalData = additionalData,
                     Succeeded = succeeded,
-                    Timestamp = DateTimeOffset.UtcNow
+                    CreatedAt = DateTimeOffset.UtcNow.UtcDateTime
                 };
 
                 _context.SecurityLogs.Add(log);
@@ -76,7 +72,7 @@ namespace GestMantIA.Infrastructure.Services.Security
 
                 var query = _context.SecurityLogs
                     .Where(log => log.UserId.HasValue && log.UserId.Value == userId) // Fixed comparison between Guid? and Guid
-                    .OrderByDescending(log => log.Timestamp);
+                    .OrderByDescending(log => log.CreatedAt);
 
                 var totalCount = await query.CountAsync();
                 var logs = await query
@@ -106,10 +102,10 @@ namespace GestMantIA.Infrastructure.Services.Security
                 var query = _context.SecurityLogs.AsQueryable();
 
                 if (startDate.HasValue)
-                    query = query.Where(log => log.Timestamp >= startDate.Value);
+                    query = query.Where(log => log.CreatedAt >= startDate.Value);
 
                 if (endDate.HasValue)
-                    query = query.Where(log => log.Timestamp <= endDate.Value);
+                    query = query.Where(log => log.CreatedAt <= endDate.Value);
 
 
                 if (!string.IsNullOrEmpty(eventType))
@@ -120,7 +116,7 @@ namespace GestMantIA.Infrastructure.Services.Security
 
                 var totalCount = await query.CountAsync();
                 var logs = await query
-                    .OrderByDescending(log => log.Timestamp)
+                    .OrderByDescending(log => log.CreatedAt)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
@@ -146,7 +142,7 @@ namespace GestMantIA.Infrastructure.Services.Security
                 var recentFailedAttempts = await _context.SecurityLogs
                     .Where(log => log.UserId == userId &&
                                 log.EventType == SecurityEventTypes.LoginFailed &&
-                                log.Timestamp > DateTimeOffset.UtcNow.AddMinutes(30))
+                                log.CreatedAt > DateTimeOffset.UtcNow.AddMinutes(30))
                     .CountAsync();
 
                 if (recentFailedAttempts >= 3)
@@ -205,7 +201,7 @@ namespace GestMantIA.Infrastructure.Services.Security
                     .Where(log => log.UserId == userId &&
                                 log.IpAddress != null &&
                                 log.UserAgent != null &&
-                                log.Timestamp > DateTimeOffset.UtcNow.AddDays(-30) &&
+                                log.CreatedAt > DateTimeOffset.UtcNow.AddDays(-30) &&
                                 GenerateDeviceId(log.IpAddress, log.UserAgent) == deviceId)
                     .AnyAsync();
             }
@@ -226,15 +222,15 @@ namespace GestMantIA.Infrastructure.Services.Security
                                     log.EventType == SecurityEventTypes.LoginSucceeded && // Corregido
                                     !string.IsNullOrEmpty(log.IpAddress) && // Comprobación más robusta
                                     !string.IsNullOrEmpty(log.UserAgent) &&
-                                    log.Timestamp > DateTimeOffset.UtcNow.AddDays(-90))
-                    .OrderByDescending(log => log.Timestamp) // Ordenar antes de traer a memoria puede ser útil si solo necesitas los más recientes
+                                    log.CreatedAt > DateTimeOffset.UtcNow.AddDays(-90))
+                    .OrderByDescending(log => log.CreatedAt) // Ordenar antes de traer a memoria puede ser útil si solo necesitas los más recientes
                     .ToListAsync(); // Materializar la consulta a la BD aquí
 
                 // Procesamiento en memoria
                 var devices = filteredLogs
                     .GroupBy(log => GenerateDeviceId(log.IpAddress!, log.UserAgent!)) // IpAddress y UserAgent ya comprobados que no son nulos/vacíos
-                    .Select(g => g.OrderByDescending(l => l.Timestamp).First()!) // Suprimir advertencia de nulabilidad aquí
-                    .OrderByDescending(l => l.Timestamp) // Re-ordenar los dispositivos finales si es necesario
+                    .Select(g => g.OrderByDescending(l => l.CreatedAt).First()!) // Suprimir advertencia de nulabilidad aquí
+                    .OrderByDescending(l => l.CreatedAt) // Re-ordenar los dispositivos finales si es necesario
                     .ToList();
 
                 return devices;

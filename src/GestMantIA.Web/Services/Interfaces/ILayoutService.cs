@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace GestMantIA.Web.Services.Interfaces
 {
     public interface ILayoutService

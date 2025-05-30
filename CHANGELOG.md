@@ -4,7 +4,104 @@ Este archivo documenta los cambios notables en el proyecto GestMantIA. El format
 
 ## [Unreleased]
 
+### Changed
+- Migrados UserRepository y RoleRepository a la nueva estructura vertical slice, utilizando las interfaces de Identity y eliminando referencias obsoletas.
+- Eliminado el repositorio genérico antiguo (`Data.Repositories.Repository<T>`) y actualizado ApplicationDbContext para lanzar NotImplementedException si se solicita un repositorio genérico (alineado con la nueva arquitectura vertical slice).
+- Actualizada la inyección de dependencias en Infrastructure para registrar correctamente los nuevos repositorios y servicios de Identity.
+- Resueltos todos los errores de compilación en GestMantIA.Infrastructure relacionados con referencias a repositorios y dependencias antiguas.
+- Validada la compilación limpia de toda la solución tras la migración.
+- Fecha: 2025-05-30
+
+
+### Changed
+- **Actualización del Script de Configuración de Base de Datos Local (`scripts/setup_local_db.sql`)**:
+  - Mejorado el script `setup_local_db.sql` para la creación de la base de datos PostgreSQL `gestmantia_dev` y el usuario `gestmantia_user`.
+  - El script ahora incluye creación condicional del rol, asignación de propietario a la base de datos, configuración de codificación y colación, y mensajes informativos (`RAISE NOTICE`).
+  - Añadidas instrucciones claras para la ejecución del script y pasos posteriores como la creación de la extensión `uuid-ossp`.
+
+### Fixed
+- Reinsertado el método de prueba unitaria `GetUserProfileAsync_Should_Return_Null_When_User_Does_Not_Exist` en `ApplicationUserServiceTests.cs` que se había perdido en ediciones anteriores.
+- Corregida la indentación de algunos atributos `[Fact]` en `ApplicationUserServiceTests.cs` como efecto secundario de la reinserción del método.
+- Verificado que todas las pruebas unitarias en `GestMantIA.Application.UnitTests` pasan correctamente.
+
+### Added
+- **Creación y Configuración de Proyectos de Pruebas Unitarias**:
+  - Creados los proyectos de pruebas unitarias: `GestMantIA.Core.UnitTests`, `GestMantIA.Application.UnitTests`, `GestMantIA.Infrastructure.UnitTests`, y `GestMantIA.API.UnitTests`.
+  - Añadidos los proyectos a la solución `GestMantIA.sln`.
+  - Configurados los proyectos para utilizar Gestión Centralizada de Paquetes (CPM).
+  - Añadidas referencias a los proyectos de origen correspondientes (ej. `Core.UnitTests` -> `Core`).
+  - Incluidos paquetes NuGet esenciales para pruebas: `xUnit`, `Moq`, `FluentAssertions`, y `Microsoft.AspNetCore.Mvc.Testing` (para API tests).
+- **Estructuración de Directorios para Pruebas Unitarias**:
+  - Creada una estructura de carpetas y archivos de marcador de posición (`*.Tests.cs`) en cada proyecto de pruebas, reflejando la estructura del proyecto de origen.
+  - Eliminados los archivos `UnitTest1.cs` por defecto.
+
+### Added
+- Entradas de log más detalladas en `ApplicationUserService` para operaciones de asignación y eliminación de roles.
+
+### Added
+- **Pruebas Unitarias para Entidades del Core (`GestMantIA.Core.UnitTests`)**:
+  - Completadas las pruebas unitarias para las siguientes entidades, cubriendo constructores, propiedades y métodos específicos:
+    - `ApplicationUser` (en `UserTests.cs`)
+    - `UserProfile`
+    - `ApplicationRole`
+    - `RefreshToken`
+    - `ApplicationPermission`
+    - `SecurityAlert` (incluyendo métodos `MarkAsResolved` y `Reopen`)
+    - `SecurityLog`
+    - `SecurityNotification` (incluyendo método `MarkAsRead`)
+
+### Fixed
+- **Errores de Compilación Críticos en la Solución:**
+  - Resuelto conflicto `More than one compatible asset found for 'service-worker.published.js'` en `GestMantIA.Web` eliminando el archivo `service-worker.published.js` preexistente de `wwwroot`.
+  - Resueltos conflictos `More than one compatible asset found` para `weather.json` y `mudTheme.json` en `GestMantIA.Web` ajustando cómo se referencian estos archivos en `GestMantIA.Web.csproj` (eliminando `weather.json` del `Content` y la entrada explícita `None Update` para `mudTheme.json`).
+  - Resuelto error `System.ArgumentException: An item with the same key has already been added` (relacionado con `SwaggerDark.css` y `app.css`) durante la tarea `DiscoverPrecompressedAssets` al deshabilitar la compresión de activos web estáticos (`<EnableStaticWebAssetsCompression>false</EnableStaticWebAssetsCompression>` en `Directory.Build.props`) y asegurar `StaticWebAssetBasePath` en los proyectos API y Web.
+- Ambiguity `CS0121` en `GestMantIA.API` eliminando el método duplicado `AddApplicationServices` de `GestMantIA.API.Extensions.ApplicationServiceExtensions.cs`.
+
+### Fixed
+- **Resolución de Error de Referencia en `GestMantIA.API` (`CS0234`)**:
+  - Se añadió la referencia de proyecto faltante a `GestMantIA.Application` en el archivo `GestMantIA.API.csproj`.
+  - Esta acción resolvió el error de compilación `CS0234` ("El tipo o el nombre del espacio de nombres 'Application' no existe en el espacio de nombres 'GestMantIA'"), permitiendo que el proyecto API reconozca y utilice correctamente la capa de Aplicación.
+
+### Fixed
+- **Resolución de Errores de Duplicidad en `Infrastructure.UserService` (`GestMantIA.Infrastructure`)**:
+  - Se eliminaron las implementaciones duplicadas de múltiples métodos (como `UnlockUserAsync`, `IsUserLockedOutAsync`, `GetUserLockoutInfoAsync`, `CreateUserAsync`, `UpdateUserAsync`, `DeleteUserAsync`, `GetUserByIdAsync`, `GetAllUsersAsync`, `AssignRolesToUserAsync`, `RemoveRolesFromUserAsync`) de `UserService.cs`.
+  - Esta acción resolvió los errores de compilación `CS0111` (miembro ya definido) que ocurrían debido a la coexistencia de estos métodos con los stubs que lanzan `NotImplementedException` (destinados a señalar que la lógica principal se ha movido a `ApplicationUserService`).
+
+### Changed
+- **Refactorización y Completitud de `ApplicationUserService` (`GestMantIA.Application`)**:
+  - Se implementaron todos los métodos de la interfaz `IUserService` en `ApplicationUserService.cs`.
+  - Se corrigieron las firmas de los métodos (incluyendo tipos de retorno, parámetros y manejo de nulabilidad) para que coincidan exactamente con `IUserService.cs`.
+  - Se aseguró que los métodos que devuelven tipos no nullables (ej. `Task<UserResponseDTO>`) lancen excepciones en lugar de retornar `null` en casos de error o datos no válidos.
+  - Se eliminaron de `ApplicationUserService.cs` los métodos que no pertenecían a la interfaz `IUserService` (ej. gestión directa de Roles y Claims, `UpdateUserActiveStatusAsync`).
+  - Esta refactorización alinea completamente `ApplicationUserService` con su contrato definido en `IUserService`, resolviendo problemas de compilación y asegurando una implementación coherente.
+
+
+
+
 ## [2025-05-29] - Cascade AI
+
+### Added
+- **Creación de la Capa de Aplicación (`GestMantIA.Application`)**:
+  - Creado el nuevo proyecto `GestMantIA.Application` como una biblioteca de clases .NET, con `TargetFramework net9.0`.
+  - Establecida la estructura de carpetas inicial: `Features`, `Interfaces`, `DTOs`, `Mappings`, `Validators`, `Behaviours`.
+  - Añadidas referencias de proyecto a `GestMantIA.Core` y `GestMantIA.Shared`.
+
+### Changed
+- **Configuración de Paquetes NuGet para `GestMantIA.Application`**:
+  - Añadidos los paquetes NuGet `MediatR` (v12.5.0), `AutoMapper` (v14.0.0), `FluentValidation` (v12.0.0), y `FluentValidation.DependencyInjectionExtensions` (v12.0.0) al proyecto `GestMantIA.Application`.
+  - Actualizado `Directory.Packages.props` para gestionar centralmente las versiones de `MediatR` y `AutoMapper`, eliminando las referencias a los paquetes de extensión de DI obsoletos (`AutoMapper.Extensions.Microsoft.DependencyInjection` y `MediatR.Extensions.Microsoft.DependencyInjection`).
+  - Corregido el archivo `GestMantIA.Application.csproj` para asegurar que las referencias a los paquetes NuGet principales sean correctas.
+
+### Corregido
+- **Resolución de Errores de Compilación Post-Refactorización Inicial de Application Layer**:
+  - Corregidos múltiples errores CS1061 y CS0117 relacionados con el uso incorrecto de la propiedad `Timestamp` en la entidad `SecurityLog` (debería ser `CreatedAt`) en los proyectos `GestMantIA.Infrastructure` y `GestMantIA.API`.
+  - Corregidos errores CS1061 y CS0117 relacionados con el uso incorrecto de la propiedad `Created` en la entidad `RefreshToken` (debería ser `CreatedAt`) en el proyecto `GestMantIA.Infrastructure`.
+  - Corregidos errores CS0029 (conversión implícita `DateTimeOffset` a `DateTime`) en `SecurityNotificationService.cs` utilizando `.UtcDateTime`.
+  - Corregido error CS1929 (`IWebHostEnvironment` sin `IsDevelopment`) en `DependencyInjection.cs` añadiendo `using Microsoft.Extensions.Hosting;`.
+  - Eliminadas directivas `using` duplicadas (CS0105) en `DependencyInjection.cs`.
+  - Corregidas advertencias de nulabilidad (CS8609, CS8602) en `CustomSignInManager.cs` ajustando la firma del método y las comprobaciones de nulidad.
+- **Modificador de Acceso en `CustomSignInManager`**:
+  - Cambiado el modificador de acceso del método `PreSignInCheck` de `public` a `protected` en `CustomSignInManager.cs` para resolver el error de compilación `CS0507`.
 ### Corregido
 - **Resolución Completa de Advertencias de Compilación**:
   - Se verificó y confirmó que todas las advertencias de compilación en la solución completa han sido resueltas.
@@ -24,6 +121,32 @@ Este archivo documenta los cambios notables en el proyecto GestMantIA. El format
 ### Cambiado
 - Eliminado el archivo `Class1.cs` (placeholder no utilizado) del proyecto `GestMantIA.Core`.
 - Añadido `README.md` a la carpeta `src/GestMantIA.Core/Entities` para documentar su propósito.
+- Eliminada la carpeta vacía `src/GestMantIA.Core/Models` por no tener un propósito definido en la arquitectura actual.
+- Centralizada la configuración de índices de base de datos en las clases `IEntityTypeConfiguration<T>` correspondientes. Se eliminó el método `ConfigurarIndices` de `ApplicationDbContext` y se verificó/actualizó la configuración de índices para `ApplicationUser`, `ApplicationRole`, `RefreshToken`, `SecurityLog`, `SecurityNotification` y `SecurityAlert` en sus archivos de configuración dedicados.
+- Refactorizada la auditoría de entidades para `ApplicationUser`:
+  - Creada la interfaz `IAuditableEntity` en `GestMantIA.Core.Interfaces`.
+  - `BaseEntity` ahora implementa `IAuditableEntity`.
+  - `ApplicationUser` ahora implementa `IAuditableEntity`.
+  - `ApplicationDbContext.ProcessAuditEntities` modificado para operar sobre `IAuditableEntity`, permitiendo que `ApplicationUser` sea auditado automáticamente.
+- **Mejoras en Borrado Lógico de Usuarios (`UserService.cs`) y finalización de Auditoría de Borrado**:
+  - `IAuditableEntity`, `BaseEntity`, `ApplicationUser` ahora incluyen consistentemente `DeletedAt` y `DeletedBy`.
+  - `ApplicationDbContext.ProcessAuditEntities` gestiona `DeletedAt` automáticamente al cambiar `IsDeleted`.
+  - `UserService.cs`:
+    - `DeleteUserAsync` implementa borrado suave por defecto, establece `IsDeleted = true` y `DeletedBy` con el ID del usuario actual (vía `IHttpContextAccessor`).
+    - `GetUserProfileAsync` y `SearchUsersAsync` filtran usuarios marcados como eliminados.
+    - Logs mejorados en `DeleteUserAsync`.
+  - `DatabaseInitializer`: Eliminada asignación manual de `CreatedAt` para usuarios, ahora manejada por la auditoría.
+- **Integración de `IsActive` e `IsDeleted` en el Flujo de Inicio de Sesión**:
+  - Creado `CustomSignInManager` (en `Infrastructure.Services.Auth`) que hereda de `SignInManager<ApplicationUser>`.
+  - `CustomSignInManager.PreSignInCheck` sobrescrito para impedir el inicio de sesión si `ApplicationUser.IsDeleted` es `true` o `ApplicationUser.IsActive` es `false`.
+  - `UserService.DeleteUserAsync` ahora establece `IsActive = false` cuando se realiza un borrado suave (soft delete).
+  - Registrado `CustomSignInManager` en la configuración de servicios de Identity.
+- **Simplificación de `ApplicationDbContext`**:
+  - Eliminado el campo `_currentTransaction` y los métodos de gestión explícita de transacciones (`BeginTransactionAsync`, `CommitTransactionAsync`, `RollbackTransactionAsync`, `DisposeTransactionAsync`) de `ApplicationDbContext.cs`, ya que no eran utilizados por la implementación de `IUnitOfWork` proporcionada por la DI (`UnitOfWork.cs`).
+- **Centralización de Registros de Persistencia**:
+  - Se movió la configuración de servicios de persistencia (DbContext, UnitOfWork, DatabaseInitializer, SeedDataSettings) desde `GestMantIA.API.Extensions.PersistenceServiceExtensions` a un nuevo método `AddPersistence` dentro de `GestMantIA.Infrastructure.DependencyInjection`.
+  - `Program.cs` (API) ahora llama a `services.AddInfrastructure(configuration)` para incluir estos servicios.
+  - `PersistenceServiceExtensions.cs` ha sido marcado como obsoleto.
 
 
 ### Corregido
@@ -78,6 +201,30 @@ Este archivo documenta los cambios notables en el proyecto GestMantIA. El format
     - **CS8603** (`IRoleService.GetRoleByIdAsync` e impl. devuelven `Task<RoleDTO?>`; `IRepository.GetByIdAsync` e impl. devuelven `Task<T?>`).
     - **CS8602** (`RolesController.CreateRole`: comprobación de nulidad para `createdRole`).
     - **ASP0014** (`Program.cs` API: `MapHealthChecks` movido a registro de rutas de nivel superior, eliminado `UseEndpoints`).
+
+### Changed
+- **Refactorización y Completitud de `IUserService` y `ApplicationUserService`**:
+  - Implementados los métodos restantes de `IUserService` en `ApplicationUserService`: `UpdateUserProfileAsync`, `LockUserAsync`, `UnlockUserAsync`, `IsUserLockedOutAsync`, y `GetUserLockoutInfoAsync`.
+  - Se aseguró la alineación con la interfaz `IUserService`, utilizando DTOs apropiados y eliminando el uso del patrón `Result<T>` en la capa de servicio.
+  - Eliminados placeholders de métodos obsoletos en `ApplicationUserService`.
+
+### Added
+- **Configuración de Inyección de Dependencias para `GestMantIA.Application`**:
+  - Creado el archivo `DependencyInjection.cs` en la capa `GestMantIA.Application` para registrar los servicios de aplicación, incluyendo `ApplicationUserService` para `IUserService`.
+  - Actualizado `Program.cs` en `GestMantIA.API` para invocar la configuración de servicios de la capa de aplicación y añadir el `using` correspondiente.
+
+### Corregido
+- **Resolución de Errores de Compilación (Bloqueo de Migraciones)**:
+  - Se resolvieron errores de compilación críticos que impedían la creación de migraciones para `UserProfile`:
+    - `GestMantIA.Core`:
+      - Eliminado modificador `new` innecesario en métodos `Failure` de `AuthenticationResult`, `RegisterResult` y `VerifyEmailResult`.
+      - Añadida directiva `using GestMantIA.Core.Identity.Entities;` a `UserProfile.cs` para resolver `ApplicationUser`.
+      - Eliminado modificador `new` innecesario del método `NormalizeName()` en `ApplicationRole.cs`.
+      - Ajustados parámetros `errors` y `message` a anulables en `AuthenticationResult.Failure`.
+      - Corregida la implementación de `IAuditableEntity` en `Entities/BaseEntity.cs` (tipos de `CreatedAt`, `UpdatedAt`, `DeletedAt`, `DeletedBy`).
+    - `GestMantIA.Shared` / `GestMantIA.Application`:
+      - Creado `UserProfileDto.cs` en `Shared/Identity/DTOs/` para resolver errores de tipo no encontrado en `ApplicationUserProfileService`.
+  - La solución ahora compila sin errores.
 
 ## [2025-05-28] - Cascade AI
 ### Agregado

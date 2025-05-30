@@ -10,11 +10,11 @@ namespace GestMantIA.Infrastructure.Data.Configurations.Security
         {
             builder.ToTable("SecurityLogs", "security");
             // La clave primaria Id se hereda de BaseEntity y se configura automáticamente.
-            
+
             builder.HasIndex(e => e.UserId);
             builder.HasIndex(e => e.EventType);
-            builder.HasIndex(e => e.Timestamp);
-            
+            builder.HasIndex(e => e.CreatedAt);
+
             builder.Property(e => e.AdditionalData).HasColumnType("jsonb");
 
             // La relación con ApplicationUser ya está definida en ApplicationUserConfiguration

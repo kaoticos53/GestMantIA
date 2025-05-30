@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-
 namespace GestMantIA.Core.Identity.Results
 {
     /// <summary>
@@ -37,23 +34,23 @@ namespace GestMantIA.Core.Identity.Results
         /// <returns>Instancia de <see cref="OperationResult"/> con éxito.</returns>
         public static OperationResult CreateSuccess(string? message = null)
         {
-            return new OperationResult 
-            { 
+            return new OperationResult
+            {
                 Succeeded = true,
-                Message = message ?? "Operación completada con éxito" 
+                Message = message ?? "Operación completada con éxito"
             };
         }
-        
+
         /// <summary>
         /// Crea un resultado de operación fallido (obsoleto, usar CreateFailure en su lugar).
         /// </summary>
         [Obsolete("Usar el método CreateFailure en su lugar.")]
-        public static OperationResult Failed(string message) 
+        public static OperationResult Failed(string message)
         {
-            var result = new OperationResult 
-            { 
+            var result = new OperationResult
+            {
                 Succeeded = false,
-                Message = message ?? "La operación ha fallado." 
+                Message = message ?? "La operación ha fallado."
             };
             result._errors.Add(message);
             return result;
@@ -67,20 +64,20 @@ namespace GestMantIA.Core.Identity.Results
         /// <returns>Instancia de <see cref="OperationResult"/> con errores.</returns>
         public static OperationResult CreateFailure(IEnumerable<string> errors, string? message = null)
         {
-            var result = new OperationResult 
-            { 
+            var result = new OperationResult
+            {
                 Succeeded = false,
-                Message = message ?? "La operación ha fallado con uno o más errores." 
+                Message = message ?? "La operación ha fallado con uno o más errores."
             };
             result._errors.AddRange(errors);
             return result;
         }
-        
+
         /// <summary>
         /// Crea un resultado de operación fallido con múltiples errores (obsoleto, usar CreateFailure en su lugar).
         /// </summary>
         [Obsolete("Usar el método CreateFailure en su lugar.")]
-        public static OperationResult Failed(IEnumerable<string> errors, string? message = null) => 
+        public static OperationResult Failed(IEnumerable<string> errors, string? message = null) =>
             CreateFailure(errors, message);
 
         /// <summary>
@@ -91,7 +88,7 @@ namespace GestMantIA.Core.Identity.Results
         {
             Succeeded = false;
             _errors.Add(error);
-            
+
             // Actualizar el mensaje para incluir el último error
             if (string.IsNullOrEmpty(Message) || Message == "Operación completada con éxito")
             {

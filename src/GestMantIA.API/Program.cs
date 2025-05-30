@@ -1,32 +1,14 @@
+using System.Reflection;
 using GestMantIA.API.Extensions;
-using GestMantIA.Core.Interfaces;
+using GestMantIA.Application;
+using GestMantIA.Application.Interfaces; // Para IDatabaseInitializer
+using GestMantIA.Core.Identity.Interfaces;
 using GestMantIA.Infrastructure;
 using GestMantIA.Infrastructure.Data;
-using GestMantIA.Infrastructure.Services.Email;
 using GestMantIA.Infrastructure.Services.Security;
-using GestMantIA.Core.Identity.Interfaces;
 // using GestMantIA.Core.Entities.Identity; // Comentado temporalmente, corregido abajo
-using GestMantIA.Core.Identity.Entities; // Para ApplicationUser y ApplicationRole
-using Microsoft.AspNetCore.Authentication; // Para AuthenticationOptions
 // using GestMantIA.Infrastructure.Identity; // Comentado temporalmente ya que SpanishIdentityErrorDescriber no se encuentra
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Any;
-using System.Text;
-using System.Reflection;
-using GestMantIA.API.Controllers;
-using GestMantIA.API.Filters.Swagger;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc.Controllers;
 
 // Punto de entrada de la aplicación
 public class Program
@@ -46,7 +28,7 @@ public class Program
             serverOptions.Limits.MinRequestBodyDataRate = null;
             serverOptions.Limits.MinResponseDataRate = null;
             serverOptions.AddServerHeader = false;
-            
+
             // Configurar endpoints desde configuración
             var kestrelSection = builder.Configuration.GetSection("Kestrel");
             if (kestrelSection.Exists())
@@ -87,12 +69,16 @@ public class Program
         builder.Logging.ClearProviders();
         builder.Logging.AddConsole();
         builder.Logging.AddDebug();
-        
+
         // Configurar el nivel de log para Entity Framework Core
         builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
 
-        // Configuración de servicios de persistencia
-        builder.Services.AddPersistenceServices(builder.Configuration);
+        // Configuración de servicios de infraestructura (incluye persistencia, identidad, utilidades)
+        builder.Services.AddInfrastructure(builder.Configuration);
+
+        // Registro de repositorios vertical slice (User y Role)
+        builder.Services.AddScoped<GestMantIA.Core.Identity.Interfaces.IUserRepository, GestMantIA.Infrastructure.Features.UserManagement.Repositories.UserRepository>();
+        builder.Services.AddScoped<GestMantIA.Core.Identity.Interfaces.IRoleRepository, GestMantIA.Infrastructure.Features.UserManagement.Repositories.RoleRepository>();
 
         // Configuración de servicios de aplicación (AutoMapper, MediatR, etc.)
         builder.Services.AddApplicationServices(builder.Configuration);
@@ -106,18 +92,18 @@ public class Program
         // Configuración de notificaciones de seguridad
         builder.Services.Configure<SecurityNotificationOptions>(
             builder.Configuration.GetSection("SecurityNotifications"));
-            
+
         // Registrar servicios de seguridad
         builder.Services.AddScoped<ISecurityLogger, SecurityLogger>();
         builder.Services.AddScoped<ISecurityNotificationService, SecurityNotificationService>();
-        
+
         // Configuración de políticas de autorización para notificaciones de seguridad
         builder.Services.AddAuthorization(options =>
         {
-            options.AddPolicy("ViewSecurityNotifications", policy => 
+            options.AddPolicy("ViewSecurityNotifications", policy =>
                 policy.RequireClaim("permission", "security.notifications.view"));
-                
-            options.AddPolicy("ManageSecurityAlerts", policy => 
+
+            options.AddPolicy("ManageSecurityAlerts", policy =>
                 policy.RequireClaim("permission", "security.alerts.manage"));
         });
 
@@ -127,22 +113,6 @@ public class Program
         // La lógica de eventos JWT (OnChallenge, OnForbidden) se ha movido a SecurityServiceExtensions.cs
         // }); // Esta llave de cierre pertenecía al AddJwtBearer que ya no está aquí.
 
-        // Configuración de autorización global
-        builder.Services.AddAuthorization(options =>
-        {
-            // Política por defecto: requiere autenticación
-            var defaultPolicy = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .Build();
-            options.DefaultPolicy = defaultPolicy;
-
-            // Políticas personalizadas
-            options.AddPolicy("RequireAdminRole", policy => 
-                policy.RequireRole("Admin"));
-        });
-
-        // Esta configuración duplicada de AddControllers() también se elimina ya que la principal se movió.
-        
         // Asegurarse de que los controladores se registren correctamente
         builder.Services.AddMvcCore()
             .AddApiExplorer()
@@ -153,6 +123,13 @@ public class Program
         builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
         var app = builder.Build();
+
+        // Habilitar Swagger en entorno Development
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
 
         // Configurar el pipeline de la API usando el método de extensión
         app.ConfigureApiPipeline(app.Environment);
@@ -170,17 +147,17 @@ public class Program
         {
             using var scope = app.Services.CreateScope();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-            
+
             // Aplicar migraciones para ApplicationDbContext
             var appDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            logger.LogInformation("Aplicando migraciones para ApplicationDbContext...");
+            logger.LogInformation("Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...");
             await appDbContext.Database.MigrateAsync();
-            logger.LogInformation("Migraciones aplicadas correctamente para ApplicationDbContext");
-            
-            if (app.Environment.EnvironmentName == "Development" && app.Configuration.GetSection("Database").GetValue<bool>("SeedData"))
+            logger.LogInformation("Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.");
+
+            if (app.Environment.IsDevelopment())
             {
                 var initializer = scope.ServiceProvider.GetRequiredService<IDatabaseInitializer>();
-                await initializer.SeedDataAsync(); // Llamar al método correcto para sembrar datos
+                await initializer.SeedDataAsync(); // Sembrar datos siempre en desarrollo
             }
         } // Cierre del bloque try
         catch (Exception ex)

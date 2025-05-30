@@ -1,9 +1,5 @@
 using GestMantIA.Core.Identity.Entities;
 using GestMantIA.Shared.Identity.DTOs;
-using GestMantIA.Shared.Identity.DTOs.Responses;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace GestMantIA.Core.Identity.Interfaces
 {
@@ -120,10 +116,10 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// </summary>
         public static RoleResult Succeeded(string? message = null)
         {
-            return new RoleResult 
-            { 
-                Success = true, 
-                Message = message ?? "Operación completada con éxito" 
+            return new RoleResult
+            {
+                Success = true,
+                Message = message ?? "Operación completada con éxito"
             };
         }
 
@@ -132,17 +128,17 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// </summary>
         public static RoleResult Failed(string error, IEnumerable<string>? errors = null)
         {
-            var result = new RoleResult 
-            { 
-                Success = false, 
+            var result = new RoleResult
+            {
+                Success = false,
                 Message = error ?? "Error en la operación"
             };
-            
+
             if (errors != null)
             {
                 result.Errors = errors;
             }
-            
+
             return result;
         }
     }

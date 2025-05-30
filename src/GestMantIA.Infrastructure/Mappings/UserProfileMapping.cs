@@ -1,8 +1,6 @@
-using System;
 using AutoMapper;
-using GestMantIA.Shared.Identity.DTOs;
-using GestMantIA.Shared.Identity.DTOs.Responses;
 using GestMantIA.Core.Identity.Entities;
+using GestMantIA.Shared.Identity.DTOs.Responses;
 
 namespace GestMantIA.Infrastructure.Mappings
 {

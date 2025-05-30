@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GestMantIA.Core.Identity.Results
 {
     /// <summary>
@@ -46,8 +44,8 @@ namespace GestMantIA.Core.Identity.Results
         /// <param name="message">Mensaje descriptivo opcional.</param>
         /// <returns>Instancia de AuthenticationResult con los tokens correspondientes.</returns>
         public static AuthenticationResult Success(
-            string accessToken, 
-            string refreshToken, 
+            string accessToken,
+            string refreshToken,
             DateTime accessTokenExpiration,
             UserInfo userInfo,
             string message = null)
@@ -69,7 +67,7 @@ namespace GestMantIA.Core.Identity.Results
         /// <param name="errors">Lista de errores.</param>
         /// <param name="message">Mensaje descriptivo opcional.</param>
         /// <returns>Instancia de AuthenticationResult con Succeeded en false.</returns>
-        public new static AuthenticationResult Failure(IEnumerable<string> errors, string message = null)
+        public static AuthenticationResult Failure(IEnumerable<string>? errors, string? message = null)
         {
             return new AuthenticationResult
             {
@@ -80,5 +78,5 @@ namespace GestMantIA.Core.Identity.Results
         }
     }
 
-// La clase UserInfo ha sido movida a su propio archivo UserInfo.cs
+    // La clase UserInfo ha sido movida a su propio archivo UserInfo.cs
 }

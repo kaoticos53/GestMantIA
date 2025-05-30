@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using GestMantIA.Shared.Identity.DTOs; 
-using GestMantIA.Shared.Identity.DTOs.Requests; 
-using GestMantIA.Shared.Identity.DTOs.Responses; 
-using GestMantIA.Core.Identity.Entities;
 using GestMantIA.Core.Shared;
+using GestMantIA.Shared.Identity.DTOs;
+using GestMantIA.Shared.Identity.DTOs.Requests;
+using GestMantIA.Shared.Identity.DTOs.Responses;
 
 namespace GestMantIA.Core.Identity.Interfaces
 {
@@ -37,8 +33,8 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// <param name="pageSize">Tamaño de página (por defecto 10).</param>
         /// <returns>Lista paginada de perfiles de usuario.</returns>
         Task<PagedResult<UserResponseDTO>> SearchUsersAsync(
-            string? searchTerm = null, 
-            int pageNumber = 1, 
+            string? searchTerm = null,
+            int pageNumber = 1,
             int pageSize = 10);
 
         /// <summary>
@@ -113,9 +109,9 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// <param name="activeOnly">Si es true, solo devuelve usuarios activos.</param>
         /// <returns>Lista paginada de usuarios.</returns>
         Task<PagedResult<UserResponseDTO>> GetAllUsersAsync(
-            int pageNumber = 1, 
-            int pageSize = 10, 
-            string? searchTerm = null, 
+            int pageNumber = 1,
+            int pageSize = 10,
+            string? searchTerm = null,
             bool activeOnly = false);
 
         /// <summary>
@@ -140,6 +136,47 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// <param name="userId">ID del usuario.</param>
         /// <returns>Lista de nombres de roles.</returns>
         Task<IEnumerable<string>> GetUserRolesAsync(string userId);
+
+        #endregion
+
+        #region Gestión de Contraseñas y Confirmación de Email
+
+        /// <summary>
+        /// Genera un token para restablecer la contraseña de un usuario.
+        /// </summary>
+        /// <param name="userIdOrEmail">ID o email del usuario.</param>
+        /// <returns>El token de restablecimiento o null si el usuario no se encuentra o no es válido.</returns>
+        Task<string?> GetPasswordResetTokenAsync(string userIdOrEmail);
+
+        /// <summary>
+        /// Restablece la contraseña de un usuario utilizando un token.
+        /// </summary>
+        /// <param name="resetPasswordDto">DTO con la información para el restablecimiento.</param>
+        /// <returns>True si la contraseña se restableció correctamente, false en caso contrario.</returns>
+        Task<bool> ResetPasswordAsync(ResetPasswordDTO resetPasswordDto);
+
+        /// <summary>
+        /// Cambia la contraseña de un usuario autenticado.
+        /// </summary>
+        /// <param name="userId">ID del usuario.</param>
+        /// <param name="changePasswordDto">DTO con la contraseña actual y la nueva contraseña.</param>
+        /// <returns>True si la contraseña se cambió correctamente, false en caso contrario.</returns>
+        Task<bool> ChangePasswordAsync(string userId, ChangePasswordDTO changePasswordDto);
+
+        /// <summary>
+        /// Confirma la dirección de correo electrónico de un usuario utilizando un token.
+        /// </summary>
+        /// <param name="userId">ID del usuario.</param>
+        /// <param name="token">Token de confirmación de email.</param>
+        /// <returns>True si el email se confirmó correctamente, false en caso contrario.</returns>
+        Task<bool> ConfirmEmailAsync(string userId, string token);
+
+        /// <summary>
+        /// Genera y reenvía un nuevo token de confirmación de email para un usuario.
+        /// </summary>
+        /// <param name="userIdOrEmail">ID o email del usuario.</param>
+        /// <returns>El nuevo token de confirmación o null si el usuario no se encuentra o el email ya está confirmado.</returns>
+        Task<string?> ResendConfirmationEmailAsync(string userIdOrEmail);
 
         #endregion
     }

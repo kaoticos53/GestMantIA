@@ -35,6 +35,9 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
+              "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Application\\GestMantIA.Application.csproj": {
+                "projectPath": "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Application\\GestMantIA.Application.csproj"
+              },
               "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Core\\GestMantIA.Core.csproj": {
                 "projectPath": "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Core\\GestMantIA.Core.csproj"
               },
@@ -78,11 +81,6 @@
               "version": "[9.0.5, )",
               "versionCentrallyManaged": true
             },
-            "Microsoft.AspNetCore.Diagnostics.HealthChecks": {
-              "target": "Package",
-              "version": "[2.2.0, )",
-              "versionCentrallyManaged": true
-            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.5, )",
@@ -97,7 +95,7 @@
             },
             "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[9.0.0-rc.2.24474.3, )",
+              "version": "[9.0.5, )",
               "versionCentrallyManaged": true
             },
             "Serilog.AspNetCore": {
@@ -122,12 +120,12 @@
             "FluentAssertions": "8.3.0",
             "FluentValidation": "12.0.0",
             "FluentValidation.DependencyInjectionExtensions": "12.0.0",
+            "MediatR": "12.5.0",
             "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.5",
             "Microsoft.AspNetCore.Components.Authorization": "9.0.5",
             "Microsoft.AspNetCore.Components.WebAssembly": "9.0.5",
             "Microsoft.AspNetCore.Components.WebAssembly.Authentication": "9.0.5",
             "Microsoft.AspNetCore.Components.WebAssembly.DevServer": "9.0.5",
-            "Microsoft.AspNetCore.Diagnostics.HealthChecks": "2.2.0",
             "Microsoft.AspNetCore.Identity": "2.3.1",
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.5",
             "Microsoft.AspNetCore.Mvc.Testing": "9.0.5",
@@ -136,14 +134,18 @@
             "Microsoft.AspNetCore.WebUtilities": "9.0.5",
             "Microsoft.EntityFrameworkCore": "9.0.5",
             "Microsoft.EntityFrameworkCore.Design": "9.0.5",
+            "Microsoft.EntityFrameworkCore.InMemory": "9.0.5",
             "Microsoft.EntityFrameworkCore.Relational": "9.0.5",
             "Microsoft.EntityFrameworkCore.SqlServer": "9.0.5",
             "Microsoft.EntityFrameworkCore.Tools": "9.0.5",
-            "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "9.0.0-rc.2.24474.3",
+            "Microsoft.Extensions.Configuration.Abstractions": "9.0.5",
+            "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.5",
+            "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "9.0.5",
             "Microsoft.Extensions.Identity.Core": "9.0.5",
+            "Microsoft.Extensions.Logging.Abstractions": "9.0.5",
             "Microsoft.NET.Test.Sdk": "17.14.0",
             "Moq": "4.20.72",
-            "MudBlazor": "8.6.0",
+            "MudBlazor": "8.7.0",
             "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
             "Serilog.AspNetCore": "9.0.0",
             "Serilog.Sinks.Console": "6.0.0",
@@ -169,6 +171,170 @@
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
             },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Application\\GestMantIA.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Application\\GestMantIA.Application.csproj",
+        "projectName": "GestMantIA.Application",
+        "projectPath": "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Application\\GestMantIA.Application.csproj",
+        "packagesPath": "D:\\packages\\NuGet\\cache",
+        "outputPath": "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Application\\obj\\",
+        "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "D:\\source\\Repos\\GestMantIA\\NuGet.Config",
+          "C:\\Users\\kaoti\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Core\\GestMantIA.Core.csproj": {
+                "projectPath": "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Core\\GestMantIA.Core.csproj"
+              },
+              "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Shared\\GestMantIA.Shared.csproj": {
+                "projectPath": "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Shared\\GestMantIA.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[14.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "FluentValidation": {
+              "target": "Package",
+              "version": "[12.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "FluentValidation.DependencyInjectionExtensions": {
+              "target": "Package",
+              "version": "[12.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "MediatR": {
+              "target": "Package",
+              "version": "[12.5.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.5, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.5, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.5, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.5, )",
+              "versionCentrallyManaged": true
+            }
+          },
+          "centralPackageVersions": {
+            "Ardalis.GuardClauses": "5.0.0",
+            "AutoMapper": "14.0.0",
+            "Blazored.LocalStorage": "4.5.0",
+            "Blazored.Toast": "4.2.1",
+            "coverlet.collector": "6.0.4",
+            "coverlet.msbuild": "6.0.4",
+            "EfCore.SchemaCompare": "9.0.0",
+            "FluentAssertions": "8.3.0",
+            "FluentValidation": "12.0.0",
+            "FluentValidation.DependencyInjectionExtensions": "12.0.0",
+            "MediatR": "12.5.0",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.5",
+            "Microsoft.AspNetCore.Components.Authorization": "9.0.5",
+            "Microsoft.AspNetCore.Components.WebAssembly": "9.0.5",
+            "Microsoft.AspNetCore.Components.WebAssembly.Authentication": "9.0.5",
+            "Microsoft.AspNetCore.Components.WebAssembly.DevServer": "9.0.5",
+            "Microsoft.AspNetCore.Identity": "2.3.1",
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.5",
+            "Microsoft.AspNetCore.Mvc.Testing": "9.0.5",
+            "Microsoft.AspNetCore.OpenApi": "9.0.5",
+            "Microsoft.AspNetCore.TestHost": "9.0.5",
+            "Microsoft.AspNetCore.WebUtilities": "9.0.5",
+            "Microsoft.EntityFrameworkCore": "9.0.5",
+            "Microsoft.EntityFrameworkCore.Design": "9.0.5",
+            "Microsoft.EntityFrameworkCore.InMemory": "9.0.5",
+            "Microsoft.EntityFrameworkCore.Relational": "9.0.5",
+            "Microsoft.EntityFrameworkCore.SqlServer": "9.0.5",
+            "Microsoft.EntityFrameworkCore.Tools": "9.0.5",
+            "Microsoft.Extensions.Configuration.Abstractions": "9.0.5",
+            "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.5",
+            "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "9.0.5",
+            "Microsoft.Extensions.Identity.Core": "9.0.5",
+            "Microsoft.Extensions.Logging.Abstractions": "9.0.5",
+            "Microsoft.NET.Test.Sdk": "17.14.0",
+            "Moq": "4.20.72",
+            "MudBlazor": "8.7.0",
+            "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
+            "Serilog.AspNetCore": "9.0.0",
+            "Serilog.Sinks.Console": "6.0.0",
+            "Serilog.Sinks.File": "7.0.0",
+            "Swashbuckle.AspNetCore": "8.1.2",
+            "System.IdentityModel.Tokens.Jwt": "8.11.0",
+            "System.Net.Http.Json": "9.0.5",
+            "xunit": "2.9.3",
+            "xunit.runner.visualstudio": "3.1.0"
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
@@ -272,12 +438,12 @@
             "FluentAssertions": "8.3.0",
             "FluentValidation": "12.0.0",
             "FluentValidation.DependencyInjectionExtensions": "12.0.0",
+            "MediatR": "12.5.0",
             "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.5",
             "Microsoft.AspNetCore.Components.Authorization": "9.0.5",
             "Microsoft.AspNetCore.Components.WebAssembly": "9.0.5",
             "Microsoft.AspNetCore.Components.WebAssembly.Authentication": "9.0.5",
             "Microsoft.AspNetCore.Components.WebAssembly.DevServer": "9.0.5",
-            "Microsoft.AspNetCore.Diagnostics.HealthChecks": "2.2.0",
             "Microsoft.AspNetCore.Identity": "2.3.1",
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.5",
             "Microsoft.AspNetCore.Mvc.Testing": "9.0.5",
@@ -286,14 +452,18 @@
             "Microsoft.AspNetCore.WebUtilities": "9.0.5",
             "Microsoft.EntityFrameworkCore": "9.0.5",
             "Microsoft.EntityFrameworkCore.Design": "9.0.5",
+            "Microsoft.EntityFrameworkCore.InMemory": "9.0.5",
             "Microsoft.EntityFrameworkCore.Relational": "9.0.5",
             "Microsoft.EntityFrameworkCore.SqlServer": "9.0.5",
             "Microsoft.EntityFrameworkCore.Tools": "9.0.5",
-            "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "9.0.0-rc.2.24474.3",
+            "Microsoft.Extensions.Configuration.Abstractions": "9.0.5",
+            "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.5",
+            "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "9.0.5",
             "Microsoft.Extensions.Identity.Core": "9.0.5",
+            "Microsoft.Extensions.Logging.Abstractions": "9.0.5",
             "Microsoft.NET.Test.Sdk": "17.14.0",
             "Moq": "4.20.72",
-            "MudBlazor": "8.6.0",
+            "MudBlazor": "8.7.0",
             "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
             "Serilog.AspNetCore": "9.0.0",
             "Serilog.Sinks.Console": "6.0.0",
@@ -355,6 +525,9 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
+              "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Application\\GestMantIA.Application.csproj": {
+                "projectPath": "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Application\\GestMantIA.Application.csproj"
+              },
               "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Core\\GestMantIA.Core.csproj": {
                 "projectPath": "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Core\\GestMantIA.Core.csproj"
               },
@@ -450,12 +623,12 @@
             "FluentAssertions": "8.3.0",
             "FluentValidation": "12.0.0",
             "FluentValidation.DependencyInjectionExtensions": "12.0.0",
+            "MediatR": "12.5.0",
             "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.5",
             "Microsoft.AspNetCore.Components.Authorization": "9.0.5",
             "Microsoft.AspNetCore.Components.WebAssembly": "9.0.5",
             "Microsoft.AspNetCore.Components.WebAssembly.Authentication": "9.0.5",
             "Microsoft.AspNetCore.Components.WebAssembly.DevServer": "9.0.5",
-            "Microsoft.AspNetCore.Diagnostics.HealthChecks": "2.2.0",
             "Microsoft.AspNetCore.Identity": "2.3.1",
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.5",
             "Microsoft.AspNetCore.Mvc.Testing": "9.0.5",
@@ -464,14 +637,18 @@
             "Microsoft.AspNetCore.WebUtilities": "9.0.5",
             "Microsoft.EntityFrameworkCore": "9.0.5",
             "Microsoft.EntityFrameworkCore.Design": "9.0.5",
+            "Microsoft.EntityFrameworkCore.InMemory": "9.0.5",
             "Microsoft.EntityFrameworkCore.Relational": "9.0.5",
             "Microsoft.EntityFrameworkCore.SqlServer": "9.0.5",
             "Microsoft.EntityFrameworkCore.Tools": "9.0.5",
-            "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "9.0.0-rc.2.24474.3",
+            "Microsoft.Extensions.Configuration.Abstractions": "9.0.5",
+            "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.5",
+            "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "9.0.5",
             "Microsoft.Extensions.Identity.Core": "9.0.5",
+            "Microsoft.Extensions.Logging.Abstractions": "9.0.5",
             "Microsoft.NET.Test.Sdk": "17.14.0",
             "Moq": "4.20.72",
-            "MudBlazor": "8.6.0",
+            "MudBlazor": "8.7.0",
             "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
             "Serilog.AspNetCore": "9.0.0",
             "Serilog.Sinks.Console": "6.0.0",
@@ -561,12 +738,12 @@
             "FluentAssertions": "8.3.0",
             "FluentValidation": "12.0.0",
             "FluentValidation.DependencyInjectionExtensions": "12.0.0",
+            "MediatR": "12.5.0",
             "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.5",
             "Microsoft.AspNetCore.Components.Authorization": "9.0.5",
             "Microsoft.AspNetCore.Components.WebAssembly": "9.0.5",
             "Microsoft.AspNetCore.Components.WebAssembly.Authentication": "9.0.5",
             "Microsoft.AspNetCore.Components.WebAssembly.DevServer": "9.0.5",
-            "Microsoft.AspNetCore.Diagnostics.HealthChecks": "2.2.0",
             "Microsoft.AspNetCore.Identity": "2.3.1",
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.5",
             "Microsoft.AspNetCore.Mvc.Testing": "9.0.5",
@@ -575,14 +752,18 @@
             "Microsoft.AspNetCore.WebUtilities": "9.0.5",
             "Microsoft.EntityFrameworkCore": "9.0.5",
             "Microsoft.EntityFrameworkCore.Design": "9.0.5",
+            "Microsoft.EntityFrameworkCore.InMemory": "9.0.5",
             "Microsoft.EntityFrameworkCore.Relational": "9.0.5",
             "Microsoft.EntityFrameworkCore.SqlServer": "9.0.5",
             "Microsoft.EntityFrameworkCore.Tools": "9.0.5",
-            "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "9.0.0-rc.2.24474.3",
+            "Microsoft.Extensions.Configuration.Abstractions": "9.0.5",
+            "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.5",
+            "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "9.0.5",
             "Microsoft.Extensions.Identity.Core": "9.0.5",
+            "Microsoft.Extensions.Logging.Abstractions": "9.0.5",
             "Microsoft.NET.Test.Sdk": "17.14.0",
             "Moq": "4.20.72",
-            "MudBlazor": "8.6.0",
+            "MudBlazor": "8.7.0",
             "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
             "Serilog.AspNetCore": "9.0.0",
             "Serilog.Sinks.Console": "6.0.0",

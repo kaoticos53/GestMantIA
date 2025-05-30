@@ -196,6 +196,80 @@ Este documento describe los pasos necesarios para el desarrollo de GestMantIA, s
   - [x] Advertencias críticas y del proyecto API (resueltas previamente)
   - [x] Advertencias CS8618 en GestMantIA.Shared - **Completado**
 
+- [x] 5.2 Implementación y Refactorización de la Capa de Aplicación (`GestMantIA.Application`) - **Completado**
+  - [x] 5.2.1 Crear el proyecto `GestMantIA.Application` y estructura base (conforme a `ARCHITECTURE.md`).
+  - [x] 5.2.2 Refactorizar `IUserService` y su implementación: - **Completado**
+    - [x] Mantener `IUserService` en `GestMantIA.Core.Identity.Interfaces`.
+    - [x] Crear `ApplicationUserService` en `GestMantIA.Application/Features/UserManagement/Services` implementando `IUserService`.
+    - [x] Implementar todos los métodos de `IUserService` en `ApplicationUserService` (e.g., `UpdateUserProfileAsync`, `LockUserAsync`, `ChangePasswordAsync`, etc.).
+    - [x] Utilizar DTOs de `GestMantIA.Shared` para la comunicación entre capas.
+    - [x] Eliminar el uso del patrón `Result<T>` en la capa de servicio, manejando errores con excepciones específicas del dominio o de la aplicación.
+  - [x] 5.2.3 Configurar Inyección de Dependencias para `GestMantIA.Application`: - **Completado**
+    - [x] En `GestMantIA.Application/DependencyInjection.cs`, registrar `ApplicationUserService` como `IUserService`.
+    - [x] Configurar AutoMapper con perfiles específicos de la capa de aplicación (si son necesarios además de los de `Shared` o `Core`).
+    - [x] Registrar validadores de FluentValidation para DTOs/Comandos de la capa de aplicación.
+  - [x] 5.2.4 Limpiar `GestMantIA.Infrastructure.Services.UserService`: Eliminar o reducir significativamente la clase original después de la migración completa de su lógica a `ApplicationUserService`.
+  - [x] 5.2.5 (Opcional/Futuro) Evolucionar hacia Patrón CQRS con MediatR para Casos de Uso de Usuario (según `ARCHITECTURE.md`):
+    - [ ] Definir Comandos (e.g., `CreateUserCommand`, `UpdateUserProfileCommand`) y Consultas (e.g., `GetUserByIdQuery`, `SearchUsersQuery`).
+    - [ ] Implementar Handlers correspondientes en `GestMantIA.Application/Features/UserManagement/Commands` y `GestMantIA.Application/Features/UserManagement/Queries`.
+    - [ ] Refactorizar `UsersController` en la API para usar MediatR para enviar Comandos y Consultas.
+  - [x] 5.2.6 Escribir pruebas unitarias para los servicios/handlers de la capa de aplicación (e.g., para `ApplicationUserService` o los futuros Handlers de MediatR).
+  - [x] 5.2.7 Revisar y asegurar la alineación continua con `ARCHITECTURE.md` en cuanto a estructura de carpetas, DTOs, manejo de errores y otros patrones para la capa de aplicación.
+
+- [x] 5.2 Refactorización de Repositorios y Servicios a Vertical Slice - **Completado 2025-05-30**
+  - Se migraron UserRepository y RoleRepository a la nueva estructura vertical slice.
+  - Se actualizaron las interfaces y la inyección de dependencias para usar los contratos de Identity.
+  - Se eliminó el repositorio genérico antiguo y se dejó constancia de la excepción NotImplementedException en ApplicationDbContext.
+  - Se resolvieron todos los errores de compilación en Infrastructure relacionados con dependencias y referencias obsoletas.
+  - Se validó la compilación limpia de toda la solución.
+
+- [x] 5.3.1 Crear estructura de proyectos de pruebas unitarias:
+    - [x] Crear proyecto `GestMantIA.Core.UnitTests`
+    - [x] Crear proyecto `GestMantIA.Application.UnitTests`
+    - [x] Crear proyecto `GestMantIA.Infrastructure.UnitTests`
+    - [x] Crear proyecto `GestMantIA.API.UnitTests`
+{{ ... }}
+    - [x] Añadir proyectos a la solución.
+    - [x] Referenciar proyectos de origen (ej: `Core.UnitTests` -> `Core`).
+    - [x] Instalar paquetes NuGet esenciales (xUnit, Moq, FluentAssertions).
+  - [x] 5.3.3 Crear estructura de directorios y ficheros de pruebas iniciales (placeholders).
+  - [x] 5.3.4 Desarrollar Pruebas Unitarias para `GestMantIA.Core`: **Completado**
+    - [x] Entidad `ApplicationUser` (y `BaseEntity` indirectamente)
+    - [x] Entidad `UserProfile`
+    - [x] Entidad `ApplicationRole`
+    - [x] Entidad `RefreshToken`
+    - [x] Entidad `ApplicationPermission`
+    - [x] Entidad `SecurityAlert`
+    - [x] Entidad `SecurityLog`
+    - [x] Entidad `SecurityNotification`
+    - [ ] Comandos y Handlers (CQRS)
+    - [ ] Consultas y Handlers (CQRS)
+    - [ ] Servicios de Aplicación (ej: `ApplicationUserServiceTests.cs`)
+    - [ ] Validadores (FluentValidation)
+    - [ ] Mapeos (AutoMapper Profiles)
+  - [ ] 5.3.5 Desarrollar Pruebas Unitarias para `GestMantIA.Application`:
+    - [ ] Comandos y Handlers (CQRS)
+    - [ ] Consultas y Handlers (CQRS)
+    - [ ] Servicios de Aplicación (ej: `ApplicationUserServiceTests.cs`)
+    - [ ] Validadores (FluentValidation)
+    - [ ] Mapeos (AutoMapper Profiles)
+  - [ ] 5.3.6 Desarrollar Pruebas Unitarias para `GestMantIA.Infrastructure`:
+    - [ ] Repositorios (usando mocks para DbContext o InMemory si es apropiado para unit tests)
+    - [ ] Servicios de Infraestructura (ej: `EmailService` con mocks, `TokenService` con mocks)
+  - [ ] 5.3.7 Desarrollar Pruebas Unitarias para `GestMantIA.API`:
+    - [ ] Controladores (lógica de acción, validación de modelo, delegación a servicios de aplicación)
+    - [ ] Middleware (si tienen lógica compleja aislable)
+    - [ ] Filtros
+  - [ ] 5.3.8 Asegurar cobertura de pruebas adecuada y configurar informes de cobertura.
+    - [x] Invocar `AddApplicationServices()` desde `Program.cs` en `GestMantIA.API`.
+  - [ ] 5.2.4 Limpiar `GestMantIA.Infrastructure.Services.UserService`: Eliminar o reducir significativamente la clase original después de la migración completa de su lógica a `ApplicationUserService`.
+  - [ ] 5.2.5 (Opcional/Futuro) Evolucionar hacia Patrón CQRS con MediatR para Casos de Uso de Usuario (según `ARCHITECTURE.md`):
+    - [ ] Definir Comandos (e.g., `CreateUserCommand`, `UpdateUserProfileCommand`) y Consultas (e.g., `GetUserByIdQuery`, `SearchUsersQuery`).
+    - [ ] Implementar Handlers correspondientes en `GestMantIA.Application/Features/UserManagement/Commands` y `GestMantIA.Application/Features/UserManagement/Queries`.
+    - [ ] Refactorizar `UsersController` en la API para usar MediatR para enviar Comandos y Consultas.
+  - [ ] 5.2.6 Escribir pruebas unitarias para los servicios/handlers de la capa de aplicación (e.g., para `ApplicationUserService` o los futuros Handlers de MediatR).
+  - [ ] 5.2.7 Revisar y asegurar la alineación continua con `ARCHITECTURE.md` en cuanto a estructura de carpetas, DTOs, manejo de errores y otros patrones para la capa de aplicación.
+
 ## Fase 6: Módulo de Autenticación (Continuación Frontend)
 
 - [ ] 6.1 Página de login con validación

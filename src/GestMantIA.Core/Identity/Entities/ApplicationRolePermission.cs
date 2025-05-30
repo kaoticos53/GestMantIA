@@ -1,12 +1,9 @@
-using Microsoft.AspNetCore.Identity;
-using System;
-
 namespace GestMantIA.Core.Identity.Entities
 {
     /// <summary>
     /// Clase que representa la relación muchos a muchos entre roles y permisos.
     /// </summary>
-    public class ApplicationRolePermission 
+    public class ApplicationRolePermission
     {
         /// <summary>
         /// Inicializa una nueva instancia de la clase <see cref="ApplicationRolePermission"/>

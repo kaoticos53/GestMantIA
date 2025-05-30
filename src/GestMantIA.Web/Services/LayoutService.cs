@@ -1,6 +1,4 @@
-using System.Threading.Tasks;
 using Blazored.LocalStorage;
-using GestMantIA.Web.Models;
 using GestMantIA.Web.Services.Interfaces;
 
 namespace GestMantIA.Web.Services
@@ -30,7 +28,7 @@ namespace GestMantIA.Web.Services
         {
             // Cargar configuración de diseño del almacenamiento local
             var layoutSettings = await _localStorage.GetItemAsync<LayoutSettings>(LayoutKey);
-            
+
             // Si no hay configuración guardada, usar valores por defecto
             if (layoutSettings == null)
             {
@@ -42,7 +40,7 @@ namespace GestMantIA.Web.Services
                     SecondaryColor = "#2d3436", // Gris oscuro
                     FontFamily = "'Poppins', sans-serif"
                 };
-                
+
                 await _localStorage.SetItemAsync(LayoutKey, layoutSettings);
             }
 
@@ -54,10 +52,10 @@ namespace GestMantIA.Web.Services
         {
             // Obtener la configuración actual
             var layoutSettings = await _localStorage.GetItemAsync<LayoutSettings>(LayoutKey) ?? new LayoutSettings();
-            
+
             // Guardar la configuración actualizada
             await _localStorage.SetItemAsync(LayoutKey, layoutSettings);
-            
+
             // Aplicar la configuración de diseño
             await ApplyLayoutSettings(layoutSettings);
         }
@@ -80,10 +78,10 @@ namespace GestMantIA.Web.Services
             {
                 _currentTitle = $"{title} | GestMantIA";
             }
-            
+
             // Notificar a los suscriptores que el título ha cambiado
             OnTitleChanged?.Invoke();
-            
+
             // Actualizar el título del documento
             await Task.CompletedTask;
         }

@@ -1,12 +1,10 @@
-using System;
-using System.Threading.Tasks;
 using GestMantIA.Core.Identity.Entities;
 using GestMantIA.Core.Identity.Interfaces;
+using GestMantIA.Core.Interfaces;
 using GestMantIA.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using GestMantIA.Core.Interfaces;
 
 namespace GestMantIA.Infrastructure.Services.Security
 {
@@ -53,14 +51,14 @@ namespace GestMantIA.Infrastructure.Services.Security
                     NotificationType = notificationType,
                     RelatedEventId = relatedEventId,
                     IsRead = false,
-                    CreatedAt = DateTimeOffset.UtcNow
+                    CreatedAt = DateTimeOffset.UtcNow.UtcDateTime
                 };
 
                 _context.SecurityNotifications.Add(notification);
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation(
-                    "Notificación de seguridad enviada al usuario {UserId}: {Title}", 
+                    "Notificación de seguridad enviada al usuario {UserId}: {Title}",
                     userId.ToString(), title);
 
                 // Enviar notificación por correo si está habilitado
@@ -91,8 +89,8 @@ namespace GestMantIA.Infrastructure.Services.Security
             catch (Exception ex)
             {
                 _logger.LogError(
-                    ex, 
-                    "Error al enviar notificación de seguridad al usuario {UserId}", 
+                    ex,
+                    "Error al enviar notificación de seguridad al usuario {UserId}",
                     userId.ToString());
                 return false;
             }
@@ -115,18 +113,18 @@ namespace GestMantIA.Infrastructure.Services.Security
                     Severity = severity,
                     RelatedEventId = relatedEventId,
                     IsResolved = false,
-                    CreatedAt = DateTimeOffset.UtcNow
+                    CreatedAt = DateTimeOffset.UtcNow.UtcDateTime
                 };
 
                 _context.SecurityAlerts.Add(alert);
                 await _context.SaveChangesAsync();
 
                 _logger.LogWarning(
-                    "Alerta de seguridad registrada: {Title} - Severidad: {Severity}", 
+                    "Alerta de seguridad registrada: {Title} - Severidad: {Severity}",
                     title, severity);
 
                 // Notificar al equipo de seguridad si la severidad es alta o crítica
-                if (severity >= SecurityAlertSeverity.High && 
+                if (severity >= SecurityAlertSeverity.High &&
                     !string.IsNullOrEmpty(_options.SecurityTeamEmail))
                 {
                     var emailSubject = $"[ALERTA DE SEGURIDAD - {severity}] {title}";
@@ -149,8 +147,8 @@ namespace GestMantIA.Infrastructure.Services.Security
             catch (Exception ex)
             {
                 _logger.LogError(
-                    ex, 
-                    "Error al registrar alerta de seguridad: {Title}", 
+                    ex,
+                    "Error al registrar alerta de seguridad: {Title}",
                     title);
                 return false;
             }
@@ -167,7 +165,7 @@ namespace GestMantIA.Infrastructure.Services.Security
             try
             {
                 var fullSubject = $"[{_options.ApplicationName}] {subject}";
-                
+
                 // Añadir el pie de página estándar
                 var fullHtmlContent = $"""
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -182,18 +180,18 @@ namespace GestMantIA.Infrastructure.Services.Security
                 """;
 
                 var result = await _emailService.SendEmailAsync(email, fullSubject, fullHtmlContent);
-                
+
                 _logger.LogInformation(
-                    "Correo de seguridad enviado a {Email}: {Subject}", 
+                    "Correo de seguridad enviado a {Email}: {Subject}",
                     email, subject);
-                
+
                 return result;
             }
             catch (Exception ex)
             {
                 _logger.LogError(
-                    ex, 
-                    "Error al enviar correo de seguridad a {Email}", 
+                    ex,
+                    "Error al enviar correo de seguridad a {Email}",
                     email);
                 return false;
             }

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GestMantIA.Core.Identity.Results
 {
     /// <summary>
@@ -50,13 +48,13 @@ namespace GestMantIA.Core.Identity.Results
         /// <param name="errors">Lista de errores.</param>
         /// <param name="message">Mensaje descriptivo opcional.</param>
         /// <returns>Instancia de VerifyEmailResult con Succeeded en false.</returns>
-        public static new VerifyEmailResult Failure(IEnumerable<string>? errors, string? message = null)
+        public static VerifyEmailResult Failure(IEnumerable<string>? errors, string? message = null)
         {
             var result = AuthResult.Failure<VerifyEmailResult>(errors, message ?? "Error al verificar el correo electrónico");
             result.EmailVerified = false;
             return result;
         }
-        
+
         // No es necesario el método obsoleto ya que es redundante con el método anterior
         // Se puede llamar directamente al método con parámetros opcionales
     }

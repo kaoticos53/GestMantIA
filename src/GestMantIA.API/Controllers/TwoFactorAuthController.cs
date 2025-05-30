@@ -1,12 +1,8 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using GestMantIA.Shared.Identity.DTOs;
 using GestMantIA.Core.Identity.Interfaces;
 using GestMantIA.Core.Identity.Results;
+using GestMantIA.Shared.Identity.DTOs;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GestMantIA.API.Controllers
 {
@@ -56,7 +52,7 @@ namespace GestMantIA.API.Controllers
                 }
 
                 var result = await _authService.GenerateTwoFactorSetupAsync(userId, userEmail);
-                
+
                 if (!result.Succeeded)
                 {
                     return BadRequest(result);
@@ -96,7 +92,7 @@ namespace GestMantIA.API.Controllers
                 }
 
                 var result = await _authService.EnableTwoFactorAsync(userId, request.Code);
-                
+
                 if (!result.Succeeded)
                 {
                     return BadRequest(result);
@@ -130,7 +126,7 @@ namespace GestMantIA.API.Controllers
                 }
 
                 var result = await _authService.DisableTwoFactorAsync(userId);
-                
+
                 if (!result.Succeeded)
                 {
                     return BadRequest(result);
@@ -171,7 +167,7 @@ namespace GestMantIA.API.Controllers
 
 
                 var isValid = await _authService.VerifyTwoFactorTokenAsync(userId, request.Code);
-                
+
                 if (!isValid)
                 {
                     return BadRequest(new VerifyTwoFactorResult { IsValid = false, Message = "Código de verificación inválido o expirado." });

@@ -1,5 +1,4 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using Blazored.LocalStorage;
 using GestMantIA.Web.Models;
 using GestMantIA.Web.Services.Interfaces;
@@ -36,7 +35,7 @@ namespace GestMantIA.Web.Services
                 await _localStorage.SetItemAsync(_authTokenStorageKey, loginResult.Token);
                 await _localStorage.SetItemAsync(_refreshTokenStorageKey, loginResult.RefreshToken);
                 await _localStorage.SetItemAsync(_userStorageKey, loginResult);
-                
+
                 ((CustomAuthStateProvider)_authStateProvider).MarkUserAsAuthenticated(loginResult.Email);
             }
 
@@ -53,7 +52,7 @@ namespace GestMantIA.Web.Services
                 await _localStorage.SetItemAsync(_authTokenStorageKey, registerResult.Token);
                 await _localStorage.SetItemAsync(_refreshTokenStorageKey, registerResult.RefreshToken);
                 await _localStorage.SetItemAsync(_userStorageKey, registerResult);
-                
+
                 ((CustomAuthStateProvider)_authStateProvider).MarkUserAsAuthenticated(registerResult.Email);
             }
 
@@ -65,7 +64,7 @@ namespace GestMantIA.Web.Services
             await _localStorage.RemoveItemAsync(_authTokenStorageKey);
             await _localStorage.RemoveItemAsync(_refreshTokenStorageKey);
             await _localStorage.RemoveItemAsync(_userStorageKey);
-            
+
             ((CustomAuthStateProvider)_authStateProvider).MarkUserAsLoggedOut();
         }
 

@@ -1,14 +1,7 @@
-using GestMantIA.API.Filters.Swagger;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
 using System.Reflection;
-using System.Collections.Generic; // For OpenApiSecurityScheme
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Any; // For OpenApiString
-using System.Linq; // For Swagger Tag Descriptions
-using Microsoft.AspNetCore.Mvc.Controllers; // For TagDescriptionsDocumentFilter
-using GestMantIA.Infrastructure.Data; // For ApplicationDbContext in HealthChecks
+using Microsoft.OpenApi.Models;
 
 namespace GestMantIA.API.Extensions
 {
@@ -60,9 +53,9 @@ namespace GestMantIA.API.Extensions
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo 
+                options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "GestMantIA API", 
+                    Title = "GestMantIA API",
                     Version = "v1",
                     Description = "API para el sistema de Gestión de Mantenimiento Inteligente Asistido.",
                     TermsOfService = new Uri("https://example.com/terms"),
@@ -85,11 +78,12 @@ namespace GestMantIA.API.Extensions
                     Description = "Encabezado de autorización JWT usando el esquema Bearer. Ejemplo: \"Authorization: Bearer {token}\"",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
+                    Type = SecuritySchemeType.Http, // Usar el tipo Http para JWT Bearer
+                    Scheme = "bearer", // ¡Importante: debe ser en minúsculas!
+                    BearerFormat = "JWT"
                 });
 
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
                         new OpenApiSecurityScheme
@@ -99,13 +93,13 @@ namespace GestMantIA.API.Extensions
                                 Type = ReferenceType.SecurityScheme,
                                 Id = "Bearer"
                             },
-                            Scheme = "oauth2",
+                            Scheme = "bearer", // Debe coincidir con el scheme definido arriba
                             Name = "Bearer",
                             In = ParameterLocation.Header,
                         },
-                        new List<string>()
+                        new string[]{}
                     }
-                });
+                }); // Esto permite que Swagger envíe el JWT automáticamente en los endpoints protegidos
 
                 // Incluir comentarios XML para documentación de Swagger
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

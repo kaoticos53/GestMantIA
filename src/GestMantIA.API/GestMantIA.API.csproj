@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <StaticWebAssetBasePath>_content/$(MSBuildProjectName)</StaticWebAssetBasePath>
+    <EnablePrecompressedStaticWebAssets>false</EnablePrecompressedStaticWebAssets>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +22,6 @@
     <PackageReference Include="Serilog.AspNetCore" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" />
     
     <!-- Configuración de publicación -->
     <Content Remove="appsettings.Development.json" />
@@ -31,6 +32,15 @@
     <ProjectReference Include="..\GestMantIA.Core\GestMantIA.Core.csproj" />
     <ProjectReference Include="..\GestMantIA.Infrastructure\GestMantIA.Infrastructure.csproj" />
     <ProjectReference Include="..\GestMantIA.Shared\GestMantIA.Shared.csproj" />
+    <ProjectReference Include="..\GestMantIA.Application\GestMantIA.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\SwaggerDark.css">
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,5 @@
-using System.Threading.Tasks;
-using GestMantIA.Shared.Identity.DTOs; 
-using GestMantIA.Shared.Identity.DTOs.Requests; 
 using GestMantIA.Core.Identity.Results;
+using GestMantIA.Shared.Identity.DTOs;
 
 namespace GestMantIA.Core.Identity.Interfaces
 {

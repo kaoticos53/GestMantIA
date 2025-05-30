@@ -10,7 +10,7 @@ namespace GestMantIA.Infrastructure.Data.Configurations.Security
         {
             builder.ToTable("SecurityNotifications", "security");
             // La clave primaria Id se hereda de BaseEntity.
-            
+
             builder.HasIndex(e => e.UserId);
             builder.HasIndex(e => e.NotificationType);
             builder.HasIndex(e => e.IsRead);

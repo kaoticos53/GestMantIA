@@ -1,8 +1,7 @@
+using System.Security.Claims;
 using GestMantIA.Core.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 // Temporalmente en este namespace hasta resolver problemas de creación de carpetas
 namespace GestMantIA.Infrastructure.Identity.Factories
@@ -20,7 +19,7 @@ namespace GestMantIA.Infrastructure.Identity.Factories
         protected override async Task<ClaimsIdentity> GenerateClaimsAsync(ApplicationUser user)
         {
             var identity = await base.GenerateClaimsAsync(user);
-            
+
             // Añadir claims personalizados basados en propiedades de ApplicationUser
             if (!string.IsNullOrWhiteSpace(user.FirstName))
             {
@@ -31,10 +30,10 @@ namespace GestMantIA.Infrastructure.Identity.Factories
             {
                 identity.AddClaim(new Claim(ClaimTypes.Surname, user.LastName));
             }
-            
+
             if (!string.IsNullOrWhiteSpace(user.FullName))
             {
-                 identity.AddClaim(new Claim("full_name", user.FullName));
+                identity.AddClaim(new Claim("full_name", user.FullName));
             }
 
             // El ClaimTypes.NameIdentifier (user.Id) ya es añadido por la clase base.

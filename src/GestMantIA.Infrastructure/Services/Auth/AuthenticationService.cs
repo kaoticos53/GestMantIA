@@ -1,19 +1,14 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using GestMantIA.Shared.Identity.DTOs;
 using GestMantIA.Core.Identity.Entities;
 using GestMantIA.Core.Identity.Interfaces;
 using GestMantIA.Core.Identity.Results;
+using GestMantIA.Core.Interfaces;
 using GestMantIA.Infrastructure.Data;
+using GestMantIA.Shared.Identity.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using GestMantIA.Core.Interfaces;
 
 namespace GestMantIA.Infrastructure.Services.Auth
 {
@@ -61,7 +56,7 @@ namespace GestMantIA.Infrastructure.Services.Auth
 
             // Buscar al usuario por nombre de usuario o correo electrónico
             var user = await _userManager.Users
-                .FirstOrDefaultAsync(u => u.NormalizedUserName == request.UsernameOrEmail.ToUpper() || 
+                .FirstOrDefaultAsync(u => u.NormalizedUserName == request.UsernameOrEmail.ToUpper() ||
                                        u.NormalizedEmail == request.UsernameOrEmail.ToUpper());
 
             if (user == null)
@@ -232,7 +227,7 @@ namespace GestMantIA.Infrastructure.Services.Auth
             try
             {
                 var user = await _userManager.FindByEmailAsync(request.Email);
-                
+
                 // Siempre devolvemos éxito para no revelar si el correo existe o no
                 if (user == null)
                 {
@@ -242,18 +237,18 @@ namespace GestMantIA.Infrastructure.Services.Auth
 
                 // Generar token de restablecimiento
                 var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-                
+
                 // Codificar el token para URL
                 var encodedToken = Uri.EscapeDataString($"{user.Id}|{resetToken}");
-                
+
                 // Crear URL de restablecimiento
                 var resetUrl = $"{origin}/reset-password?token={encodedToken}";
-                
+
                 // Enviar correo electrónico con el enlace de restablecimiento
                 await SendPasswordResetEmailAsync(user, resetUrl);
 
                 _logger.LogInformation("Se ha enviado un correo de restablecimiento a {Email}", request.Email);
-                
+
                 return OperationResult.CreateSuccess("Si el correo electrónico existe en nuestro sistema, se ha enviado un enlace para restablecer la contraseña.");
             }
             catch (Exception ex)
@@ -312,7 +307,7 @@ namespace GestMantIA.Infrastructure.Services.Auth
 
             // Generar token de verificación de correo
             var verificationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            
+
             // Enviar correo de verificación (implementación simulada)
             await SendVerificationEmail(user, verificationToken, origin);
 
@@ -368,12 +363,12 @@ namespace GestMantIA.Infrastructure.Services.Auth
         private async Task<RefreshToken> RotateRefreshToken(RefreshToken refreshToken, string ipAddress)
         {
             var newRefreshToken = await _tokenService.GenerateRefreshTokenAsync(refreshToken.User, ipAddress);
-            
+
             // Revocar el token actual
             await RevokeRefreshToken(
-                refreshToken, 
-                ipAddress, 
-                "Reemplazado por nuevo token", 
+                refreshToken,
+                ipAddress,
+                "Reemplazado por nuevo token",
                 newRefreshToken.Token);
 
             return newRefreshToken;
@@ -403,12 +398,12 @@ namespace GestMantIA.Infrastructure.Services.Auth
         {
             if (token == null)
                 throw new ArgumentNullException(nameof(token));
-                
+
             token.Revoked = DateTime.UtcNow;
             token.RevokedByIp = ipAddress ?? throw new ArgumentNullException(nameof(ipAddress));
             token.ReasonRevoked = reason;
             token.ReplacedByToken = replacedByToken ?? string.Empty;
-            
+
             await _context.SaveChangesAsync();
         }
 
@@ -440,9 +435,9 @@ namespace GestMantIA.Infrastructure.Services.Auth
                 // En una implementación real, aquí se enviaría un correo electrónico
                 // con un enlace que incluya el token de verificación
                 var verificationUrl = $"{origin.TrimEnd('/')}/api/auth/verify-email?token={Uri.EscapeDataString($"{user.Id}|{verificationToken}")}";
-                
+
                 _logger.LogInformation("URL de verificación para {Email}: {VerificationUrl}", user.Email, verificationUrl);
-                
+
                 // Implementación simulada del envío de correo
                 var emailSent = await _emailService.SendEmailAsync(
                     to: user.Email,
@@ -496,7 +491,7 @@ namespace GestMantIA.Infrastructure.Services.Auth
 
                 // Restablecer la contraseña
                 var result = await _userManager.ResetPasswordAsync(user, resetToken, request.NewPassword);
-                
+
                 if (!result.Succeeded)
                 {
                     var errors = result.Errors.Select(e => e.Description).ToList();
@@ -505,10 +500,10 @@ namespace GestMantIA.Infrastructure.Services.Auth
                 }
 
                 _logger.LogInformation("Contraseña restablecida exitosamente para el usuario: {UserId}", user.Id);
-                
+
                 // Opcional: Enviar notificación de cambio de contraseña
                 await SendPasswordChangedNotificationAsync(user);
-                
+
                 return OperationResult.CreateSuccess("La contraseña se ha restablecido correctamente.");
             }
             catch (Exception ex)
@@ -551,11 +546,11 @@ namespace GestMantIA.Infrastructure.Services.Auth
                 }
 
                 _logger.LogInformation("Enviando correo de restablecimiento de contraseña a: {Email}", user.Email);
-                
+
                 // En una implementación real, aquí se enviaría un correo electrónico
                 // con el enlace de restablecimiento de contraseña
                 _logger.LogInformation("URL de restablecimiento de contraseña para {Email}: {ResetUrl}", user.Email, resetUrl);
-                
+
                 // Implementación simulada del envío de correo
                 var emailSent = await _emailService.SendEmailAsync(
                     to: user.Email,
@@ -592,7 +587,7 @@ namespace GestMantIA.Infrastructure.Services.Auth
                 // En una implementación real, aquí se enviaría una notificación
                 // informando que la contraseña ha sido cambiada
                 _logger.LogInformation("Notificación de cambio de contraseña para {Email}", user.Email);
-                
+
                 // Implementación simulada del envío de notificación
                 var emailSent = await _emailService.SendEmailAsync(
                     to: user.Email,
@@ -625,7 +620,7 @@ namespace GestMantIA.Infrastructure.Services.Auth
                 // Generar una clave secreta
                 await _userManager.ResetAuthenticatorKeyAsync(user);
                 var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
-                
+
                 if (string.IsNullOrEmpty(unformattedKey))
                 {
                     _logger.LogError("No se pudo generar la clave de autenticación para el usuario {UserId}", userId);
@@ -636,7 +631,7 @@ namespace GestMantIA.Infrastructure.Services.Auth
 
                 // Generar código QR
                 var authenticatorUri = GenerateQrCode(email, unformattedKey);
-                
+
                 return new TwoFactorSetupResult(sharedKey, authenticatorUri);
             }
             catch (Exception ex)
@@ -657,8 +652,8 @@ namespace GestMantIA.Infrastructure.Services.Auth
 
                 // Verificar el código
                 var is2faTokenValid = await _userManager.VerifyTwoFactorTokenAsync(
-                    user, 
-                    _userManager.Options.Tokens.AuthenticatorTokenProvider, 
+                    user,
+                    _userManager.Options.Tokens.AuthenticatorTokenProvider,
                     code);
 
                 if (!is2faTokenValid)
@@ -702,7 +697,7 @@ namespace GestMantIA.Infrastructure.Services.Auth
 
                 // Limpiar la clave de autenticación
                 await _userManager.ResetAuthenticatorKeyAsync(user);
-                
+
                 _logger.LogInformation("Autenticación de dos factores deshabilitada para el usuario {UserId}", userId);
                 return OperationResult.CreateSuccess("Autenticación de dos factores deshabilitada correctamente.");
             }
@@ -723,8 +718,8 @@ namespace GestMantIA.Infrastructure.Services.Auth
                     return false;
 
                 return await _userManager.VerifyTwoFactorTokenAsync(
-                    user, 
-                    _userManager.Options.Tokens.AuthenticatorTokenProvider, 
+                    user,
+                    _userManager.Options.Tokens.AuthenticatorTokenProvider,
                     code);
             }
             catch (Exception ex)
@@ -741,7 +736,7 @@ namespace GestMantIA.Infrastructure.Services.Auth
                 var encodedIssuer = Uri.EscapeDataString("GestMantIA");
                 var encodedAccount = Uri.EscapeDataString(email);
                 var encodedSecret = Uri.EscapeDataString(unformattedKey);
-                
+
                 return string.Format(
                     AuthenticatorUriFormat,
                     encodedIssuer,
@@ -759,7 +754,7 @@ namespace GestMantIA.Infrastructure.Services.Auth
         {
             if (string.IsNullOrEmpty(unformattedKey))
                 return string.Empty;
-                
+
             var result = new StringBuilder();
             int currentPosition = 0;
             while (currentPosition + 4 < unformattedKey.Length)
@@ -767,7 +762,7 @@ namespace GestMantIA.Infrastructure.Services.Auth
                 result.Append(unformattedKey.Substring(currentPosition, 4)).Append(" ");
                 currentPosition += 4;
             }
-            
+
             if (currentPosition < unformattedKey.Length)
             {
                 result.Append(unformattedKey.Substring(currentPosition));

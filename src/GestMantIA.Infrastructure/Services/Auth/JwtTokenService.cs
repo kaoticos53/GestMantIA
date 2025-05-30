@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using GestMantIA.Core.Identity.Entities;
 using GestMantIA.Core.Identity.Interfaces;
 using GestMantIA.Infrastructure.Data;
@@ -57,22 +54,25 @@ namespace GestMantIA.Infrastructure.Services.Auth
             // Si se desea control explícito:
             // claims.Add(new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64));
 
+            // Agregar los roles como claims individuales para compatibilidad con ASP.NET Core
+            // Importante: No agregar los roles como un array, sino como múltiples claims "role" (uno por cada rol)
+            //var userRoles = await _userManager.GetRolesAsync(user);
+            //foreach (var role in userRoles)
+            //{
+            //    claims.Add(new Claim(ClaimTypes.Role, role)); // Cada rol se agrega como claim independiente
+            //}
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims), // Usar los claims obtenidos y los específicos del JWT
                 Expires = DateTime.UtcNow.AddMinutes(GetTokenExpirationMinutes()),
                 SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(key), 
+                    new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature),
                 Issuer = GetIssuer(),
                 Audience = GetAudience()
             };
 
-            // Agregar roles como claims
-            // Nota: Esto es un ejemplo básico. En una aplicación real, deberías cargar los roles del usuario.
-            // var userRoles = await _userManager.GetRolesAsync(user);
-            // foreach (var role in userRoles)
-            // {
             //     tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, role));
             // }
 
@@ -96,7 +96,7 @@ namespace GestMantIA.Infrastructure.Services.Auth
                 UserId = user.Id,
                 Token = GenerateRefreshToken(),
                 Expires = DateTime.UtcNow.AddDays(GetRefreshTokenExpirationDays()),
-                Created = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow,
                 CreatedByIp = ipAddress
             };
 
@@ -179,12 +179,12 @@ namespace GestMantIA.Infrastructure.Services.Auth
 
             var claims = GetClaimsFromToken(token);
             var userIdClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            
+
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
                 return null;
             }
-            
+
             return userId;
         }
 

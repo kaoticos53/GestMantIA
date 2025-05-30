@@ -1,11 +1,11 @@
-using System;
+using GestMantIA.Core.Interfaces;
 
 namespace GestMantIA.Core.Identity.Entities
 {
     /// <summary>
     /// Clase base para todas las entidades del dominio.
     /// </summary>
-    public abstract class BaseEntity
+    public abstract class BaseEntity : IAuditableEntity
     {
         /// <summary>
         /// Identificador único de la entidad.
@@ -22,10 +22,20 @@ namespace GestMantIA.Core.Identity.Entities
         /// </summary>
         public DateTime? UpdatedAt { get; set; }
 
-        
+
         /// <summary>
         /// Indica si el registro está marcado como eliminado (borrado lógico).
         /// </summary>
         public bool IsDeleted { get; set; } = false;
+
+        /// <summary>
+        /// Fecha en que se marcó como eliminado.
+        /// </summary>
+        public DateTime? DeletedAt { get; set; }
+
+        /// <summary>
+        /// Identificador del usuario que marcó como eliminado.
+        /// </summary>
+        public Guid? DeletedBy { get; set; }
     }
 }

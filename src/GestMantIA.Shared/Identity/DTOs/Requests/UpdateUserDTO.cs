@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace GestMantIA.Shared.Identity.DTOs.Requests

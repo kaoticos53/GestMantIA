@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GestMantIA.Core.Identity.Results
 {
     /// <summary>
@@ -50,7 +48,7 @@ namespace GestMantIA.Core.Identity.Results
         /// <param name="errors">Lista de errores.</param>
         /// <param name="message">Mensaje descriptivo opcional.</param>
         /// <returns>Instancia de RegisterResult con Succeeded en false.</returns>
-        public static new RegisterResult Failure(IEnumerable<string>? errors, string? message = null)
+        public static RegisterResult Failure(IEnumerable<string>? errors, string? message = null)
         {
             return AuthResult.Failure<RegisterResult>(errors, message ?? "Error en el registro");
         }

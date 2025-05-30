@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
@@ -57,11 +55,11 @@ namespace GestMantIA.Core.Identity.Entities
         /// Fecha y hora de la última modificación del rol.
         /// </summary>
         public DateTime? UpdatedAt { get; set; }
-        
+
         /// <summary>
         /// Normaliza el nombre del rol (a mayúsculas).
         /// </summary>
-        public new void NormalizeName()
+        public void NormalizeName()
         {
             base.NormalizedName = Name?.ToUpperInvariant() ?? string.Empty;
         }

@@ -1,8 +1,7 @@
+using GestMantIA.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using GestMantIA.Infrastructure.Data;
-using System.Threading.Tasks;
 
 namespace GestMantIA.API.Controllers
 {
@@ -25,7 +24,7 @@ namespace GestMantIA.API.Controllers
             {
                 // Verificar si la base de datos puede conectarse
                 var canConnect = await _context.Database.CanConnectAsync();
-                
+
                 if (!canConnect)
                 {
                     return StatusCode(500, new { message = "No se pudo conectar a la base de datos." });
@@ -36,13 +35,13 @@ namespace GestMantIA.API.Controllers
                 var appliedMigrations = await _context.Database.GetAppliedMigrationsAsync();
                 var currentMigration = await _context.Database.GetAppliedMigrationsAsync();
 
-                return Ok(new 
-                { 
+                return Ok(new
+                {
                     message = "Conexión exitosa a la base de datos.",
                     database = _context.Database.GetDbConnection().Database,
                     dataSource = _context.Database.GetDbConnection().DataSource,
-                    migrations = new 
-                    { 
+                    migrations = new
+                    {
                         pending = pendingMigrations,
                         applied = appliedMigrations,
                         current = currentMigration

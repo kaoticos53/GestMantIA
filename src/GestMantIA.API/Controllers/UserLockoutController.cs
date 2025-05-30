@@ -1,10 +1,7 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using GestMantIA.Shared.Identity.DTOs;
 using GestMantIA.Core.Identity.Interfaces;
+using GestMantIA.Shared.Identity.DTOs;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GestMantIA.API.Controllers
 {
@@ -48,8 +45,8 @@ namespace GestMantIA.API.Controllers
         {
             try
             {
-                TimeSpan? duration = durationMinutes.HasValue 
-                    ? TimeSpan.FromMinutes(durationMinutes.Value) 
+                TimeSpan? duration = durationMinutes.HasValue
+                    ? TimeSpan.FromMinutes(durationMinutes.Value)
                     : (TimeSpan?)null;
 
                 var result = await _userService.LockUserAsync(userId, duration, reason);
@@ -58,7 +55,7 @@ namespace GestMantIA.API.Controllers
                     return NotFound(new { Message = $"No se pudo bloquear al usuario con ID: {userId}" });
                 }
 
-                var message = duration.HasValue 
+                var message = duration.HasValue
                     ? $"Usuario bloqueado por {duration.Value.TotalMinutes} minutos."
                     : "Usuario bloqueado indefinidamente.";
 

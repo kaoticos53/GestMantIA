@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -69,24 +68,24 @@ namespace GestMantIA.Core.Identity.Entities
         public const string LoginFailed = "LoginFailed";
         public const string Logout = "Logout";
         public const string LockedOut = "LockedOut";
-        
+
         // Contraseñas
         public const string PasswordChanged = "PasswordChanged";
         public const string PasswordResetRequested = "PasswordResetRequested";
         public const string PasswordReset = "PasswordReset";
-        
+
         // 2FA
         public const string TwoFactorEnabled = "TwoFactorEnabled";
         public const string TwoFactorDisabled = "TwoFactorDisabled";
         public const string TwoFactorLoginSucceeded = "TwoFactorLoginSucceeded";
         public const string TwoFactorLoginFailed = "TwoFactorLoginFailed";
-        
+
         // Cuentas
         public const string AccountLocked = "AccountLocked";
         public const string AccountUnlocked = "AccountUnlocked";
         public const string EmailChanged = "EmailChanged";
         public const string PhoneNumberChanged = "PhoneNumberChanged";
-        
+
         // Seguridad
         public const string SuspiciousActivity = "SuspiciousActivity";
         public const string NewDeviceLogin = "NewDeviceLogin";

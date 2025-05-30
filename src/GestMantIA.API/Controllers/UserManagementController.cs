@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using GestMantIA.Core.Identity.Interfaces;
+using GestMantIA.Core.Shared;
 using GestMantIA.Shared.Identity.DTOs.Requests;
 using GestMantIA.Shared.Identity.DTOs.Responses;
-using GestMantIA.Core.Shared;
-using GestMantIA.Core.Identity.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GestMantIA.API.Controllers
 {

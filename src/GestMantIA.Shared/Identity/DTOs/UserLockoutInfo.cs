@@ -1,5 +1,3 @@
-using System;
-
 namespace GestMantIA.Shared.Identity.DTOs
 {
     /// <summary>
@@ -45,8 +43,8 @@ namespace GestMantIA.Shared.Identity.DTOs
         /// <summary>
         /// Tiempo restante de bloqueo (si es temporal).
         /// </summary>
-        public TimeSpan? TimeRemaining => IsLockedOut && LockoutEnd.HasValue 
-            ? LockoutEnd.Value - DateTime.UtcNow 
+        public TimeSpan? TimeRemaining => IsLockedOut && LockoutEnd.HasValue
+            ? LockoutEnd.Value - DateTime.UtcNow
             : null;
     }
 }

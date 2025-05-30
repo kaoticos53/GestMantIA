@@ -1,5 +1,3 @@
-using System;
-
 namespace GestMantIA.Shared.Identity.DTOs.Responses
 {
     /// <summary>

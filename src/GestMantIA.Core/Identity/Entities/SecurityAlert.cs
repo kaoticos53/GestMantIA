@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GestMantIA.Core.Identity.Interfaces;
@@ -53,7 +52,7 @@ namespace GestMantIA.Core.Identity.Entities
         /// Fecha y hora en que se resolvió la alerta (si aplica).
         /// </summary>
         public DateTimeOffset? ResolvedAt { get; set; }
-        
+
         /// <summary>
         /// Comentarios adicionales sobre la resolución de la alerta.
         /// </summary>

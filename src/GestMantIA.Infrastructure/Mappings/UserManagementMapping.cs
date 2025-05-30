@@ -1,7 +1,4 @@
-using System;
 using AutoMapper;
-using GestMantIA.Shared.Identity.DTOs.Requests;
-using GestMantIA.Shared.Identity.DTOs.Responses;
 using GestMantIA.Core.Identity.Entities;
 
 namespace GestMantIA.Infrastructure.Mappings

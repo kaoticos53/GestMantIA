@@ -29,12 +29,12 @@ namespace GestMantIA.Infrastructure.Data.Configurations.Identity
                 .HasForeignKey(ur => ur.RoleId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
-                
+
             // Configuración de tipos de columna
             builder.Property(ur => ur.UserId)
                 .HasColumnType("uuid")
                 .IsRequired();
-                
+
             builder.Property(ur => ur.RoleId)
                 .HasColumnType("uuid")
                 .IsRequired();

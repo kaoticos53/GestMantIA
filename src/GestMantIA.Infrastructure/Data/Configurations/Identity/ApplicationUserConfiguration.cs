@@ -41,9 +41,14 @@ namespace GestMantIA.Infrastructure.Data.Configurations.Identity
             builder.Property(u => u.FullName)
                 .HasMaxLength(100);
 
-            // Configuración de índices
-            builder.HasIndex(u => u.Email);
-            builder.HasIndex(u => u.PhoneNumber);
+            // Configuración de índices adicionales (los de UserName y Email ya están definidos como únicos junto a sus propiedades)
+            builder.HasIndex(u => u.NormalizedUserName)
+                .IsUnique();
+
+            builder.HasIndex(u => u.NormalizedEmail)
+                .IsUnique();
+
+            builder.HasIndex(u => u.PhoneNumber); // Índice para búsquedas por número de teléfono
 
             // Configuración de eliminación en cascada
             builder.HasMany(u => u.UserRoles)

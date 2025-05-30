@@ -1,9 +1,4 @@
 using GestMantIA.API.Middleware;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting; // For IWebHostEnvironment and IsDevelopment()
-using Microsoft.AspNetCore.Diagnostics.HealthChecks; // For HealthCheckOptions
-using Microsoft.AspNetCore.Http; // For PathString
 
 namespace GestMantIA.API.Extensions
 {
@@ -16,7 +11,7 @@ namespace GestMantIA.API.Extensions
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => 
+                app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "GestMantIA API v1");
                     c.RoutePrefix = string.Empty; // Servir Swagger UI en la raíz de la API
@@ -45,26 +40,8 @@ namespace GestMantIA.API.Extensions
             app.UseAuthorization();
 
             app.MapControllers();
-            
-            app.MapHealthChecks("/health", new HealthCheckOptions
-            {
-                Predicate = _ => true, // Incluir todos los health checks
-                ResponseWriter = async (context, report) =>
-                {
-                    var result = System.Text.Json.JsonSerializer.Serialize(
-                        new { 
-                            status = report.Status.ToString(), 
-                            checks = report.Entries.Select(e => new { 
-                                name = e.Key, 
-                                status = e.Value.Status.ToString(), 
-                                description = e.Value.Description 
-                            }),
-                            totalDuration = report.TotalDuration.TotalMilliseconds
-                        });
-                    context.Response.ContentType = "application/json";
-                    await context.Response.WriteAsync(result);
-                }
-            });
+
+            app.MapHealthChecks("/health");
 
             return app;
         }

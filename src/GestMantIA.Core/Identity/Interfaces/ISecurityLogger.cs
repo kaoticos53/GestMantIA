@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using GestMantIA.Core.Identity.Entities;
 
 namespace GestMantIA.Core.Identity.Interfaces

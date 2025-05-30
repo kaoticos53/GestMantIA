@@ -1,9 +1,5 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Net;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace GestMantIA.API.Middleware
 {
@@ -37,7 +33,7 @@ namespace GestMantIA.API.Middleware
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
             // Considerar no exponer exception.Message directamente en producción por seguridad.
-            var responsePayload = new 
+            var responsePayload = new
             {
                 StatusCode = context.Response.StatusCode,
                 Message = "Ocurrió un error interno en el servidor. Por favor, intente más tarde.",
