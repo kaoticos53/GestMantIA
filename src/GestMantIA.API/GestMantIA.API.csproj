@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <EnableStaticWebAssetsCompression>false</EnableStaticWebAssetsCompression>
+    <EnableDefaultStaticWebAssetItems>false</EnableDefaultStaticWebAssetItems>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
@@ -11,6 +13,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="App.Metrics" />
+    <PackageReference Include="App.Metrics.AspNetCore" />
+    <PackageReference Include="App.Metrics.Formatters.InfluxDB" />
+    <PackageReference Include="App.Metrics.Formatters.Json" />
+    <PackageReference Include="App.Metrics.Formatters.Prometheus" />
+    <PackageReference Include="App.Metrics.Reporting.InfluxDB" />
+    <PackageReference Include="InfluxDB.Client" />
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
@@ -36,11 +45,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="wwwroot\SwaggerDark.css">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
+    <Content Remove="wwwroot\SwaggerMaterial.css" />
   </ItemGroup>
 
+  <Target Name="GenerateSwaggerFile" AfterTargets="Build">
+    <PropertyGroup>
+      <SwaggerJsonPath>$(OutputPath)swagger\v1\swagger.json</SwaggerJsonPath>
+    </PropertyGroup>
+    <MakeDir Directories="$(OutputPath)swagger\v1" Condition="!Exists('$(OutputPath)swagger\v1')" />
+    <Message Text="GenerateSwaggerFile: ProjectDir = $(ProjectDir)" Importance="high" />
+    <Message Text="GenerateSwaggerFile: TargetPath = $(TargetPath)" Importance="high" />
+    <Message Text="GenerateSwaggerFile: OutputPath for swagger.json = $(ProjectDir)swagger.json" Importance="high" />
+    <Exec Command="dotnet swagger tofile --output &quot;$(ProjectDir)swagger.json&quot; &quot;$(TargetPath)&quot; v1" WorkingDirectory="$(ProjectDir)" />
+    <Message Text="GenerateSwaggerFile: Intentando ejecutar comando swagger..." Importance="high" />
+    <Message Text="Archivo Swagger generado en: $(SwaggerJsonPath)" Importance="high" />
+  </Target>
 </Project>

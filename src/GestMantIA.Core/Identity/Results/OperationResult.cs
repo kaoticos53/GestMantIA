@@ -52,7 +52,12 @@ namespace GestMantIA.Core.Identity.Results
                 Succeeded = false,
                 Message = message ?? "La operación ha fallado."
             };
-            result._errors.Add(message);
+            
+            if (message != null)
+            {
+                result._errors.Add(message);
+            }
+            
             return result;
         }
 

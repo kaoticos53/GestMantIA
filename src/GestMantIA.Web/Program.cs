@@ -10,12 +10,15 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
 // using Microsoft.AspNetCore.Components.WebAssembly.Authentication; // Comentado si no se usa directamente o si CustomAuthStateProvider lo maneja todo
 using MudBlazor.Services;
+using Microsoft.Extensions.DependencyInjection;
+using GestMantIA.Web.HttpClients;
+using GestMantIA.Core.Identity.Interfaces;
+using GestMantIA.Application.Features.UserManagement.Services;
 // using GestMantIA.Web.Models; // Si no se usa directamente aquí
 // using GestMantIA.Core.Identity.Interfaces; // Se eliminará si no hay dependencias directas válidas aquí
 // using GestMantIA.Infrastructure.Services; // Eliminado
 // using GestMantIA.Infrastructure.Services.Auth; // Eliminado
 // using GestMantIA.Infrastructure; // Eliminado
-// using GestMantIA.Core.Identity.Services; // Eliminado
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -44,11 +47,35 @@ builder.Services.AddMudServices(config =>
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 
-// Configuración de HttpClient
-builder.Services.AddScoped(sp => new HttpClient
+// Registrar servicios de la aplicación
+builder.Services.AddScoped<GestMantIA.Web.Services.Interfaces.IUserService, GestMantIA.Web.Services.UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+
+// Configuración del cliente HTTP con el handler de autenticación
+builder.Services.AddHttpClient("API", client =>
 {
-    BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
+    var baseAddress = builder.Configuration["ApiBaseAddress"] ?? builder.HostEnvironment.BaseAddress;
+    if (!baseAddress.EndsWith("/"))
+    {
+        baseAddress += "/";
+    }
+    client.BaseAddress = new Uri(baseAddress);
+    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+})
+.AddHttpMessageHandler<GestMantIA.Web.HttpClients.AuthHeaderHandler>();
+
+// Registrar el DelegatingHandler para la autenticación
+builder.Services.AddScoped<GestMantIA.Web.HttpClients.AuthHeaderHandler>();
+
+// Configuración del cliente de API generado por OpenAPI
+builder.Services.AddScoped<IGestMantIAApiClient>(sp =>
+{
+    var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("API");
+    return new GestMantIAApiClient(httpClient.BaseAddress.ToString(), httpClient);
 });
+
+// Configuración de HttpClient para la API (para inyección directa)
+builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("API"));
 
 // Configuración de servicios personalizados
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -62,7 +89,7 @@ builder.Services.AddBlazoredLocalStorage(config =>
 {
     config.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
     config.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
-    config.JsonSerializerOptions.IgnoreNullValues = false;
+    config.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.Never;
     config.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     config.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     config.JsonSerializerOptions.ReadCommentHandling = JsonCommentHandling.Skip;

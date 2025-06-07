@@ -35,6 +35,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xNdWRGb3JtR3Jvd1dpZHRoLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Components/Shared/ConfirmationDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTaGFyZWRcQ29uZmlybWF0aW9uRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Components/Shared/MinimalDialogTest.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTaGFyZWRcTWluaW1hbERpYWxvZ1Rlc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/source/Repos/GestMantIA/src/GestMantIA.Web/Components/ThemeToggle.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xUaGVtZVRvZ2dsZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -45,6 +53,26 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/source/Repos/GestMantIA/src/GestMantIA.Web/Layout/RedirectToLogin.razor]
 build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XFJlZGlyZWN0VG9Mb2dpbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Pages/Account/ForgotPasswordPage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWNjb3VudFxGb3Jnb3RQYXNzd29yZFBhZ2UucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Pages/Account/ResetPasswordPage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWNjb3VudFxSZXNldFBhc3N3b3JkUGFnZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Pages/Admin/Usuarios/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVXN1YXJpb3NcQ3JlYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Pages/Admin/Usuarios/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVXN1YXJpb3NcRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Pages/Admin/Usuarios/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVXN1YXJpb3NcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/source/Repos/GestMantIA/src/GestMantIA.Web/Pages/Authentication.razor]
@@ -63,12 +91,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291bnRlci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Pages/DashboardPage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFzaGJvYXJkUGFnZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/source/Repos/GestMantIA/src/GestMantIA.Web/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/source/Repos/GestMantIA/src/GestMantIA.Web/Pages/Weather.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV2VhdGhlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/source/Repos/GestMantIA/src/GestMantIA.Web/Shared/RedirectToLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFJlZGlyZWN0VG9Mb2dpbi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/source/Repos/GestMantIA/src/GestMantIA.Web/_Imports.razor]

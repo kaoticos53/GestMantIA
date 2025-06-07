@@ -11,7 +11,7 @@ namespace GestMantIA.Infrastructure.Features.UserManagement.Repositories
         }
 
         // Ejemplo de implementación de un método específico si se añadiera a IUserProfileRepository:
-        // public async Task<UserProfile?> GetByUserIdAsync(string userId)
+        // public async Task<UserProfile?> GetByUserIdAsync(Guid userId)
         // {
         //     return await _dbContext.Set<UserProfile>()
         //                            .FirstOrDefaultAsync(up => up.UserId == userId);

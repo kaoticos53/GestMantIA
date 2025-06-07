@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using GestMantIA.Core.Identity.Entities;
 using GestMantIA.Infrastructure.Data; // For ApplicationDbContext
@@ -68,7 +69,74 @@ namespace GestMantIA.API.Extensions
                     ValidAudience = audience,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
                     ClockSkew = TimeSpan.Zero,
-                    RoleClaimType = "role", // Usar el claim plano 'role' para autorización de roles con Swagger y JWT
+                    NameClaimType = ClaimTypes.Name,
+                    RoleClaimType = ClaimTypes.Role // Usar ClaimTypes.Role para compatibilidad con [Authorize(Roles = "...")]
+                };
+
+                // Manejador de eventos para depuración
+                jwtOptions.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        // Verificar los claims del token
+                        var identity = context.Principal?.Identity as ClaimsIdentity;
+                        if (identity != null)
+                        {
+                            // Agregar claims de roles adicionales si es necesario
+                            var roleClaims = identity.FindAll(ClaimTypes.Role).Concat(
+                                identity.FindAll("role")).DistinctBy(c => c.Value);
+                            
+                            // Eliminar claims duplicados
+                            identity.RemoveClaim(identity.FindFirst(ClaimTypes.Role));
+                            identity.RemoveClaim(identity.FindFirst("role"));
+                            
+                            // Agregar claims de roles únicos
+                            foreach (var claim in roleClaims)
+                            {
+                                identity.AddClaim(new Claim(ClaimTypes.Role, claim.Value));
+                            }
+                        }
+                        return Task.CompletedTask;
+                    },
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Append("Token-Expired", "true");
+                        }
+                        return Task.CompletedTask;
+                    },
+                    OnChallenge = context =>
+                    {
+                        // Skip the default logic.
+                        context.HandleResponse();
+                        if (context.AuthenticateFailure != null)
+                        {
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.Response.ContentType = "application/json";
+                            var authFailureResult = System.Text.Json.JsonSerializer.Serialize(new
+                            {
+                                error = "No autorizado. El token no es válido o ha expirado.",
+                                tokenExpired = context.AuthenticateFailure is SecurityTokenExpiredException
+                            });
+                            return context.Response.WriteAsync(authFailureResult);
+                        }
+                        else if (!context.Response.HasStarted)
+                        {
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.Response.ContentType = "application/json";
+                            var defaultChallengeResult = System.Text.Json.JsonSerializer.Serialize(new { error = "No autorizado. Se requiere autenticación." });
+                            return context.Response.WriteAsync(defaultChallengeResult);
+                        }
+                        return Task.CompletedTask;
+                    },
+                    OnForbidden = context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                        context.Response.ContentType = "application/json";
+                        var result = System.Text.Json.JsonSerializer.Serialize(new { error = "No tiene permiso para acceder a este recurso." });
+                        return context.Response.WriteAsync(result);
+                    }
                 };
 
                 jwtOptions.Events = new JwtBearerEvents

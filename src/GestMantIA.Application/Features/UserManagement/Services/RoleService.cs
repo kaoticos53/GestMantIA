@@ -37,12 +37,12 @@ namespace GestMantIA.Application.Features.UserManagement.Services
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<RoleDTO>> GetAllRolesAsync()
+        public async Task<IEnumerable<RoleDto>> GetAllRolesAsync()
         {
             try
             {
                 var roles = await _roleRepository.GetAllAsync();
-                return _mapper.Map<IEnumerable<RoleDTO>>(roles);
+                return _mapper.Map<IEnumerable<RoleDto>>(roles);
             }
             catch (Exception ex)
             {
@@ -52,7 +52,7 @@ namespace GestMantIA.Application.Features.UserManagement.Services
         }
 
         /// <inheritdoc />
-        public async Task<RoleDTO?> GetRoleByIdAsync(string roleId)
+        public async Task<RoleDto?> GetRoleByIdAsync(string roleId)
         {
             if (string.IsNullOrEmpty(roleId))
                 throw new ArgumentNullException(nameof(roleId));
@@ -66,7 +66,7 @@ namespace GestMantIA.Application.Features.UserManagement.Services
                     return null;
                 }
 
-                return _mapper.Map<RoleDTO>(role);
+                return _mapper.Map<RoleDto>(role);
             }
             catch (Exception ex)
             {
@@ -76,25 +76,25 @@ namespace GestMantIA.Application.Features.UserManagement.Services
         }
 
         /// <inheritdoc />
-        public async Task<RoleResult> CreateRoleAsync(RoleDTO roleDto)
+        public async Task<RoleResult> CreateRoleAsync(RoleDto RoleDto)
         {
-            if (roleDto == null)
-                throw new ArgumentNullException(nameof(roleDto));
+            if (RoleDto == null)
+                throw new ArgumentNullException(nameof(RoleDto));
 
             try
             {
                 // Verificar si el rol ya existe
-                var roleExists = await _roleManager.RoleExistsAsync(roleDto.Name);
+                var roleExists = await _roleManager.RoleExistsAsync(RoleDto.Name);
                 if (roleExists)
                 {
-                    return RoleResult.Failed($"El rol '{roleDto.Name}' ya existe.");
+                    return RoleResult.Failed($"El rol '{RoleDto.Name}' ya existe.");
                 }
 
                 // Crear el nuevo rol
                 var role = new ApplicationRole
                 {
-                    Name = roleDto.Name,
-                    Description = roleDto.Description,
+                    Name = RoleDto.Name,
+                    Description = RoleDto.Description,
                     CreatedAt = DateTime.UtcNow
                 };
 
@@ -108,9 +108,9 @@ namespace GestMantIA.Application.Features.UserManagement.Services
                 }
 
                 // Asignar permisos si se especificaron
-                if (roleDto.Permissions != null && roleDto.Permissions.Any())
+                if (RoleDto.Permissions != null && RoleDto.Permissions.Any())
                 {
-                    await AssignPermissionsToRoleAsync(role, roleDto.Permissions);
+                    await AssignPermissionsToRoleAsync(role, RoleDto.Permissions);
                 }
 
                 _logger.LogInformation("Rol creado exitosamente: {RoleName}", role.Name);
@@ -118,29 +118,39 @@ namespace GestMantIA.Application.Features.UserManagement.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear el rol: {RoleName}", roleDto.Name);
+                _logger.LogError(ex, "Error al crear el rol: {RoleName}", RoleDto.Name);
                 return RoleResult.Failed($"Error al crear el rol: {ex.Message}");
             }
         }
 
         /// <inheritdoc />
-        public async Task<RoleResult> UpdateRoleAsync(RoleDTO roleDto)
+        public async Task<RoleResult> UpdateRoleAsync(RoleDto RoleDto)
         {
-            if (roleDto == null)
-                throw new ArgumentNullException(nameof(roleDto));
+            if (RoleDto == null)
+                throw new ArgumentNullException(nameof(RoleDto));
 
             try
             {
-                var role = await _roleManager.FindByIdAsync(roleDto.Id);
+                var role = await _roleManager.FindByIdAsync(RoleDto.Id);
                 if (role == null)
                 {
                     return RoleResult.Failed("El rol especificado no existe.");
                 }
 
                 // Actualizar propiedades del rol
-                role.Name = roleDto.Name;
-                role.Description = roleDto.Description;
-                role.UpdatedAt = DateTime.UtcNow;
+                if (RoleDto.Name != null)
+                {
+                    role.Name = RoleDto.Name;
+                }
+                
+                if (RoleDto.Description != null)
+                {
+                    role.Description = RoleDto.Description;
+                }
+                
+                // Usar reflexión para establecer UpdatedAt si existe
+                var updatedAtProperty = role.GetType().GetProperty("UpdatedAt");
+                updatedAtProperty?.SetValue(role, DateTime.UtcNow);
 
                 var result = await _roleManager.UpdateAsync(role);
                 if (!result.Succeeded)
@@ -152,9 +162,9 @@ namespace GestMantIA.Application.Features.UserManagement.Services
                 }
 
                 // Actualizar permisos si se especificaron
-                if (roleDto.Permissions != null)
+                if (RoleDto.Permissions != null)
                 {
-                    await UpdateRolePermissionsAsync(role, roleDto.Permissions);
+                    await UpdateRolePermissionsAsync(role, RoleDto.Permissions);
                 }
 
                 _logger.LogInformation("Rol actualizado exitosamente: {RoleName}", role.Name);
@@ -162,7 +172,7 @@ namespace GestMantIA.Application.Features.UserManagement.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al actualizar el rol con ID: {RoleId}", roleDto.Id);
+                _logger.LogError(ex, "Error al actualizar el rol con ID: {RoleId}", RoleDto.Id);
                 return RoleResult.Failed($"Error al actualizar el rol: {ex.Message}");
             }
         }
@@ -214,16 +224,16 @@ namespace GestMantIA.Application.Features.UserManagement.Services
         }
 
         /// <inheritdoc />
-        public async Task<RoleResult> AddUserToRoleAsync(string userId, string roleName)
+        public async Task<RoleResult> AddUserToRoleAsync(Guid userId, string roleName)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (userId == Guid.Empty)
                 throw new ArgumentNullException(nameof(userId));
             if (string.IsNullOrEmpty(roleName))
                 throw new ArgumentNullException(nameof(roleName));
 
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
+                var user = await _userManager.FindByIdAsync(userId.ToString());
                 if (user == null)
                 {
                     return RoleResult.Failed("El usuario especificado no existe.");
@@ -262,16 +272,16 @@ namespace GestMantIA.Application.Features.UserManagement.Services
         }
 
         /// <inheritdoc />
-        public async Task<RoleResult> RemoveUserFromRoleAsync(string userId, string roleName)
+        public async Task<RoleResult> RemoveUserFromRoleAsync(Guid userId, string roleName)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (userId == Guid.Empty)
                 throw new ArgumentNullException(nameof(userId));
             if (string.IsNullOrEmpty(roleName))
                 throw new ArgumentNullException(nameof(roleName));
 
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
+                var user = await _userManager.FindByIdAsync(userId.ToString());
                 if (user == null)
                 {
                     return RoleResult.Failed("El usuario especificado no existe.");
@@ -310,14 +320,14 @@ namespace GestMantIA.Application.Features.UserManagement.Services
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<string>> GetUserRolesAsync(string userId)
+        public async Task<IEnumerable<string>> GetUserRolesAsync(Guid userId)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (userId == Guid.Empty)
                 throw new ArgumentNullException(nameof(userId));
 
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
+                var user = await _userManager.FindByIdAsync(userId.ToString());
                 if (user == null)
                 {
                     _logger.LogWarning("No se encontró el usuario con ID: {UserId}", userId);
@@ -366,16 +376,16 @@ namespace GestMantIA.Application.Features.UserManagement.Services
         }
 
         /// <inheritdoc />
-        public async Task<bool> IsUserInRoleAsync(string userId, string roleName)
+        public async Task<bool> IsUserInRoleAsync(Guid userId, string roleName)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (userId == Guid.Empty)
                 throw new ArgumentNullException(nameof(userId));
             if (string.IsNullOrEmpty(roleName))
                 throw new ArgumentNullException(nameof(roleName));
 
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
+                var user = await _userManager.FindByIdAsync(userId.ToString());
                 if (user == null)
                 {
                     _logger.LogWarning("No se encontró el usuario con ID: {UserId}", userId);

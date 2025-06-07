@@ -20,20 +20,20 @@ namespace GestMantIA.Core.Identity.Entities
         /// Usuario destinatario de la notificación.
         /// </summary>
         [ForeignKey(nameof(UserId))]
-        public virtual ApplicationUser User { get; set; }
+        public virtual ApplicationUser? User { get; set; }
 
         /// <summary>
         /// Título de la notificación.
         /// </summary>
         [Required]
         [MaxLength(200)]
-        public string Title { get; set; }
+        public required string Title { get; set; }
 
         /// <summary>
         /// Mensaje detallado de la notificación.
         /// </summary>
         [Required]
-        public string Message { get; set; }
+        public required string Message { get; set; }
 
         /// <summary>
         /// Tipo de notificación.

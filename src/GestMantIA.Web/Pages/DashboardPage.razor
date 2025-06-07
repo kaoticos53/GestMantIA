@@ -1,0 +1,77 @@
+@page "/dashboard"
+@attribute [Authorize]
+
+@inject ILayoutService LayoutService 
+@* @inject AuthenticationStateProvider AuthenticationStateProvider // Descomentar si se necesita lógica C# compleja con roles *@
+@using GestMantIA.Web.Services.Interfaces // Necesario para ILayoutService si no está global
+
+<PageTitle>Dashboard Principal - GestMantIA</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4">Dashboard Principal</MudText>
+
+<MudGrid Spacing="3">
+    
+    @* Sección solo para Administradores *@
+    <AuthorizeView Roles="Admin">
+        <Authorized>
+            <MudItem xs="12" sm="6" md="4">
+                <MudPaper Class="pa-4" Elevation="3" Style="height: 100%;">
+                    <MudText Typo="Typo.h6" GutterBottom="true">Panel de Administración</MudText>
+                    <MudIcon Icon="@Icons.Material.Filled.AdminPanelSettings" Class="mb-2" Style="font-size: 2.5rem;" Color="Color.Primary"/>
+                    <MudList T="object" Clickable="true">
+                        <MudListItem T="object" Href="/admin/users" Icon="@Icons.Material.Filled.People">Gestionar Usuarios</MudListItem>
+                        <MudListItem T="object" Href="/admin/roles" Icon="@Icons.Material.Filled.LockPerson">Gestionar Roles</MudListItem>
+                        <MudListItem T="object" Href="/admin/settings" Icon="@Icons.Material.Filled.Settings">Configuración del Sistema</MudListItem>
+                    </MudList>
+                </MudPaper>
+            </MudItem>
+        </Authorized>
+    </AuthorizeView>
+
+    @* Sección para Usuarios (y también Administradores) *@
+    <AuthorizeView Roles="User, Admin"> 
+        <Authorized>
+            <MudItem xs="12" sm="6" md="4">
+                <MudPaper Class="pa-4" Elevation="3" Style="height: 100%;">
+                    <MudText Typo="Typo.h6" GutterBottom="true">Mis Incidencias</MudText>
+                    <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Class="mb-2" Style="font-size: 2.5rem;" Color="Color.Warning"/>
+                    <MudText>Aquí verás tus incidencias reportadas y su estado.</MudText>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/incidencias/mis-incidencias" Class="mt-2">Ver Mis Incidencias</MudButton>
+                </MudPaper>
+            </MudItem>
+        </Authorized>
+    </AuthorizeView>
+
+    @* Componentes comunes para todos los usuarios autenticados *@
+    <MudItem xs="12" sm="6" md="4">
+        <MudPaper Class="pa-4" Elevation="3" Style="height: 100%;">
+            <MudText Typo="Typo.h6" GutterBottom="true">Resumen de Actividad</MudText>
+            <MudIcon Icon="@Icons.Material.Filled.Assessment" Class="mb-2" Style="font-size: 2.5rem;" Color="Color.Info"/>
+            <MudText>Contenido del resumen de actividad general...</MudText>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" sm="6" md="4">
+        <MudPaper Class="pa-4" Elevation="3" Style="height: 100%;">
+            <MudText Typo="Typo.h6" GutterBottom="true">Estadísticas Clave</MudText>
+            <MudIcon Icon="@Icons.Material.Filled.BarChart" Class="mb-2" Style="font-size: 2.5rem;" Color="Color.Success"/>
+            <MudText>Contenido de estadísticas clave para tu rol...</MudText>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" sm="12" md="8"> @* Este podría ser más grande si es un gráfico principal *@
+        <MudPaper Class="pa-4" Elevation="3" Height="300px">
+            <MudText Typo="Typo.h6" GutterBottom="true">Gráfico Principal de Mantenimiento</MudText>
+            <MudIcon Icon="@Icons.Material.Filled.InsertChartOutlined" Class="mb-2" Style="font-size: 2.5rem;" Color="Color.Secondary"/>
+            <MudText>Espacio para un gráfico interactivo sobre el estado de las órdenes de trabajo, etc.</MudText>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await LayoutService.SetTitleAsync("Dashboard Principal");
+        // Puedes añadir lógica adicional aquí si es necesario, por ejemplo, para cargar datos específicos del dashboard.
+    }
+}

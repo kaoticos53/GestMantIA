@@ -12,28 +12,28 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// Obtiene todos los roles disponibles.
         /// </summary>
         /// <returns>Lista de roles.</returns>
-        Task<IEnumerable<RoleDTO>> GetAllRolesAsync();
+        Task<IEnumerable<RoleDto>> GetAllRolesAsync();
 
         /// <summary>
         /// Obtiene un rol por su ID.
         /// </summary>
         /// <param name="roleId">ID del rol.</param>
         /// <returns>El rol si existe, de lo contrario null.</returns>
-        Task<RoleDTO?> GetRoleByIdAsync(string roleId);
+        Task<RoleDto?> GetRoleByIdAsync(string roleId);
 
         /// <summary>
         /// Crea un nuevo rol.
         /// </summary>
-        /// <param name="roleDto">Datos del rol a crear.</param>
+        /// <param name="RoleDto">Datos del rol a crear.</param>
         /// <returns>Resultado de la operación.</returns>
-        Task<RoleResult> CreateRoleAsync(RoleDTO roleDto);
+        Task<RoleResult> CreateRoleAsync(RoleDto RoleDto);
 
         /// <summary>
         /// Actualiza un rol existente.
         /// </summary>
-        /// <param name="roleDto">Datos actualizados del rol.</param>
+        /// <param name="RoleDto">Datos actualizados del rol.</param>
         /// <returns>Resultado de la operación.</returns>
-        Task<RoleResult> UpdateRoleAsync(RoleDTO roleDto);
+        Task<RoleResult> UpdateRoleAsync(RoleDto RoleDto);
 
         /// <summary>
         /// Elimina un rol por su ID.
@@ -48,7 +48,7 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// <param name="userId">ID del usuario.</param>
         /// <param name="roleName">Nombre del rol.</param>
         /// <returns>Resultado de la operación.</returns>
-        Task<RoleResult> AddUserToRoleAsync(string userId, string roleName);
+        Task<RoleResult> AddUserToRoleAsync(Guid userId, string roleName);
 
         /// <summary>
         /// Elimina un rol de un usuario.
@@ -56,14 +56,14 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// <param name="userId">ID del usuario.</param>
         /// <param name="roleName">Nombre del rol.</param>
         /// <returns>Resultado de la operación.</returns>
-        Task<RoleResult> RemoveUserFromRoleAsync(string userId, string roleName);
+        Task<RoleResult> RemoveUserFromRoleAsync(Guid userId, string roleName);
 
         /// <summary>
         /// Obtiene los roles de un usuario.
         /// </summary>
         /// <param name="userId">ID del usuario.</param>
         /// <returns>Lista de roles del usuario.</returns>
-        Task<IEnumerable<string>> GetUserRolesAsync(string userId);
+        Task<IEnumerable<string>> GetUserRolesAsync(Guid userId);
 
         /// <summary>
         /// Obtiene los usuarios que tienen un rol específico.
@@ -78,7 +78,7 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// <param name="userId">ID del usuario.</param>
         /// <param name="roleName">Nombre del rol.</param>
         /// <returns>True si el usuario tiene el rol, de lo contrario false.</returns>
-        Task<bool> IsUserInRoleAsync(string userId, string roleName);
+        Task<bool> IsUserInRoleAsync(Guid userId, string roleName);
     }
 
     /// <summary>

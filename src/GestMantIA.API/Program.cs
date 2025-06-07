@@ -1,4 +1,6 @@
 using System.Reflection;
+using System.IO;
+using GestMantIA.API.Configuration;
 using GestMantIA.API.Extensions;
 using GestMantIA.Application;
 using GestMantIA.Application.Interfaces; // Para IDatabaseInitializer
@@ -8,7 +10,14 @@ using GestMantIA.Infrastructure.Data;
 using GestMantIA.Infrastructure.Services.Security;
 // using GestMantIA.Core.Entities.Identity; // Comentado temporalmente, corregido abajo
 // using GestMantIA.Infrastructure.Identity; // Comentado temporalmente ya que SpanishIdentityErrorDescriber no se encuentra
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.File;
+using Serilog.Sinks.SystemConsole.Themes;
+using App.Metrics.AspNetCore;
+using App.Metrics.Formatters.Prometheus;
 
 // Punto de entrada de la aplicación
 public class Program
@@ -40,6 +49,19 @@ public class Program
         // Configurar el host para usar el proveedor de configuración de variables de entorno
         builder.Configuration.AddEnvironmentVariables();
 
+        // Configurar métricas
+        builder.Services.AddMetricsConfiguration(builder.Configuration);
+
+        // Configurar el host para usar métricas
+        builder.Host.ConfigureMetricsWithDefaults(metricsBuilder =>
+        {
+            // metricsBuilder.OutputMetrics.AsPrometheusPlainText(); // Configurado globalmente al añadir IMetricsRoot
+        });
+
+        // Configurar el host para usar métricas de aplicación
+        builder.Host.UseMetrics();
+        builder.Host.UseMetricsWebTracking();
+
         // Add services to the container.
         // La configuración de controladores se mueve a AddPresentationServices
         // builder.Services.AddControllers()
@@ -65,13 +87,38 @@ public class Program
         // Configuración de validación personalizada
         builder.Services.AddCustomValidation();
 
-        // Configuración de logging
-        builder.Logging.ClearProviders();
-        builder.Logging.AddConsole();
-        builder.Logging.AddDebug();
+        // Configuración de Serilog
+        var logPath = Path.Combine("Logs", "log-.txt");
+        Directory.CreateDirectory("Logs"); // Asegurarse de que el directorio existe
 
-        // Configurar el nivel de log para Entity Framework Core
-        builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+            .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+            .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+            .WriteTo.File(
+                path: logPath,
+                rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: 7,
+                shared: true,
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .CreateLogger();
+
+        try
+        {
+            Log.Information("Iniciando la aplicación...");
+            
+            // Configuración de logging estándar (se mantiene para compatibilidad)
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSerilog();
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Error al configurar el sistema de logging");
+            throw;
+        }
 
         // Configuración de servicios de infraestructura (incluye persistencia, identidad, utilidades)
         builder.Services.AddInfrastructure(builder.Configuration);

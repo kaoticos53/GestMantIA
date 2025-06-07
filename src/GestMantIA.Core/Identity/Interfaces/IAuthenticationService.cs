@@ -68,7 +68,7 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// <param name="userId">ID del usuario.</param>
         /// <param name="email">Correo electrónico del usuario.</param>
         /// <returns>Resultado con la clave secreta y el código QR.</returns>
-        Task<TwoFactorSetupResult> GenerateTwoFactorSetupAsync(string userId, string email);
+        Task<TwoFactorSetupResult> GenerateTwoFactorSetupAsync(Guid userId, string email);
 
         /// <summary>
         /// Habilita la autenticación de dos factores para un usuario.
@@ -76,14 +76,14 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// <param name="userId">ID del usuario.</param>
         /// <param name="code">Código de verificación.</param>
         /// <returns>Resultado de la operación.</returns>
-        Task<OperationResult> EnableTwoFactorAsync(string userId, string code);
+        Task<OperationResult> EnableTwoFactorAsync(Guid userId, string code);
 
         /// <summary>
         /// Deshabilita la autenticación de dos factores para un usuario.
         /// </summary>
         /// <param name="userId">ID del usuario.</param>
         /// <returns>Resultado de la operación.</returns>
-        Task<OperationResult> DisableTwoFactorAsync(string userId);
+        Task<OperationResult> DisableTwoFactorAsync(Guid userId);
 
         /// <summary>
         /// Verifica el código de autenticación de dos factores.
@@ -91,6 +91,6 @@ namespace GestMantIA.Core.Identity.Interfaces
         /// <param name="userId">ID del usuario.</param>
         /// <param name="code">Código de verificación.</param>
         /// <returns>True si el código es válido; de lo contrario, false.</returns>
-        Task<bool> VerifyTwoFactorTokenAsync(string userId, string code);
+        Task<bool> VerifyTwoFactorTokenAsync(Guid userId, string code);
     }
 }

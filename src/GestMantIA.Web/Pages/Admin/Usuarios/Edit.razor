@@ -1,0 +1,219 @@
+@page "/admin/usuarios/nuevo"
+@page "/admin/usuarios/editar/{UserId}"
+@attribute [Authorize(Roles = "Admin")]
+
+@using GestMantIA.Web.Models.Users
+@using GestMantIA.Web.Services.Interfaces
+@using MudBlazor
+@inject IUserService UserService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@inject IDialogService DialogService
+
+<PageTitle>@(EsNuevo ? "Nuevo Usuario" : "Editar Usuario") - GestMantIA</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-4">
+    <MudPaper Class="pa-4" Elevation="3">
+        <MudText Typo="Typo.h5" Class="mb-4">
+            @(EsNuevo ? "Nuevo Usuario" : "Editar Usuario")
+        </MudText>
+
+        <EditForm Model="_model" OnValidSubmit="GuardarUsuario">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <MudGrid>
+                <MudItem xs="12" md="6" Class="pr-md-2">
+                    <MudTextField @bind-Value="_model.UserName" 
+                                Label="Nombre de usuario" 
+                                Required="true" 
+                                RequiredError="El nombre de usuario es obligatorio"
+                                Class="mb-3" />
+                </MudItem>
+                
+                <MudItem xs="12" md="6" Class="pl-md-2">
+                    <MudTextField @bind-Value="_model.Email" 
+                                Label="Correo electrónico" 
+                                Required="true" 
+                                RequiredError="El correo electrónico es obligatorio"
+                                InputType="InputType.Email"
+                                Class="mb-3" />
+                </MudItem>
+
+                <MudItem xs="12" md="6" Class="pr-md-2">
+                    <MudTextField @bind-Value="_model.FirstName" 
+                                Label="Nombres" 
+                                Class="mb-3" />
+                </MudItem>
+
+                <MudItem xs="12" md="6" Class="pl-md-2">
+                    <MudTextField @bind-Value="_model.LastName" 
+                                Label="Apellidos" 
+                                Class="mb-3" />
+                </MudItem>
+
+                @if (EsNuevo)
+                {
+                    <MudItem xs="12" md="6" Class="pr-md-2">
+                        <MudTextField @bind-Value="_model.Password" 
+                                    Label="Contraseña" 
+                                    Required="@EsNuevo"
+                                    RequiredError="La contraseña es obligatoria"
+                                    InputType="InputType.Password"
+                                    Class="mb-3" />
+                    </MudItem>
+
+                    <MudItem xs="12" md="6" Class="pl-md-2">
+                        <MudTextField @bind-Value="_model.ConfirmPassword" 
+                                    Label="Confirmar contraseña" 
+                                    Required="@EsNuevo"
+                                    RequiredError="La confirmación de contraseña es obligatoria"
+                                    InputType="InputType.Password"
+                                    Class="mb-3" />
+                    </MudItem>
+                }
+
+
+                <MudItem xs="12" Class="mt-4">
+                    <MudText Typo="Typo.subtitle2" Class="mb-2">Roles</MudText>
+                    <MudChipSet SelectedValues="_selectedRoles" SelectedValuesChanged="OnSelectedRolesChanged" T="string">
+                        @foreach (var role in _availableRoles)
+                        {
+                            <MudChip Value="@role" Color="Color.Primary">@role</MudChip>
+                        }
+                    </MudChipSet>
+                </MudItem>
+
+                <MudItem xs="12" Class="mt-4 d-flex justify-end">
+                    <MudButton Variant="Variant.Text" 
+                              Color="Color.Secondary" 
+                              Class="mr-2"
+                              Href="/admin/usuarios">
+                        Cancelar
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" 
+                              Variant="Variant.Filled" 
+                              Color="Color.Primary"
+                              Disabled="_isLoading">
+                        @(_isLoading ? "Guardando..." : "Guardar")
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    [Parameter]
+    public Guid UserId { get; set; } = Guid.Empty;
+
+    private bool EsNuevo => UserId == Guid.Empty;
+    private bool _isLoading = false;
+    private UpdateUserModel _model = new()
+    {
+        FirstName = string.Empty,
+        LastName = string.Empty,
+        Email = string.Empty,
+        UserName = string.Empty,
+        Password = string.Empty,
+        ConfirmPassword = string.Empty,
+        Roles = new List<string>()
+    };
+    private readonly List<string> _availableRoles = new() { "Admin", "Tecnico", "Usuario" };
+    private HashSet<string> _selectedRoles = new(StringComparer.OrdinalIgnoreCase);
+
+    private void OnSelectedRolesChanged(IEnumerable<string> newValues)
+    {
+        _selectedRoles = new HashSet<string>(newValues ?? Enumerable.Empty<string>(), StringComparer.OrdinalIgnoreCase);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!EsNuevo)
+        {
+            await CargarUsuario();
+        }
+    }
+
+    private async Task CargarUsuario()
+    {
+        try
+        {
+            _isLoading = true;
+            var usuario = await UserService.GetUserByIdAsync(UserId);
+            
+            if (usuario != null)
+            {
+                _model = new UpdateUserModel
+                {
+                    Id = usuario.Id,
+                    UserName = usuario.UserName,
+                    Email = usuario.Email,
+                    FirstName = usuario.FirstName,
+                    LastName = usuario.LastName,
+                    EmailConfirmed = usuario.EmailConfirmed
+                };
+                
+                _selectedRoles = new HashSet<string>(usuario.Roles);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al cargar el usuario: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+
+    private async Task GuardarUsuario()
+    {
+        try
+        {
+            _isLoading = true;
+            _model.Roles = _selectedRoles.ToList();
+            
+            ApiResponse response;
+            
+            if (EsNuevo)
+            {
+                var createModel = new CreateUserModel
+                {
+                    UserName = _model.UserName,
+                    Email = _model.Email,
+                    FirstName = _model.FirstName,
+                    LastName = _model.LastName,
+                    Password = _model.Password,
+                    ConfirmPassword = _model.ConfirmPassword,
+                    Roles = _model.Roles
+                };
+                
+                response = await UserService.CreateUserAsync(createModel);
+            }
+            else
+            {
+                response = await UserService.UpdateUserAsync(_model.Id, _model);
+            }
+            
+            if (response.Success)
+            {
+                Snackbar.Add(response.Message, Severity.Success);
+                NavigationManager.NavigateTo("/admin/usuarios");
+            }
+            else
+            {
+                Snackbar.Add(response.Message, Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al guardar el usuario: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+}

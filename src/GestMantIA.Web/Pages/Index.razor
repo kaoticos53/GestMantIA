@@ -1,0 +1,11 @@
+@page "/"
+@inject NavigationManager NavigationManager
+@attribute [Authorize] // Mantenemos Authorize por si acaso, aunque la página solo redirige.
+
+@code {
+    protected override void OnInitialized()
+    {
+        // Redirige siempre al dashboard principal que hemos diseñado.
+        NavigationManager.NavigateTo("/dashboard", forceLoad: false); // forceLoad: false para evitar recarga innecesaria si ya está en el cliente.
+    }
+}

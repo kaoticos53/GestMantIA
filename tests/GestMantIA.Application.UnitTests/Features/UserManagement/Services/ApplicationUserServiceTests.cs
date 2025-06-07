@@ -2,6 +2,7 @@ using AutoMapper;
 using FluentAssertions;
 using GestMantIA.Application.Features.UserManagement.Services;
 using GestMantIA.Core.Identity.Entities;
+using GestMantIA.Shared.Identity.DTOs.Requests;
 using GestMantIA.Shared.Identity.DTOs.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -25,24 +26,16 @@ namespace GestMantIA.Application.UnitTests.Features.UserManagement.Services
         {
             // UserManager mock
             _mockUserManager = new Mock<UserManager<ApplicationUser>>(
-                Mock.Of<IUserStore<ApplicationUser>>(), // IUserStore<ApplicationUser> store
-                null!, // IOptions<IdentityOptions> optionsAccessor
-                null!, // IPasswordHasher<ApplicationUser> passwordHasher
-                null!, // IEnumerable<IUserValidator<ApplicationUser>> userValidators
-                null!, // IEnumerable<IPasswordValidator<ApplicationUser>> passwordValidators
-                null!, // ILookupNormalizer keyNormalizer
-                null!, // IdentityErrorDescriber errors
-                null!, // IServiceProvider services
-                null!  // ILogger<UserManager<ApplicationUser>> logger
+                Mock.Of<IUserStore<ApplicationUser>>(),
+                null!, null!, null!, null!, null!, null!, null!,
+                Mock.Of<ILogger<UserManager<ApplicationUser>>>() // Provide a mock logger for UserManager
             );
 
             // RoleManager mock
             _mockRoleManager = new Mock<RoleManager<ApplicationRole>>(
-                Mock.Of<IRoleStore<ApplicationRole>>(), // IRoleStore<ApplicationRole> store
-                null!, // IEnumerable<IRoleValidator<ApplicationRole>> roleValidators
-                null!, // ILookupNormalizer keyNormalizer
-                null!, // IdentityErrorDescriber errors
-                null!  // ILogger<RoleManager<ApplicationRole>> logger
+                Mock.Of<IRoleStore<ApplicationRole>>(),
+                null!, null!, null!,
+                Mock.Of<ILogger<RoleManager<ApplicationRole>>>() // Provide a mock logger for RoleManager
             );
 
             _mockMapper = new Mock<IMapper>();
@@ -50,7 +43,6 @@ namespace GestMantIA.Application.UnitTests.Features.UserManagement.Services
             _mockIdentityOptions = new Mock<IOptions<IdentityOptions>>();
             _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
 
-            // Es importante configurar el .Value para IdentityOptions si el servicio lo accede.
             _mockIdentityOptions.Setup(io => io.Value).Returns(new IdentityOptions());
 
             _userService = new ApplicationUserService(
@@ -62,27 +54,24 @@ namespace GestMantIA.Application.UnitTests.Features.UserManagement.Services
                 _mockHttpContextAccessor.Object);
         }
 
-        // Prueba de marcador de posición para asegurar que la configuración compila y se ejecuta.
         [Fact]
         public void Constructor_Should_Initialize_Service_Without_Errors()
         {
-            // Assert
             _userService.Should().NotBeNull();
-            // Esta prueba verifica principalmente que el constructor se complete y los mocks se pasen correctamente.
         }
 
-        // Aquí se añadirán más pruebas.
+        #region GetUserProfileAsync Tests
 
         [Fact]
-        public async Task GetUserProfileAsync_Should_Return_UserResponseDTO_When_User_Exists_And_Not_Deleted()
+        public async Task GetUserProfileAsync_UserExistsAndNotDeleted_ReturnsUserResponseDTO()
         {
             // Arrange
-            var userId = Guid.NewGuid().ToString();
-            var applicationUser = new ApplicationUser { Id = Guid.Parse(userId), UserName = "testuser", Email = "test@example.com", IsDeleted = false };
+            var userId = Guid.NewGuid();
+            var applicationUser = new ApplicationUser { Id = userId, UserName = "testuser", Email = "test@example.com", IsDeleted = false };
             var userRoles = new List<string> { "User" };
             var expectedDto = new UserResponseDTO { Id = userId, UserName = "testuser", Email = "test@example.com", Roles = userRoles };
 
-            _mockUserManager.Setup(x => x.FindByIdAsync(It.Is<string>(s => s == userId))).ReturnsAsync(applicationUser);
+            _mockUserManager.Setup(x => x.FindByIdAsync(userId.ToString())).ReturnsAsync(applicationUser);
             _mockUserManager.Setup(um => um.GetRolesAsync(applicationUser)).ReturnsAsync(userRoles);
             _mockMapper.Setup(m => m.Map<UserResponseDTO>(applicationUser)).Returns(expectedDto);
 
@@ -93,104 +82,2774 @@ namespace GestMantIA.Application.UnitTests.Features.UserManagement.Services
             result.Should().NotBeNull();
             result.Should().BeEquivalentTo(expectedDto);
             _mockLogger.Verify(
-                x => x.Log(
-                    LogLevel.Warning,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => true),
-                    null,
-                    It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
+                x => x.Log(LogLevel.Warning, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), null, It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Never);
         }
+
         [Fact]
-        public async Task GetUserProfileAsync_Should_Return_Null_When_User_Is_Deleted()
+        public async Task GetUserProfileAsync_UserIsDeleted_ReturnsNullAndLogsWarning()
         {
             // Arrange
-            var userId = Guid.NewGuid().ToString();
-            var applicationUser = new ApplicationUser { Id = Guid.Parse(userId), UserName = "testuser", Email = "test@example.com", IsDeleted = true };
+            var userId = Guid.NewGuid();
+            var applicationUser = new ApplicationUser { Id = userId, UserName = "testuser", Email = "test@example.com", IsDeleted = true };
 
-            _mockUserManager.Setup(x => x.FindByIdAsync(It.Is<string>(s => s == userId))).ReturnsAsync(applicationUser);
+            _mockUserManager.Setup(x => x.FindByIdAsync(userId.ToString())).ReturnsAsync(applicationUser);
 
             // Act
             var result = await _userService.GetUserProfileAsync(userId);
 
             // Assert
             result.Should().BeNull();
-            _mockMapper.Verify(m => m.Map<UserResponseDTO>(It.IsAny<ApplicationUser>()), Times.Never); // No debería intentar mapear
-            _mockUserManager.Verify(um => um.GetRolesAsync(It.IsAny<ApplicationUser>()), Times.Never); // No debería intentar obtener roles
-            _mockLogger.Verify(
-                x => x.Log(
-                    LogLevel.Warning,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v != null && v.ToString()!.Contains($"No se encontró el usuario con ID '{userId}' o está marcado como eliminado.")),
-                    null,
-                    It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
-                Times.Once);
+            _mockMapper.Verify(m => m.Map<UserResponseDTO>(It.IsAny<ApplicationUser>()), Times.Never());
+            _mockUserManager.Verify(um => um.GetRolesAsync(It.IsAny<ApplicationUser>()), Times.Never());
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró el usuario con ID '{userId}' o está marcado como eliminado.");
         }
+
         [Fact]
-        public async Task GetUserProfileAsync_Should_Return_Null_When_User_Does_Not_Exist()
+        public async Task GetUserProfileAsync_UserDoesNotExist_ReturnsNullAndLogsWarning()
         {
             // Arrange
-            var userId = Guid.NewGuid().ToString();
-            _mockUserManager.Setup(x => x.FindByIdAsync(It.Is<string>(s => s == userId))).ReturnsAsync((ApplicationUser?)null);
+            var userId = Guid.NewGuid();
+            _mockUserManager.Setup(x => x.FindByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser?)null);
 
             // Act
             var result = await _userService.GetUserProfileAsync(userId);
 
             // Assert
             result.Should().BeNull();
-            _mockMapper.Verify(m => m.Map<UserResponseDTO>(It.IsAny<ApplicationUser>()), Times.Never);
-            _mockUserManager.Verify(um => um.GetRolesAsync(It.IsAny<ApplicationUser>()), Times.Never);
-            _mockLogger.Verify(
-                x => x.Log(
-                    LogLevel.Warning,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v != null && v.ToString()!.Contains($"No se encontró el usuario con ID '{userId}' o está marcado como eliminado.")),
-                    null,
-                    It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
-                Times.Once);
+            _mockMapper.Verify(m => m.Map<UserResponseDTO>(It.IsAny<ApplicationUser>()), Times.Never());
+            _mockUserManager.Verify(um => um.GetRolesAsync(It.IsAny<ApplicationUser>()), Times.Never());
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró el usuario con ID '{userId}' o está marcado como eliminado.");
         }
+
         [Fact]
-        public async Task GetUserProfileAsync_Should_Return_Null_When_UserId_Is_Invalid_Guid()
+        public async Task GetUserProfileAsync_ExceptionOccurs_ReturnsNullAndLogsError()
         {
             // Arrange
-            var invalidUserId = "not-a-guid";
-
-            // Act
-            var result = await _userService.GetUserProfileAsync(invalidUserId);
-
-            // Assert
-            result.Should().BeNull();
-            _mockUserManager.Verify(um => um.FindByIdAsync(It.IsAny<string>()), Times.Never); // No debería intentar buscar
-            _mockLogger.Verify(
-                x => x.Log(
-                    LogLevel.Warning,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v != null && v.ToString()!.Contains($"El ID de usuario '{invalidUserId}' no es un GUID válido.")),
-                    null,
-                    It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
-                Times.Once);
-        }
-        [Fact]
-        public async Task GetUserProfileAsync_Should_Return_Null_And_Log_Error_When_Exception_Occurs()
-        {
-            // Arrange
-            var userId = Guid.NewGuid().ToString();
+            var userId = Guid.NewGuid();
             var exceptionMessage = "Database connection failed";
-            _mockUserManager.Setup(um => um.FindByIdAsync(It.Is<string>(s => s == userId))).ThrowsAsync(new Exception(exceptionMessage));
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ThrowsAsync(new Exception(exceptionMessage));
 
             // Act
             var result = await _userService.GetUserProfileAsync(userId);
 
             // Assert
             result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error al obtener el perfil del usuario con ID '{userId}'.", typeof(Exception));
+        }
+        #endregion
+
+        #region GetUserByIdAsync Tests
+
+        [Fact]
+        public async Task GetUserByIdAsync_UserExistsAndNotDeleted_ReturnsUserResponseDTO()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var applicationUser = new ApplicationUser { Id = userId, UserName = "testuser", Email = "test@example.com", IsDeleted = false };
+            var userRoles = new List<string> { "User" };
+            var expectedDto = new UserResponseDTO { Id = userId, UserName = "testuser", Email = "test@example.com", Roles = userRoles };
+
+            _mockUserManager.Setup(x => x.FindByIdAsync(userId.ToString())).ReturnsAsync(applicationUser);
+            _mockUserManager.Setup(um => um.GetRolesAsync(applicationUser)).ReturnsAsync(userRoles);
+            _mockMapper.Setup(m => m.Map<UserResponseDTO>(applicationUser)).Returns(expectedDto);
+
+            // Act
+            var result = await _userService.GetUserByIdAsync(userId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedDto);
             _mockLogger.Verify(
+                x => x.Log(LogLevel.Warning, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), null, It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Never());
+        }
+
+        [Fact]
+        public async Task GetUserByIdAsync_UserIsDeleted_ReturnsNullAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var applicationUser = new ApplicationUser { Id = userId, UserName = "testuser", Email = "test@example.com", IsDeleted = true };
+
+            _mockUserManager.Setup(x => x.FindByIdAsync(userId.ToString())).ReturnsAsync(applicationUser);
+
+            // Act
+            var result = await _userService.GetUserByIdAsync(userId);
+
+            // Assert
+            result.Should().BeNull();
+            _mockMapper.Verify(m => m.Map<UserResponseDTO>(It.IsAny<ApplicationUser>()), Times.Never());
+            _mockUserManager.Verify(um => um.GetRolesAsync(It.IsAny<ApplicationUser>()), Times.Never());
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró el usuario con ID '{userId}' o está marcado como eliminado.");
+        }
+
+        [Fact]
+        public async Task GetUserByIdAsync_UserDoesNotExist_ReturnsNullAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            _mockUserManager.Setup(x => x.FindByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser?)null);
+
+            // Act
+            var result = await _userService.GetUserByIdAsync(userId);
+
+            // Assert
+            result.Should().BeNull();
+            _mockMapper.Verify(m => m.Map<UserResponseDTO>(It.IsAny<ApplicationUser>()), Times.Never());
+            _mockUserManager.Verify(um => um.GetRolesAsync(It.IsAny<ApplicationUser>()), Times.Never());
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró el usuario con ID '{userId}' o está marcado como eliminado.");
+        }
+
+        [Fact]
+        public async Task GetUserByIdAsync_ExceptionOccurs_ReturnsNullAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var exceptionMessage = "Database connection failed";
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ThrowsAsync(new Exception(exceptionMessage));
+
+            // Act
+            var result = await _userService.GetUserByIdAsync(userId);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error al obtener el usuario con ID '{userId}'.", typeof(Exception));
+        }
+
+        #endregion
+
+        #region GetUserRolesAsync Tests
+
+        [Fact]
+        public async Task GetUserRolesAsync_UserExistsAndHasRoles_ReturnsRolesList()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var applicationUser = new ApplicationUser { Id = userId, UserName = "testuser", IsDeleted = false };
+            var expectedRoles = new List<string> { "Admin", "User" };
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(applicationUser);
+            _mockUserManager.Setup(um => um.GetRolesAsync(applicationUser)).ReturnsAsync(expectedRoles);
+
+            // Act
+            var result = await _userService.GetUserRolesAsync(userId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedRoles);
+            _mockLogger.Verify(log => log.Log(LogLevel.Warning, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Never());
+            _mockLogger.Verify(log => log.Log(LogLevel.Error, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Never());
+        }
+
+        [Fact]
+        public async Task GetUserRolesAsync_UserExistsAndHasNoRoles_ReturnsEmptyList()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var applicationUser = new ApplicationUser { Id = userId, UserName = "testuser", IsDeleted = false };
+            var expectedRoles = new List<string>(); // Empty list
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(applicationUser);
+            _mockUserManager.Setup(um => um.GetRolesAsync(applicationUser)).ReturnsAsync(expectedRoles);
+
+            // Act
+            var result = await _userService.GetUserRolesAsync(userId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEmpty();
+            _mockLogger.Verify(log => log.Log(LogLevel.Warning, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Never());
+            _mockLogger.Verify(log => log.Log(LogLevel.Error, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Never());
+        }
+
+        [Fact]
+        public async Task GetUserRolesAsync_UserIsDeleted_ReturnsEmptyListAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            // In this context, a 'deleted' user is treated as 'not found' for role retrieval by GetUserRolesAsync
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser?)null); 
+
+            // Act
+            var result = await _userService.GetUserRolesAsync(userId);
+
+            // Assert
+            result.Should().NotBeNull().And.BeEmpty();
+            _mockUserManager.Verify(um => um.GetRolesAsync(It.IsAny<ApplicationUser>()), Times.Never());
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró el usuario con ID '{userId}' para obtener roles.");
+        }
+
+        [Fact]
+        public async Task GetUserRolesAsync_UserDoesNotExist_ReturnsEmptyListAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser?)null);
+
+            // Act
+            var result = await _userService.GetUserRolesAsync(userId);
+
+            // Assert
+            result.Should().NotBeNull().And.BeEmpty();
+            _mockUserManager.Verify(um => um.GetRolesAsync(It.IsAny<ApplicationUser>()), Times.Never());
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró el usuario con ID '{userId}' para obtener roles.");
+        }
+
+        [Fact]
+        public async Task GetUserRolesAsync_ExceptionOccurs_ReturnsEmptyListAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var exceptionMessage = "Database connection error";
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ThrowsAsync(new Exception(exceptionMessage));
+
+            // Act
+            var result = await _userService.GetUserRolesAsync(userId);
+
+            // Assert
+            result.Should().NotBeNull().And.BeEmpty();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al obtener los roles del usuario '{userId}'.", typeof(Exception));
+        }
+
+        #endregion
+
+        #region GetAllUsersAsync Tests
+
+        private List<ApplicationUser> GetTestUsers()
+        {
+            return new List<ApplicationUser>
+            {
+                new ApplicationUser { Id = Guid.NewGuid(), UserName = "user1", Email = "user1@example.com", FirstName = "User", LastName = "One", IsDeleted = false, EmailConfirmed = true, LockoutEnabled = false },
+                new ApplicationUser { Id = Guid.NewGuid(), UserName = "user2", Email = "user2@example.com", FirstName = "User", LastName = "Two", IsDeleted = false, EmailConfirmed = false, LockoutEnabled = false }, // Not active (EmailNotConfirmed)
+                new ApplicationUser { Id = Guid.NewGuid(), UserName = "user3", Email = "user3@example.com", FirstName = "User", LastName = "Three", IsDeleted = true, EmailConfirmed = true, LockoutEnabled = false }, // Deleted
+                new ApplicationUser { Id = Guid.NewGuid(), UserName = "admin1", Email = "admin1@example.com", FirstName = "Admin", LastName = "One", IsDeleted = false, EmailConfirmed = true, LockoutEnabled = false },
+                new ApplicationUser { Id = Guid.NewGuid(), UserName = "user4", Email = "user4@example.com", FirstName = "Another", LastName = "User", IsDeleted = false, EmailConfirmed = true, LockoutEnabled = true } // Not active (LockoutEnabled)
+            };
+        }
+
+        [Fact]
+        public async Task GetAllUsersAsync_NoFilters_ReturnsPagedNonDeletedUsersWithRoles()
+        {
+            // Arrange
+            var testUsers = GetTestUsers();
+            var nonDeletedUsers = testUsers.Where(u => !u.IsDeleted).ToList();
+            _mockUserManager.Setup(um => um.Users).Returns(testUsers.AsQueryable());
+
+            _mockMapper.Setup(m => m.Map<List<UserResponseDTO>>(It.IsAny<List<ApplicationUser>>()))
+                .Returns<List<ApplicationUser>>(users => users.Select(u => new UserResponseDTO {
+    Id = u.Id,
+    UserName = u.UserName ?? string.Empty,
+    Email = u.Email ?? string.Empty,
+    EmailConfirmed = u.EmailConfirmed,
+    FirstName = u.FirstName ?? string.Empty,
+    LastName = u.LastName ?? string.Empty,
+    PhoneNumber = u.PhoneNumber,
+    PhoneNumberConfirmed = u.PhoneNumberConfirmed,
+    DateRegistered = u.CreatedAt,
+    IsActive = u.IsActive,
+    TwoFactorEnabled = u.TwoFactorEnabled,
+    IsLockedOut = u.LockoutEnabled,
+    LockoutEnd = u.LockoutEnd,
+    UpdatedAt = u.UpdatedAt,
+    Roles = new List<string>(),
+    Claims = new Dictionary<string, string>()
+}).ToList());
+            
+            _mockUserManager.Setup(um => um.GetRolesAsync(It.IsAny<ApplicationUser>()))
+                            .ReturnsAsync((ApplicationUser user) => user.UserName == "admin1" ? new List<string> { "Admin" } : new List<string> { "User" });
+
+            // Act
+            var result = await _userService.GetAllUsersAsync(pageNumber: 1, pageSize: 2);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Items.Should().HaveCount(2); // First 2 non-deleted users
+            result.TotalCount.Should().Be(nonDeletedUsers.Count); // Total non-deleted users
+            result.Items.First().UserName.Should().Be(nonDeletedUsers[0].UserName);
+            result.Items.Last().UserName.Should().Be(nonDeletedUsers[1].UserName);
+            result.Items.First().Roles.Should().Contain("User");
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), "GetAllUsersAsync invocado");
+        }
+
+        [Fact]
+        public async Task GetAllUsersAsync_WithSearchTerm_ReturnsMatchingUsers()
+        {
+            // Arrange
+            var testUsers = GetTestUsers();
+            _mockUserManager.Setup(um => um.Users).Returns(testUsers.AsQueryable());
+            _mockMapper.Setup(m => m.Map<List<UserResponseDTO>>(It.IsAny<List<ApplicationUser>>()))
+                .Returns<List<ApplicationUser>>(users => users.Select(u => new UserResponseDTO {
+    Id = u.Id,
+    UserName = u.UserName ?? string.Empty,
+    Email = u.Email ?? string.Empty,
+    EmailConfirmed = u.EmailConfirmed,
+    FirstName = u.FirstName ?? string.Empty,
+    LastName = u.LastName ?? string.Empty,
+    PhoneNumber = u.PhoneNumber,
+    PhoneNumberConfirmed = u.PhoneNumberConfirmed,
+    DateRegistered = u.CreatedAt,
+    IsActive = u.IsActive,
+    TwoFactorEnabled = u.TwoFactorEnabled,
+    IsLockedOut = u.LockoutEnabled,
+    LockoutEnd = u.LockoutEnd,
+    UpdatedAt = u.UpdatedAt,
+    Roles = new List<string>(),
+    Claims = new Dictionary<string, string>()
+}).ToList());
+            _mockUserManager.Setup(um => um.GetRolesAsync(It.IsAny<ApplicationUser>())).ReturnsAsync(new List<string> { "User" });
+
+            var searchTerm = "admin";
+            var expectedMatchingUsers = testUsers.Count(u => !u.IsDeleted && (u.UserName!.Contains(searchTerm) || u.Email!.Contains(searchTerm) || u.FirstName!.Contains(searchTerm) || u.LastName!.Contains(searchTerm)));
+
+            // Act
+            var result = await _userService.GetAllUsersAsync(searchTerm: searchTerm);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Items.Should().HaveCount(expectedMatchingUsers);
+            result.TotalCount.Should().Be(expectedMatchingUsers);
+            result.Items.Should().AllSatisfy(u => u.UserName.Should().Contain(searchTerm));
+        }
+
+        [Fact]
+        public async Task GetAllUsersAsync_ActiveOnly_ReturnsActiveUsers()
+        {
+            // Arrange
+            var testUsers = GetTestUsers();
+            _mockUserManager.Setup(um => um.Users).Returns(testUsers.AsQueryable());
+            _mockMapper.Setup(m => m.Map<List<UserResponseDTO>>(It.IsAny<List<ApplicationUser>>()))
+                .Returns<List<ApplicationUser>>(users => users.Select(u => new UserResponseDTO {
+    Id = u.Id,
+    UserName = u.UserName ?? string.Empty,
+    Email = u.Email ?? string.Empty,
+    EmailConfirmed = u.EmailConfirmed,
+    FirstName = u.FirstName ?? string.Empty,
+    LastName = u.LastName ?? string.Empty,
+    PhoneNumber = u.PhoneNumber,
+    PhoneNumberConfirmed = u.PhoneNumberConfirmed,
+    DateRegistered = u.CreatedAt,
+    IsActive = u.IsActive,
+    TwoFactorEnabled = u.TwoFactorEnabled,
+    IsLockedOut = u.LockoutEnabled,
+    LockoutEnd = u.LockoutEnd,
+    UpdatedAt = u.UpdatedAt,
+    Roles = new List<string>(),
+    Claims = new Dictionary<string, string>()
+}).ToList());
+            _mockUserManager.Setup(um => um.GetRolesAsync(It.IsAny<ApplicationUser>())).ReturnsAsync(new List<string> { "User" });
+
+            var expectedActiveUsers = testUsers.Count(u => u.EmailConfirmed && !u.LockoutEnabled);
+
+            // Act
+            var result = await _userService.GetAllUsersAsync(activeOnly: true);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Items.Should().HaveCount(expectedActiveUsers);
+            result.TotalCount.Should().Be(expectedActiveUsers);
+            result.Items.Should().OnlyContain(u => testUsers.Single(tu => tu.Id == u.Id).EmailConfirmed && !testUsers.Single(tu => tu.Id == u.Id).LockoutEnabled);
+        }
+
+        [Fact]
+        public async Task GetAllUsersAsync_NoMatchingUsers_ReturnsEmptyPagedResult()
+        {
+            // Arrange
+            var testUsers = GetTestUsers();
+            _mockUserManager.Setup(um => um.Users).Returns(testUsers.AsQueryable());
+            _mockMapper.Setup(m => m.Map<List<UserResponseDTO>>(It.IsAny<List<ApplicationUser>>()))
+                .Returns<List<ApplicationUser>>(users => users.Select(u => new UserResponseDTO {
+    Id = u.Id,
+    UserName = u.UserName ?? string.Empty,
+    Email = u.Email ?? string.Empty,
+    EmailConfirmed = u.EmailConfirmed,
+    FirstName = u.FirstName ?? string.Empty,
+    LastName = u.LastName ?? string.Empty,
+    PhoneNumber = u.PhoneNumber,
+    PhoneNumberConfirmed = u.PhoneNumberConfirmed,
+    DateRegistered = u.CreatedAt,
+    IsActive = u.IsActive,
+    TwoFactorEnabled = u.TwoFactorEnabled,
+    IsLockedOut = u.LockoutEnabled,
+    LockoutEnd = u.LockoutEnd,
+    UpdatedAt = u.UpdatedAt,
+    Roles = new List<string>(),
+    Claims = new Dictionary<string, string>()
+}).ToList());
+            _mockUserManager.Setup(um => um.GetRolesAsync(It.IsAny<ApplicationUser>())).ReturnsAsync(new List<string>());
+
+            // Act
+            var result = await _userService.GetAllUsersAsync(searchTerm: "nonexistentuser");
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Items.Should().BeEmpty();
+            result.TotalCount.Should().Be(0);
+        }
+
+        [Fact]
+        public async Task GetAllUsersAsync_HandlesPaginationCorrectly()
+        {
+            // Arrange
+            var testUsers = new List<ApplicationUser>();
+            for (int i = 1; i <= 15; i++)
+            {
+                testUsers.Add(new ApplicationUser { Id = Guid.NewGuid(), UserName = $"user{i}", Email = $"user{i}@example.com", IsDeleted = false, EmailConfirmed = true, LockoutEnabled = false });
+            }
+            _mockUserManager.Setup(um => um.Users).Returns(testUsers.AsQueryable());
+            _mockMapper.Setup(m => m.Map<List<UserResponseDTO>>(It.IsAny<List<ApplicationUser>>()))
+                .Returns<List<ApplicationUser>>(users => users.Select(u => new UserResponseDTO {
+    Id = u.Id,
+    UserName = u.UserName ?? string.Empty,
+    Email = u.Email ?? string.Empty,
+    EmailConfirmed = u.EmailConfirmed,
+    FirstName = u.FirstName ?? string.Empty,
+    LastName = u.LastName ?? string.Empty,
+    PhoneNumber = u.PhoneNumber,
+    PhoneNumberConfirmed = u.PhoneNumberConfirmed,
+    DateRegistered = u.CreatedAt,
+    IsActive = u.IsActive,
+    TwoFactorEnabled = u.TwoFactorEnabled,
+    IsLockedOut = u.LockoutEnabled,
+    LockoutEnd = u.LockoutEnd,
+    UpdatedAt = u.UpdatedAt,
+    Roles = new List<string>(),
+    Claims = new Dictionary<string, string>()
+}).ToList());
+            _mockUserManager.Setup(um => um.GetRolesAsync(It.IsAny<ApplicationUser>())).ReturnsAsync(new List<string> { "User" });
+
+            // Act: Get page 2 with page size 5
+            var result = await _userService.GetAllUsersAsync(pageNumber: 2, pageSize: 5);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Items.Should().HaveCount(5);
+            result.TotalCount.Should().Be(15);
+            result.PageNumber.Should().Be(2);
+            result.PageSize.Should().Be(5);
+            result.Items.First().UserName.Should().Be("searchuser6");
+            result.Items.Last().UserName.Should().Be("searchuser10");
+        }
+
+        [Fact]
+        public async Task SearchUsersAsync_ExceptionOccurs_ReturnsEmptyPagedResultAndLogsError()
+        {
+            // Arrange
+            var searchTerm = "test";
+            _mockUserManager.Setup(um => um.Users).Throws(new Exception("Database error"));
+
+            // Act
+            var result = await _userService.SearchUsersAsync(searchTerm: searchTerm);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Items.Should().BeEmpty();
+            result.TotalCount.Should().Be(0);
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error al buscar usuarios con término '{searchTerm}'.", typeof(Exception));
+        }
+
+        #endregion
+
+        #region CreateUserAsync Tests
+
+        [Fact]
+        public async Task CreateUserAsync_WithValidDataAndRoles_CreatesUserAssignsRoles_ReturnsUserResponseDTO()
+        {
+            // Arrange
+            var createUserDto = new CreateUserDTO
+            {
+                UserName = "newUser",
+                Email = "new@example.com",
+                Password = "Password123!",
+                ConfirmPassword = "Password123!",
+                FirstName = "New",
+                LastName = "User"
+            };
+            var applicationUser = new ApplicationUser { 
+                Id = Guid.NewGuid(), 
+                UserName = createUserDto.UserName, 
+                Email = createUserDto.Email,
+                FirstName = createUserDto.FirstName,
+                LastName = createUserDto.LastName
+                // Ensure other relevant ApplicationUser properties are set if needed by UserResponseDTO mapping
+            };
+            
+            // Corrected UserResponseDTO instantiation
+            var userResponseDto = new UserResponseDTO {
+                Id = applicationUser.Id,
+                UserName = applicationUser.UserName ?? string.Empty,
+                Email = applicationUser.Email ?? string.Empty,
+                EmailConfirmed = applicationUser.EmailConfirmed, // Will be true if RequireEmailConfirmation is false
+                FirstName = applicationUser.FirstName ?? string.Empty,
+                LastName = applicationUser.LastName ?? string.Empty,
+                PhoneNumber = applicationUser.PhoneNumber,
+                PhoneNumberConfirmed = applicationUser.PhoneNumberConfirmed,
+                DateRegistered = applicationUser.CreatedAt, // Assuming ApplicationUser has CreatedAt or a similar property
+                IsActive = !applicationUser.LockoutEnabled && applicationUser.EmailConfirmed, // Example logic
+                TwoFactorEnabled = applicationUser.TwoFactorEnabled,
+                IsLockedOut = applicationUser.LockoutEnabled,
+                LockoutEnd = applicationUser.LockoutEnd,
+                UpdatedAt = applicationUser.UpdatedAt,
+                Roles = new List<string>(), // Roles will be added by the service
+                Claims = new Dictionary<string, string>()
+            };
+
+            _mockUserManager.Setup(um => um.FindByNameAsync(createUserDto.UserName)).ReturnsAsync((ApplicationUser?)null);
+            _mockUserManager.Setup(um => um.FindByEmailAsync(createUserDto.Email)).ReturnsAsync((ApplicationUser?)null);
+            _mockMapper.Setup(m => m.Map<ApplicationUser>(createUserDto)).Returns(applicationUser);
+            _mockUserManager.Setup(um => um.CreateAsync(applicationUser, createUserDto.Password)).ReturnsAsync(IdentityResult.Success);
+            _mockRoleManager.Setup(rm => rm.RoleExistsAsync("UserRole1")).ReturnsAsync(true);
+            _mockRoleManager.Setup(rm => rm.RoleExistsAsync("UserRole2")).ReturnsAsync(true);
+            _mockUserManager.Setup(um => um.AddToRoleAsync(applicationUser, "UserRole1")).ReturnsAsync(IdentityResult.Success);
+            _mockUserManager.Setup(um => um.AddToRoleAsync(applicationUser, "UserRole2")).ReturnsAsync(IdentityResult.Success);
+            _mockMapper.Setup(m => m.Map<UserResponseDTO>(applicationUser)).Returns(userResponseDto); // This mock now returns the fully initialized DTO
+
+            // Act
+            var result = await _userService.CreateUserAsync(createUserDto);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.UserName.Should().Be(createUserDto.UserName);
+            result.Email.Should().Be(createUserDto.Email); // Added assertion for email
+            result.Roles.Should().Contain("UserRole1").And.Contain("UserRole2");
+            // If createUserDto.RequireEmailConfirmation is false, the service sets EmailConfirmed to true.
+            // The applicationUser.EmailConfirmed should reflect this after CreateAsync.
+            // The DTO's EmailConfirmed should match.
+            (applicationUser.EmailConfirmed == !createUserDto.RequireEmailConfirmation).Should().BeTrue();
+            result.EmailConfirmed.Should().Be(applicationUser.EmailConfirmed); 
+
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Usuario '{createUserDto.UserName}' creado con ID '{applicationUser.Id}'.");
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Rol 'UserRole1' asignado al usuario '{createUserDto.UserName}'.");
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Rol 'UserRole2' asignado al usuario '{createUserDto.UserName}'.");
+        }
+
+        [Fact]
+        public async Task CreateUserAsync_NullDto_ThrowsArgumentNullException()
+        {
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _userService.CreateUserAsync(null!));
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), "El DTO para crear usuario no puede ser nulo.");
+        }
+
+        [Fact]
+        public async Task CreateUserAsync_DuplicateUserName_ThrowsInvalidOperationException()
+        {
+            // Arrange
+            var createUserDto = new CreateUserDTO
+            {
+                UserName = "existingUser",
+                Email = "new@example.com",
+                Password = "Password123!",
+                ConfirmPassword = "Password123!",
+                FirstName = "New",
+                LastName = "User"
+            };
+            _mockUserManager.Setup(um => um.FindByNameAsync(createUserDto.UserName)).ReturnsAsync(new ApplicationUser());
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _userService.CreateUserAsync(createUserDto));
+            exception.Message.Should().Be($"El nombre de usuario '{createUserDto.UserName}' ya existe.");
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"Intento de crear usuario con UserName '{createUserDto.UserName}' que ya existe.");
+        }
+
+        [Fact]
+        public async Task CreateUserAsync_DuplicateEmail_ThrowsInvalidOperationException()
+        {
+            // Arrange
+            var createUserDto = new CreateUserDTO
+            {
+                UserName = "newUser",
+                Email = "existing@example.com",
+                Password = "Password123!",
+                ConfirmPassword = "Password123!",
+                FirstName = "New",
+                LastName = "User"
+            };
+            _mockUserManager.Setup(um => um.FindByNameAsync(createUserDto.UserName)).ReturnsAsync((ApplicationUser?)null);
+            _mockUserManager.Setup(um => um.FindByEmailAsync(createUserDto.Email)).ReturnsAsync(new ApplicationUser());
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _userService.CreateUserAsync(createUserDto));
+            exception.Message.Should().Be($"El email '{createUserDto.Email}' ya existe.");
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"Intento de crear usuario con Email '{createUserDto.Email}' que ya existe.");
+        }
+
+        [Fact]
+        public async Task CreateUserAsync_UserManagerCreateFails_ThrowsInvalidOperationException()
+        {
+            // Arrange
+            var createUserDto = new CreateUserDTO
+            {
+                UserName = "newUser",
+                Email = "new@example.com",
+                Password = "Password123!",
+                ConfirmPassword = "Password123!",
+                FirstName = "New",
+                LastName = "User"
+            };
+            var applicationUser = new ApplicationUser { 
+                Id = Guid.NewGuid(), 
+                UserName = createUserDto.UserName, 
+                Email = createUserDto.Email,
+                FirstName = createUserDto.FirstName,
+                LastName = createUserDto.LastName
+            };
+            var errors = new List<IdentityError> { new IdentityError { Code = "TestError", Description = "Test error description" } };
+
+            _mockUserManager.Setup(um => um.FindByNameAsync(createUserDto.UserName)).ReturnsAsync((ApplicationUser?)null);
+            _mockUserManager.Setup(um => um.FindByEmailAsync(createUserDto.Email)).ReturnsAsync((ApplicationUser?)null);
+            _mockMapper.Setup(m => m.Map<ApplicationUser>(createUserDto)).Returns(applicationUser);
+            _mockUserManager.Setup(um => um.CreateAsync(applicationUser, createUserDto.Password)).ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _userService.CreateUserAsync(createUserDto));
+            exception.Message.Should().Contain("Test error description");
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error al crear usuario '{createUserDto.UserName}': Test error description");
+        }
+
+        [Fact]
+        public async Task CreateUserAsync_RoleDoesNotExist_CreatesUserLogsWarningForNonExistentRole()
+        {
+            // Arrange
+            var createUserDto = new CreateUserDTO
+            {
+                UserName = "newUser",
+                Email = "new@example.com",
+                Password = "Password123!",
+                ConfirmPassword = "Password123!",
+                FirstName = "New",
+                LastName = "User"
+            };
+            var applicationUser = new ApplicationUser { 
+                Id = Guid.NewGuid(), 
+                UserName = createUserDto.UserName, 
+                Email = createUserDto.Email,
+                FirstName = createUserDto.FirstName,
+                LastName = createUserDto.LastName
+            };
+            var userResponseDto = new UserResponseDTO {
+                Id = applicationUser.Id,
+                UserName = applicationUser.UserName ?? string.Empty,
+                Email = applicationUser.Email ?? string.Empty,
+                EmailConfirmed = applicationUser.EmailConfirmed,
+                FirstName = applicationUser.FirstName ?? string.Empty,
+                LastName = applicationUser.LastName ?? string.Empty,
+                PhoneNumber = applicationUser.PhoneNumber,
+                PhoneNumberConfirmed = applicationUser.PhoneNumberConfirmed,
+                DateRegistered = applicationUser.CreatedAt, 
+                IsActive = !applicationUser.LockoutEnabled && applicationUser.EmailConfirmed, 
+                TwoFactorEnabled = applicationUser.TwoFactorEnabled,
+                IsLockedOut = applicationUser.LockoutEnabled,
+                LockoutEnd = applicationUser.LockoutEnd,
+                UpdatedAt = applicationUser.UpdatedAt,
+                Roles = new List<string>(), 
+                Claims = new Dictionary<string, string>()
+            };
+
+            _mockUserManager.Setup(um => um.FindByNameAsync(createUserDto.UserName)).ReturnsAsync((ApplicationUser?)null);
+            _mockUserManager.Setup(um => um.FindByEmailAsync(createUserDto.Email)).ReturnsAsync((ApplicationUser?)null);
+            _mockMapper.Setup(m => m.Map<ApplicationUser>(createUserDto)).Returns(applicationUser);
+            _mockUserManager.Setup(um => um.CreateAsync(applicationUser, createUserDto.Password)).ReturnsAsync(IdentityResult.Success);
+            _mockRoleManager.Setup(rm => rm.RoleExistsAsync("NonExistentRole")).ReturnsAsync(false);
+            _mockMapper.Setup(m => m.Map<UserResponseDTO>(applicationUser)).Returns(userResponseDto);
+
+            // Act
+            var result = await _userService.CreateUserAsync(createUserDto);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Roles.Should().BeEmpty();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"El rol 'NonExistentRole' no existe y no se pudo asignar al usuario '{createUserDto.UserName}'.");
+        }
+
+        [Fact]
+        public async Task CreateUserAsync_AddToRoleFails_CreatesUserLogsWarningForFailedRoleAssignment()
+        {
+            // Arrange
+            var createUserDto = new CreateUserDTO
+            {
+                UserName = "newUser",
+                Email = "new@example.com",
+                Password = "Password123!",
+                ConfirmPassword = "Password123!",
+                FirstName = "New",
+                LastName = "User",
+                Roles = new List<string> { "ExistingRole" }
+            };
+            var applicationUser = new ApplicationUser { 
+                Id = Guid.NewGuid(), 
+                UserName = createUserDto.UserName, 
+                Email = createUserDto.Email,
+                FirstName = createUserDto.FirstName,
+                LastName = createUserDto.LastName
+            };
+            var userResponseDto = new UserResponseDTO {
+                Id = applicationUser.Id,
+                UserName = applicationUser.UserName ?? string.Empty,
+                Email = applicationUser.Email ?? string.Empty,
+                EmailConfirmed = applicationUser.EmailConfirmed,
+                FirstName = applicationUser.FirstName ?? string.Empty,
+                LastName = applicationUser.LastName ?? string.Empty,
+                PhoneNumber = applicationUser.PhoneNumber,
+                PhoneNumberConfirmed = applicationUser.PhoneNumberConfirmed,
+                DateRegistered = applicationUser.CreatedAt, 
+                IsActive = !applicationUser.LockoutEnabled && applicationUser.EmailConfirmed, 
+                TwoFactorEnabled = applicationUser.TwoFactorEnabled,
+                IsLockedOut = applicationUser.LockoutEnabled,
+                LockoutEnd = applicationUser.LockoutEnd,
+                UpdatedAt = applicationUser.UpdatedAt,
+                Roles = new List<string>(), 
+                Claims = new Dictionary<string, string>()
+            };
+            var roleErrors = new List<IdentityError> { new IdentityError { Code = "RoleError", Description = "Role assignment failed" } };
+
+            _mockUserManager.Setup(um => um.FindByNameAsync(createUserDto.UserName)).ReturnsAsync((ApplicationUser?)null);
+            _mockUserManager.Setup(um => um.FindByEmailAsync(createUserDto.Email)).ReturnsAsync((ApplicationUser?)null);
+            _mockMapper.Setup(m => m.Map<ApplicationUser>(createUserDto)).Returns(applicationUser);
+            _mockUserManager.Setup(um => um.CreateAsync(applicationUser, createUserDto.Password)).ReturnsAsync(IdentityResult.Success);
+            _mockRoleManager.Setup(rm => rm.RoleExistsAsync("ExistingRole")).ReturnsAsync(true);
+            _mockUserManager.Setup(um => um.AddToRoleAsync(applicationUser, "ExistingRole")).ReturnsAsync(IdentityResult.Failed(roleErrors.ToArray()));
+            _mockMapper.Setup(m => m.Map<UserResponseDTO>(applicationUser)).Returns(userResponseDto);
+
+            // Act
+            var result = await _userService.CreateUserAsync(createUserDto);
+
+            // Assert
+            result.Should().NotBeNull();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se pudo asignar el rol 'ExistingRole' al usuario '{createUserDto.UserName}': Role assignment failed");
+        }
+
+        [Fact]
+        public async Task CreateUserAsync_NoRolesSpecified_CreatesUserWithoutAssigningRoles()
+        {
+            // Arrange
+            var createUserDto = new CreateUserDTO
+            {
+                UserName = "newUser",
+                Email = "new@example.com",
+                Password = "Password123!",
+                ConfirmPassword = "Password123!",
+                FirstName = "New",
+                LastName = "User",
+                Roles = new List<string>()
+            };
+            var applicationUser = new ApplicationUser { 
+                Id = Guid.NewGuid(), 
+                UserName = createUserDto.UserName, 
+                Email = createUserDto.Email,
+                FirstName = createUserDto.FirstName,
+                LastName = createUserDto.LastName
+            };
+            var userResponseDto = new UserResponseDTO {
+                Id = applicationUser.Id,
+                UserName = applicationUser.UserName ?? string.Empty,
+                Email = applicationUser.Email ?? string.Empty,
+                EmailConfirmed = applicationUser.EmailConfirmed,
+                FirstName = applicationUser.FirstName ?? string.Empty,
+                LastName = applicationUser.LastName ?? string.Empty,
+                PhoneNumber = applicationUser.PhoneNumber,
+                PhoneNumberConfirmed = applicationUser.PhoneNumberConfirmed,
+                DateRegistered = applicationUser.CreatedAt, 
+                IsActive = !applicationUser.LockoutEnabled && applicationUser.EmailConfirmed, 
+                TwoFactorEnabled = applicationUser.TwoFactorEnabled,
+                IsLockedOut = applicationUser.LockoutEnabled,
+                LockoutEnd = applicationUser.LockoutEnd,
+                UpdatedAt = applicationUser.UpdatedAt,
+                Roles = new List<string>(), 
+                Claims = new Dictionary<string, string>()
+            };
+
+            _mockUserManager.Setup(um => um.FindByNameAsync(createUserDto.UserName)).ReturnsAsync((ApplicationUser?)null);
+            _mockUserManager.Setup(um => um.FindByEmailAsync(createUserDto.Email)).ReturnsAsync((ApplicationUser?)null);
+            _mockMapper.Setup(m => m.Map<ApplicationUser>(createUserDto)).Returns(applicationUser);
+            _mockUserManager.Setup(um => um.CreateAsync(applicationUser, createUserDto.Password)).ReturnsAsync(IdentityResult.Success);
+            _mockMapper.Setup(m => m.Map<UserResponseDTO>(applicationUser)).Returns(userResponseDto);
+
+            // Act
+            var result = await _userService.CreateUserAsync(createUserDto);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Roles.Should().BeEmpty();
+            _mockRoleManager.Verify(rm => rm.RoleExistsAsync(It.IsAny<string>()), Times.Never());
+            _mockUserManager.Verify(um => um.AddToRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Never());
+        }
+
+        [Fact]
+        public async Task CreateUserAsync_RequireEmailConfirmationTrue_SetsEmailConfirmedFalseOnUser()
+        {
+            // Arrange
+            var createUserDto = new CreateUserDTO // RequireEmailConfirmation = true
+            {
+                UserName = "newUser",
+                Email = "new@example.com",
+                Password = "Password123!",
+                ConfirmPassword = "Password123!",
+                FirstName = "New",
+                LastName = "User",
+                RequireEmailConfirmation = true,
+                Roles = new List<string>() // Default empty list
+            };
+            var applicationUser = new ApplicationUser { 
+                Id = Guid.NewGuid(), 
+                UserName = createUserDto.UserName, 
+                Email = createUserDto.Email,
+                FirstName = createUserDto.FirstName,
+                LastName = createUserDto.LastName
+            };
+            var userResponseDto = new UserResponseDTO {
+                Id = applicationUser.Id,
+                UserName = applicationUser.UserName ?? string.Empty,
+                Email = applicationUser.Email ?? string.Empty,
+                EmailConfirmed = applicationUser.EmailConfirmed,
+                FirstName = applicationUser.FirstName ?? string.Empty,
+                LastName = applicationUser.LastName ?? string.Empty,
+                PhoneNumber = applicationUser.PhoneNumber,
+                PhoneNumberConfirmed = applicationUser.PhoneNumberConfirmed,
+                DateRegistered = applicationUser.CreatedAt, 
+                IsActive = !applicationUser.LockoutEnabled && applicationUser.EmailConfirmed, 
+                TwoFactorEnabled = applicationUser.TwoFactorEnabled,
+                IsLockedOut = applicationUser.LockoutEnabled,
+                LockoutEnd = applicationUser.LockoutEnd,
+                UpdatedAt = applicationUser.UpdatedAt,
+                Roles = new List<string>(), 
+                Claims = new Dictionary<string, string>()
+            };
+
+            _mockUserManager.Setup(um => um.FindByNameAsync(createUserDto.UserName)).ReturnsAsync((ApplicationUser?)null);
+            _mockUserManager.Setup(um => um.FindByEmailAsync(createUserDto.Email)).ReturnsAsync((ApplicationUser?)null);
+            _mockMapper.Setup(m => m.Map<ApplicationUser>(createUserDto)).Returns(applicationUser);
+            _mockUserManager.Setup(um => um.CreateAsync(applicationUser, createUserDto.Password)).ReturnsAsync(IdentityResult.Success);
+            _mockMapper.Setup(m => m.Map<UserResponseDTO>(applicationUser)).Returns(userResponseDto);
+
+            // Act
+            await _userService.CreateUserAsync(createUserDto);
+
+            // Assert
+            applicationUser.EmailConfirmed.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task CreateUserAsync_GenericException_ThrowsAndLogsError()
+        {
+            // Arrange
+            var createUserDto = new CreateUserDTO
+            {
+                UserName = "newUser",
+                Email = "new@example.com",
+                Password = "Password123!",
+                ConfirmPassword = "Password123!",
+                FirstName = "New",
+                LastName = "User",
+                PhoneNumber = null,
+                RequireEmailConfirmation = false,
+                Roles = new List<string>() // Default empty list
+            };
+            _mockUserManager.Setup(um => um.FindByNameAsync(createUserDto.UserName)).ThrowsAsync(new System.Net.Http.HttpRequestException("Network error"));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<System.Net.Http.HttpRequestException>(() => _userService.CreateUserAsync(createUserDto));
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al crear el usuario '{createUserDto.UserName}'.", typeof(System.Net.Http.HttpRequestException));
+        }
+
+        #endregion
+
+        #region UpdateUserAsync Tests
+
+        [Fact]
+        public async Task UpdateUserAsync_WithValidDataAndRoleChanges_UpdatesUserAndRoles_ReturnsUserResponseDTO()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var updateUserDto = new UpdateUserDTO
+            {
+                Id = userId,
+                UserName = "updatedUser",
+                Email = "updated@example.com",
+                FirstName = "UpdatedFirst",
+                LastName = "UpdatedLast",
+                Roles = new List<string> { "NewRole", "KeptRole" },
+                IsActive = true,
+                EmailConfirmed = true
+            };
+            var existingUser = new ApplicationUser { Id = userId, UserName = "originalUser", Email = "original@example.com", FirstName = "OriginalFirst", IsDeleted = false };
+            var userResponseDto = new UserResponseDTO {
+                Id = userId,
+                UserName = updateUserDto.UserName ?? string.Empty,
+                Email = updateUserDto.Email ?? string.Empty,
+                EmailConfirmed = updateUserDto.EmailConfirmed ?? false,
+                FirstName = updateUserDto.FirstName ?? string.Empty,
+                LastName = updateUserDto.LastName ?? string.Empty,
+                PhoneNumber = existingUser.PhoneNumber,
+                PhoneNumberConfirmed = existingUser.PhoneNumberConfirmed,
+                DateRegistered = existingUser.CreatedAt,
+                IsActive = updateUserDto.IsActive ?? false,
+                TwoFactorEnabled = existingUser.TwoFactorEnabled,
+                IsLockedOut = !(updateUserDto.IsActive ?? true),
+                LockoutEnd = existingUser.LockoutEnd,
+                UpdatedAt = existingUser.UpdatedAt, // Or a fixed DateTime for test consistency if service updates it
+                Roles = updateUserDto.Roles ?? new List<string>(),
+                Claims = new Dictionary<string, string>()
+            };
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(existingUser);
+            _mockUserManager.Setup(um => um.FindByNameAsync(updateUserDto.UserName!)).ReturnsAsync((ApplicationUser?)null); // No conflict with new username
+            _mockUserManager.Setup(um => um.FindByEmailAsync(updateUserDto.Email!)).ReturnsAsync((ApplicationUser?)null); // No conflict with new email
+            _mockUserManager.Setup(um => um.UpdateAsync(existingUser)).ReturnsAsync(IdentityResult.Success);
+            _mockUserManager.Setup(um => um.GetRolesAsync(existingUser)).ReturnsAsync(new List<string> { "OldRole", "KeptRole" });
+            _mockUserManager.Setup(um => um.AddToRolesAsync(existingUser, It.Is<List<string>>(roles => roles.Contains("NewRole") && roles.Count == 1))).ReturnsAsync(IdentityResult.Success);
+            _mockUserManager.Setup(um => um.RemoveFromRolesAsync(existingUser, It.Is<List<string>>(roles => roles.Contains("OldRole") && roles.Count == 1))).ReturnsAsync(IdentityResult.Success);
+            _mockMapper.Setup(m => m.Map<UserResponseDTO>(existingUser)).Returns(userResponseDto);
+
+            // Act
+            var result = await _userService.UpdateUserAsync(userId, updateUserDto);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(userResponseDto, opt => opt.Excluding(r => r.Roles)); // Roles are set on DTO separately by service
+            existingUser.UserName.Should().Be(updateUserDto.UserName);
+            existingUser.Email.Should().Be(updateUserDto.Email);
+            existingUser.FirstName.Should().Be(updateUserDto.FirstName);
+            existingUser.IsActive.Should().Be(updateUserDto.IsActive!.Value);
+            existingUser.EmailConfirmed.Should().Be(updateUserDto.EmailConfirmed!.Value);
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Datos del usuario '{userId}' actualizados correctamente.");
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_NullDto_ThrowsArgumentNullException()
+        {
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _userService.UpdateUserAsync(Guid.NewGuid(), null!));
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), "El DTO para actualizar usuario no puede ser nulo.");
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_UserIdMismatchInDto_ThrowsArgumentException()
+        {
+            // Arrange
+            var routeUserId = Guid.NewGuid();
+            var dtoUserId = Guid.NewGuid(); // Different ID
+            var updateUserDto = new UpdateUserDTO { Id = dtoUserId };
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => _userService.UpdateUserAsync(routeUserId, updateUserDto));
+            ex.ParamName.Should().Be("userId");
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"El ID de usuario en la ruta ('{routeUserId}') y en el DTO ('{dtoUserId}') no coinciden o son inválidos.");
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_UserNotFound_ReturnsNullAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var updateUserDto = new UpdateUserDTO { Id = userId };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser?)null);
+
+            // Act
+            var result = await _userService.UpdateUserAsync(userId, updateUserDto);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró el usuario con ID '{userId}' para actualizar o está marcado como eliminado.");
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_UserIsDeleted_ReturnsNullAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var updateUserDto = new UpdateUserDTO { Id = userId };
+            var deletedUser = new ApplicationUser { Id = userId, IsDeleted = true };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(deletedUser);
+
+            // Act
+            var result = await _userService.UpdateUserAsync(userId, updateUserDto);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró el usuario con ID '{userId}' para actualizar o está marcado como eliminado.");
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_UpdateToExistingUserName_ThrowsInvalidOperationExceptionAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var updateUserDto = new UpdateUserDTO { Id = userId, UserName = "existingUser" };
+            var userToUpdate = new ApplicationUser { Id = userId, UserName = "originalUser" };
+            var otherUserWithSameName = new ApplicationUser { Id = Guid.NewGuid(), UserName = "existingUser" };
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(userToUpdate);
+            _mockUserManager.Setup(um => um.FindByNameAsync(updateUserDto.UserName)).ReturnsAsync(otherUserWithSameName);
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => _userService.UpdateUserAsync(userId, updateUserDto));
+            ex.Message.Should().Be($"El nombre de usuario '{updateUserDto.UserName}' ya está en uso por otro usuario.");
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"Intento de actualizar UserName a '{updateUserDto.UserName}' que ya está en uso por otro usuario.");
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_UpdateToExistingEmail_ThrowsInvalidOperationExceptionAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var updateUserDto = new UpdateUserDTO { Id = userId, Email = "existing@example.com" };
+            var userToUpdate = new ApplicationUser { Id = userId, Email = "original@example.com" };
+            var otherUserWithSameEmail = new ApplicationUser { Id = Guid.NewGuid(), Email = "existing@example.com" };
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(userToUpdate);
+            _mockUserManager.Setup(um => um.FindByEmailAsync(updateUserDto.Email)).ReturnsAsync(otherUserWithSameEmail);
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => _userService.UpdateUserAsync(userId, updateUserDto));
+            ex.Message.Should().Be($"El email '{updateUserDto.Email}' ya está en uso por otro usuario.");
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"Intento de actualizar Email a '{updateUserDto.Email}' que ya está en uso por otro usuario.");
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_UserManagerUpdateFails_ThrowsInvalidOperationExceptionAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var updateUserDto = new UpdateUserDTO { Id = userId, FirstName = "Test" };
+            var existingUser = new ApplicationUser { Id = userId };
+            var errors = new List<IdentityError> { new IdentityError { Code = "UpdateError", Description = "Update failed" } };
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(existingUser);
+            _mockUserManager.Setup(um => um.UpdateAsync(existingUser)).ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => _userService.UpdateUserAsync(userId, updateUserDto));
+            ex.Message.Should().Contain("Update failed");
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error al actualizar datos del usuario '{userId}': Update failed");
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_DtoRolesNull_KeepsExistingRoles()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var updateUserDto = new UpdateUserDTO { Id = userId, Roles = new List<string>() }; // Empty roles list instead of null
+            var existingUser = new ApplicationUser { 
+                Id = userId,
+                UserName = "testUser" + userId.ToString().Substring(0,4),
+                Email = "test" + userId.ToString().Substring(0,4) + "@example.com",
+                FirstName = "Test",
+                LastName = "User"
+            };
+            var userResponseDto = new UserResponseDTO {
+                Id = existingUser.Id,
+                UserName = existingUser.UserName ?? string.Empty,
+                Email = existingUser.Email ?? string.Empty,
+                EmailConfirmed = existingUser.EmailConfirmed,
+                FirstName = existingUser.FirstName ?? string.Empty,
+                LastName = existingUser.LastName ?? string.Empty,
+                PhoneNumber = existingUser.PhoneNumber,
+                PhoneNumberConfirmed = existingUser.PhoneNumberConfirmed,
+                DateRegistered = existingUser.CreatedAt,
+                IsActive = !existingUser.LockoutEnabled && existingUser.EmailConfirmed,
+                TwoFactorEnabled = existingUser.TwoFactorEnabled,
+                IsLockedOut = existingUser.LockoutEnabled,
+                LockoutEnd = existingUser.LockoutEnd,
+                UpdatedAt = existingUser.UpdatedAt,
+                Roles = new List<string>(), 
+                Claims = new Dictionary<string, string>()
+            };
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(existingUser);
+            _mockUserManager.Setup(um => um.UpdateAsync(existingUser)).ReturnsAsync(IdentityResult.Success);
+            _mockMapper.Setup(m => m.Map<UserResponseDTO>(existingUser)).Returns(userResponseDto);
+            // GetRolesAsync will be called, but AddToRolesAsync and RemoveFromRolesAsync should not if DTO.Roles is null
+            _mockUserManager.Setup(um => um.GetRolesAsync(existingUser)).ReturnsAsync(new List<string> { "ExistingRole" });
+
+            // Act
+            var result = await _userService.UpdateUserAsync(userId, updateUserDto);
+
+            // Assert
+            result.Should().NotBeNull();
+            _mockUserManager.Verify(um => um.AddToRolesAsync(It.IsAny<ApplicationUser>(), It.IsAny<IEnumerable<string>>()), Times.Never());
+            _mockUserManager.Verify(um => um.RemoveFromRolesAsync(It.IsAny<ApplicationUser>(), It.IsAny<IEnumerable<string>>()), Times.Never());
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_DtoRolesEmpty_RemovesAllExistingRoles()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var updateUserDto = new UpdateUserDTO { Id = userId, Roles = new List<string>() }; // Roles is empty list
+            var existingUser = new ApplicationUser { 
+                Id = userId,
+                UserName = "testUser" + userId.ToString().Substring(0,4),
+                Email = "test" + userId.ToString().Substring(0,4) + "@example.com",
+                FirstName = "Test",
+                LastName = "User"
+            };
+            var userResponseDto = new UserResponseDTO {
+                Id = existingUser.Id,
+                UserName = existingUser.UserName ?? string.Empty,
+                Email = existingUser.Email ?? string.Empty,
+                EmailConfirmed = existingUser.EmailConfirmed,
+                FirstName = existingUser.FirstName ?? string.Empty,
+                LastName = existingUser.LastName ?? string.Empty,
+                PhoneNumber = existingUser.PhoneNumber,
+                PhoneNumberConfirmed = existingUser.PhoneNumberConfirmed,
+                DateRegistered = existingUser.CreatedAt,
+                IsActive = !existingUser.LockoutEnabled && existingUser.EmailConfirmed,
+                TwoFactorEnabled = existingUser.TwoFactorEnabled,
+                IsLockedOut = existingUser.LockoutEnabled,
+                LockoutEnd = existingUser.LockoutEnd,
+                UpdatedAt = existingUser.UpdatedAt,
+                Roles = new List<string>(), 
+                Claims = new Dictionary<string, string>()
+            };
+            var currentRoles = new List<string> { "Role1", "Role2" };
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(existingUser);
+            _mockUserManager.Setup(um => um.UpdateAsync(existingUser)).ReturnsAsync(IdentityResult.Success);
+            _mockUserManager.Setup(um => um.GetRolesAsync(existingUser)).ReturnsAsync(currentRoles);
+            _mockUserManager.Setup(um => um.RemoveFromRolesAsync(existingUser, currentRoles)).ReturnsAsync(IdentityResult.Success);
+            _mockMapper.Setup(m => m.Map<UserResponseDTO>(existingUser)).Returns(userResponseDto);
+
+            // Act
+            var result = await _userService.UpdateUserAsync(userId, updateUserDto);
+
+            // Assert
+            result.Should().NotBeNull();
+            _mockUserManager.Verify(um => um.AddToRolesAsync(It.IsAny<ApplicationUser>(), It.IsAny<IEnumerable<string>>()), Times.Never());
+            _mockUserManager.Verify(um => um.RemoveFromRolesAsync(existingUser, currentRoles), Times.Once());
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_GenericException_ThrowsAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var updateUserDto = new UpdateUserDTO { Id = userId };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ThrowsAsync(new System.Net.Http.HttpRequestException("Network error"));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<System.Net.Http.HttpRequestException>(() => _userService.UpdateUserAsync(userId, updateUserDto));
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al actualizar el usuario '{userId}'.", typeof(System.Net.Http.HttpRequestException));
+        }
+
+        #endregion
+
+
+        // Tests for UpdateUserProfileAsync
+        [Fact]
+        public async Task UpdateUserProfileAsync_UserNotFound_ReturnsFalseAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var profileDto = new UpdateProfileDTO { FirstName = "NewName" };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser?)null);
+
+            // Act
+            var result = await _userService.UpdateUserProfileAsync(userId, profileDto);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró el usuario con ID '{userId}' para actualizar el perfil.");
+        }
+
+        [Fact]
+        public async Task UpdateUserProfileAsync_NoChangesInDto_ReturnsTrueAndLogsInformation()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId, FirstName = "OldName" };
+            var profileDto = new UpdateProfileDTO { /* All properties null */ }; 
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+
+            // Act
+            var result = await _userService.UpdateUserProfileAsync(userId, profileDto);
+
+            // Assert
+            result.Should().BeTrue();
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"No se proporcionaron datos para actualizar en el perfil del usuario '{userId}'.");
+            _mockUserManager.Verify(um => um.UpdateAsync(It.IsAny<ApplicationUser>()), Times.Never());
+        }
+
+        [Theory]
+        [InlineData("NewFirst", null, null)]
+        [InlineData(null, "NewLast", null)]
+        [InlineData(null, null, "123456789")]
+        [InlineData(null, null, "")] // Test clearing phone number
+        [InlineData("NewFirst", "NewLast", "987654321")]
+        public async Task UpdateUserProfileAsync_UpdatesFields_Successfully_ReturnsTrueAndLogsInformation(
+            string? newFirstName, string? newLastName, string? newPhoneNumber)
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var originalFirstName = "OriginalFirst";
+            var originalLastName = "OriginalLast";
+            var originalPhoneNumber = "555555555";
+            var user = new ApplicationUser 
+            {
+                Id = userId, 
+                FirstName = originalFirstName,
+                LastName = originalLastName,
+                PhoneNumber = originalPhoneNumber
+            };
+            var profileDto = new UpdateProfileDTO 
+            {
+                FirstName = newFirstName, 
+                LastName = newLastName, 
+                PhoneNumber = newPhoneNumber 
+            };
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.UpdateAsync(It.IsAny<ApplicationUser>()))
+                            .ReturnsAsync(IdentityResult.Success)
+                            .Callback<ApplicationUser>(updatedUser =>
+                            {
+                                if (newFirstName != null) updatedUser.FirstName.Should().Be(newFirstName);
+                                else updatedUser.FirstName.Should().Be(originalFirstName);
+                                if (newLastName != null) updatedUser.LastName.Should().Be(newLastName);
+                                else updatedUser.LastName.Should().Be(originalLastName);
+                                if (newPhoneNumber != null) updatedUser.PhoneNumber.Should().Be(newPhoneNumber);
+                                else updatedUser.PhoneNumber.Should().Be(originalPhoneNumber);
+                                updatedUser.UpdatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
+                            });
+
+            // Act
+            var result = await _userService.UpdateUserProfileAsync(userId, profileDto);
+
+            // Assert
+            result.Should().BeTrue();
+            _mockUserManager.Verify(um => um.UpdateAsync(user), Times.Once());
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Perfil de usuario '{userId}' actualizado exitosamente.");
+        }
+
+        [Fact]
+        public async Task UpdateUserProfileAsync_UserManagerUpdateFails_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId };
+            var profileDto = new UpdateProfileDTO { FirstName = "NewName" };
+            var errors = new List<IdentityError> { new IdentityError { Description = "Update failed" } };
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.UpdateAsync(user)).ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
+
+            // Act
+            var result = await _userService.UpdateUserProfileAsync(userId, profileDto);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error al actualizar el perfil del usuario '{userId}': {errors.First().Description}");
+        }
+
+        [Fact]
+        public async Task UpdateUserProfileAsync_FindByIdAsyncThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var profileDto = new UpdateProfileDTO { FirstName = "NewName" };
+            var exception = new InvalidOperationException("DB error during find");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.UpdateUserProfileAsync(userId, profileDto);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al actualizar el perfil del usuario '{userId}'.", typeof(InvalidOperationException));
+        }
+
+        [Fact]
+        public async Task UpdateUserProfileAsync_UpdateAsyncThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId };
+            var profileDto = new UpdateProfileDTO { FirstName = "NewName" };
+            var exception = new InvalidOperationException("DB error during update");
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.UpdateAsync(user)).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.UpdateUserProfileAsync(userId, profileDto);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al actualizar el perfil del usuario '{userId}'.", typeof(InvalidOperationException));
+        }
+
+        // Tests for LockUserAsync
+        [Fact]
+        public async Task LockUserAsync_UserNotFound_ReturnsFalseAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser?)null);
+
+            // Act
+            var result = await _userService.LockUserAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró un usuario activo con ID '{userId}' para bloquear.");
+        }
+
+        [Fact]
+        public async Task LockUserAsync_UserIsDeleted_ReturnsFalseAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId, IsDeleted = true };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+
+            // Act
+            var result = await _userService.LockUserAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró un usuario activo con ID '{userId}' para bloquear.");
+        }
+
+        [Fact]
+        public async Task LockUserAsync_UserAlreadyLockedOut_ReturnsTrueAndLogsInformation()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var lockoutEndDate = DateTimeOffset.UtcNow.AddHours(1);
+            var user = new ApplicationUser { Id = userId, LockoutEnd = lockoutEndDate };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(true);
+
+            // Act
+            var result = await _userService.LockUserAsync(userId);
+
+            // Assert
+            result.Should().BeTrue();
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"El usuario '{userId}' ya se encuentra bloqueado. Fecha de finalización del bloqueo: {lockoutEndDate}");
+            _mockUserManager.Verify(um => um.SetLockoutEndDateAsync(user, It.IsAny<DateTimeOffset?>()), Times.Never());
+        }
+
+        [Fact]
+        public async Task LockUserAsync_SuccessfulLockout_WithSpecificDurationAndReason_ReturnsTrueAndLogsInformation()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId };
+            var duration = TimeSpan.FromHours(2);
+            var reason = "Test lockout reason";
+            DateTimeOffset expectedLockoutEnd = DateTimeOffset.MinValue; // Will be set in callback
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(false);
+            _mockUserManager.Setup(um => um.SetLockoutEndDateAsync(user, It.IsAny<DateTimeOffset?>()))
+                            .Callback<ApplicationUser, DateTimeOffset?>((u, dto) => expectedLockoutEnd = dto!.Value)
+                            .ReturnsAsync(IdentityResult.Success);
+
+            // Act
+            var result = await _userService.LockUserAsync(userId, duration, reason);
+
+            // Assert
+            result.Should().BeTrue();
+            expectedLockoutEnd.Should().BeCloseTo(DateTimeOffset.UtcNow.Add(duration), TimeSpan.FromSeconds(1));
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Usuario '{userId}' bloqueado exitosamente hasta {expectedLockoutEnd}. Razón: {reason}");
+        }
+
+        [Fact]
+        public async Task LockUserAsync_SuccessfulLockout_WithDefaultDurationAndNoReason_ReturnsTrueAndLogsInformation()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId };
+            var defaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+            DateTimeOffset expectedLockoutEnd = DateTimeOffset.MinValue; // Will be set in callback
+
+            var mockUserStore = new Mock<IUserStore<ApplicationUser>>();
+            var mockOptions = new Mock<IOptions<IdentityOptions>>();
+            var identityOptions = new IdentityOptions();
+            identityOptions.Lockout.DefaultLockoutTimeSpan = defaultLockoutTimeSpan;
+            mockOptions.Setup(o => o.Value).Returns(identityOptions);
+            // Re-initialize UserManager with mocked options for DefaultLockoutTimeSpan
+            var localMockUserManager = new Mock<UserManager<ApplicationUser>>(
+                mockUserStore.Object, mockOptions.Object, new Mock<IPasswordHasher<ApplicationUser>>().Object, 
+                new IUserValidator<ApplicationUser>[0], new IPasswordValidator<ApplicationUser>[0], 
+                new Mock<ILookupNormalizer>().Object, new Mock<IdentityErrorDescriber>().Object, 
+                new Mock<IServiceProvider>().Object, new Mock<ILogger<UserManager<ApplicationUser>>>().Object);
+            
+            // Setup mocks on the local UserManager instance used by the service for this test path
+            _mockUserManager.Setup(um => um.Options).Returns(identityOptions); // Ensure the service's UserManager instance uses these options
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(false);
+            _mockUserManager.Setup(um => um.SetLockoutEndDateAsync(user, It.IsAny<DateTimeOffset?>()))
+                            .Callback<ApplicationUser, DateTimeOffset?>((u, dto) => expectedLockoutEnd = dto!.Value)
+                            .ReturnsAsync(IdentityResult.Success);
+
+            // Act
+            var result = await _userService.LockUserAsync(userId, TimeSpan.Zero, string.Empty); // Using default values instead of null
+
+            // Assert
+            result.Should().BeTrue();
+            expectedLockoutEnd.Should().BeCloseTo(DateTimeOffset.UtcNow.Add(defaultLockoutTimeSpan), TimeSpan.FromSeconds(1));
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Usuario '{userId}' bloqueado exitosamente hasta {expectedLockoutEnd}. Razón: No especificada");
+        }
+
+        [Fact]
+        public async Task LockUserAsync_SetLockoutEndDateFails_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId };
+            var errors = new List<IdentityError> { new IdentityError { Description = "SetLockoutEndDate failed" } };
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(false);
+            _mockUserManager.Setup(um => um.SetLockoutEndDateAsync(user, It.IsAny<DateTimeOffset?>()))
+                            .ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
+            // Mock options for DefaultLockoutTimeSpan as it's used if duration is null
+            var identityOptions = new IdentityOptions();
+            _mockUserManager.Setup(um => um.Options).Returns(identityOptions);
+
+            // Act
+            var result = await _userService.LockUserAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error al bloquear al usuario '{userId}': {errors.First().Description}");
+        }
+
+        [Fact]
+        public async Task LockUserAsync_FindByIdAsyncThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var exception = new InvalidOperationException("DB error during find");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.LockUserAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al bloquear al usuario '{userId}'.", typeof(InvalidOperationException));
+        }
+
+        [Fact]
+        public async Task LockUserAsync_IsLockedOutAsyncThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId };
+            var exception = new InvalidOperationException("DB error during IsLockedOutAsync");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.LockUserAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al bloquear al usuario '{userId}'.", typeof(InvalidOperationException));
+        }
+
+        [Fact]
+        public async Task LockUserAsync_SetLockoutEndDateAsyncThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId };
+            var exception = new InvalidOperationException("DB error during SetLockoutEndDateAsync");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(false);
+            _mockUserManager.Setup(um => um.SetLockoutEndDateAsync(user, It.IsAny<DateTimeOffset?>())).ThrowsAsync(exception);
+            // Mock options for DefaultLockoutTimeSpan as it's used if duration is null
+            var identityOptions = new IdentityOptions();
+            _mockUserManager.Setup(um => um.Options).Returns(identityOptions);
+
+            // Act
+            var result = await _userService.LockUserAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al bloquear al usuario '{userId}'.", typeof(InvalidOperationException));
+        }
+
+        // Tests for UnlockUserAsync
+        [Fact]
+        public async Task UnlockUserAsync_UserNotFound_ReturnsFalseAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser?)null);
+
+            // Act
+            var result = await _userService.UnlockUserAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró un usuario activo con ID '{userId}' para desbloquear.");
+        }
+
+        [Fact]
+        public async Task UnlockUserAsync_UserIsDeleted_ReturnsFalseAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId, IsDeleted = true };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+
+            // Act
+            var result = await _userService.UnlockUserAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró un usuario activo con ID '{userId}' para desbloquear.");
+        }
+
+        [Fact]
+        public async Task UnlockUserAsync_UserNotLockedOut_ReturnsTrueAndLogsInformation()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(false);
+
+            // Act
+            var result = await _userService.UnlockUserAsync(userId);
+
+            // Assert
+            result.Should().BeTrue();
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"El usuario '{userId}' no se encuentra actualmente bloqueado.");
+            _mockUserManager.Verify(um => um.SetLockoutEndDateAsync(user, It.IsAny<DateTimeOffset?>()), Times.Never());
+            _mockUserManager.Verify(um => um.ResetAccessFailedCountAsync(user), Times.Never());
+        }
+
+        [Fact]
+        public async Task UnlockUserAsync_SuccessfulUnlock_ReturnsTrueResetsAccessFailedCountAndLogsInformation()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(true);
+            _mockUserManager.Setup(um => um.SetLockoutEndDateAsync(user, It.IsAny<DateTimeOffset?>()))
+                            .Callback<ApplicationUser, DateTimeOffset?>((u, dto) => 
+                            {
+                                dto.Should().NotBeNull();
+                                dto.Value.Should().BeCloseTo(DateTimeOffset.UtcNow, TimeSpan.FromSeconds(1));
+                            })
+                            .ReturnsAsync(IdentityResult.Success);
+            _mockUserManager.Setup(um => um.ResetAccessFailedCountAsync(user)).ReturnsAsync(IdentityResult.Success);
+
+            // Act
+            var result = await _userService.UnlockUserAsync(userId);
+
+            // Assert
+            result.Should().BeTrue();
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Usuario '{userId}' desbloqueado exitosamente.");
+            _mockUserManager.Verify(um => um.SetLockoutEndDateAsync(user, It.IsAny<DateTimeOffset?>()), Times.Once());
+            _mockUserManager.Verify(um => um.ResetAccessFailedCountAsync(user), Times.Once());
+        }
+
+        [Fact]
+        public async Task UnlockUserAsync_SetLockoutEndDateFails_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId };
+            var errors = new List<IdentityError> { new IdentityError { Description = "SetLockoutEndDate failed" } };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(true);
+            _mockUserManager.Setup(um => um.SetLockoutEndDateAsync(user, It.IsAny<DateTimeOffset?>()))
+                            .ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
+
+            // Act
+            var result = await _userService.UnlockUserAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error al desbloquear al usuario '{userId}': {errors.First().Description}");
+            _mockUserManager.Verify(um => um.ResetAccessFailedCountAsync(user), Times.Never());
+        }
+
+        [Fact]
+        public async Task UnlockUserAsync_FindByIdAsyncThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var exception = new InvalidOperationException("DB error during find");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.UnlockUserAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al desbloquear al usuario '{userId}'.", typeof(InvalidOperationException));
+        }
+
+        [Fact]
+        public async Task UnlockUserAsync_IsLockedOutAsyncThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId };
+            var exception = new InvalidOperationException("DB error during IsLockedOutAsync");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.UnlockUserAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al desbloquear al usuario '{userId}'.", typeof(InvalidOperationException));
+        }
+
+        [Fact]
+        public async Task UnlockUserAsync_SetLockoutEndDateAsyncThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId };
+            var exception = new InvalidOperationException("DB error during SetLockoutEndDateAsync");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(true);
+            _mockUserManager.Setup(um => um.SetLockoutEndDateAsync(user, It.IsAny<DateTimeOffset?>())).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.UnlockUserAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al desbloquear al usuario '{userId}'.", typeof(InvalidOperationException));
+            _mockUserManager.Verify(um => um.ResetAccessFailedCountAsync(user), Times.Never());
+        }
+
+        [Fact]
+        public async Task UnlockUserAsync_ResetAccessFailedCountAsyncThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId };
+            var exception = new InvalidOperationException("DB error during ResetAccessFailedCountAsync");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(true);
+            _mockUserManager.Setup(um => um.SetLockoutEndDateAsync(user, It.IsAny<DateTimeOffset?>()))
+                            .ReturnsAsync(IdentityResult.Success);
+            _mockUserManager.Setup(um => um.ResetAccessFailedCountAsync(user)).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.UnlockUserAsync(userId);
+            // Assert
+            result.Should().BeFalse(); // Because the exception is caught by the main try-catch
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Usuario '{userId}' desbloqueado exitosamente."); // Log for successful SetLockoutEndDateAsync
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al desbloquear al usuario '{userId}'.", typeof(InvalidOperationException)); // Log for the exception from ResetAccessFailedCountAsync
+        }
+
+        // Tests for IsUserLockedOutAsync
+        [Fact]
+        public async Task IsUserLockedOutAsync_UserNotFound_ReturnsFalseAndLogsInformation()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser?)null);
+
+            // Act
+            var result = await _userService.IsUserLockedOutAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"No se encontró un usuario activo con ID '{userId}' para verificar si está bloqueado.");
+        }
+
+        [Fact]
+        public async Task IsUserLockedOutAsync_UserIsDeleted_ReturnsFalseAndLogsInformation()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId, IsDeleted = true };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+
+            // Act
+            var result = await _userService.IsUserLockedOutAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"No se encontró un usuario activo con ID '{userId}' para verificar si está bloqueado.");
+        }
+
+        [Fact]
+        public async Task IsUserLockedOutAsync_UserIsLockedOut_ReturnsTrue()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(true);
+
+            // Act
+            var result = await _userService.IsUserLockedOutAsync(userId);
+
+            // Assert
+            result.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task IsUserLockedOutAsync_UserIsNotLockedOut_ReturnsFalse()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(false);
+
+            // Act
+            var result = await _userService.IsUserLockedOutAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task IsUserLockedOutAsync_FindByIdAsyncThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var exception = new InvalidOperationException("DB error during find");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.IsUserLockedOutAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al verificar si el usuario '{userId}' está bloqueado.", typeof(InvalidOperationException));
+        }
+
+        [Fact]
+        public async Task IsUserLockedOutAsync_UserManagerIsLockedOutAsyncThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId };
+            var exception = new InvalidOperationException("DB error during IsLockedOutAsync check");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.IsUserLockedOutAsync(userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al verificar si el usuario '{userId}' está bloqueado.", typeof(InvalidOperationException));
+        }
+
+        // Tests for GetUserLockoutInfoAsync
+        [Fact]
+        public async Task GetUserLockoutInfoAsync_UserNotFound_ReturnsNullAndLogsInformation()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser?)null);
+
+            // Act
+            var result = await _userService.GetUserLockoutInfoAsync(userId);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"No se encontró un usuario activo con ID '{userId}' para obtener información de bloqueo.");
+        }
+
+        [Fact]
+        public async Task GetUserLockoutInfoAsync_UserIsDeleted_ReturnsNullAndLogsInformation()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId, UserName = "deleteduser", IsDeleted = true };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+
+            // Act
+            var result = await _userService.GetUserLockoutInfoAsync(userId);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"No se encontró un usuario activo con ID '{userId}' para obtener información de bloqueo.");
+        }
+
+        [Fact]
+        public async Task GetUserLockoutInfoAsync_UserNotLockedOut_ReturnsCorrectInfo()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var userName = "testuser";
+            var user = new ApplicationUser { Id = userId, UserName = userName };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(false);
+            _mockUserManager.Setup(um => um.GetLockoutEndDateAsync(user)).ReturnsAsync((DateTimeOffset?)null);
+
+            // Act
+            var result = await _userService.GetUserLockoutInfoAsync(userId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.UserId.Should().Be(userId.ToString());
+            result.UserName.Should().Be(userName);
+            result.IsLockedOut.Should().BeFalse();
+            result.LockoutEnd.Should().BeNull();
+            result.IsPermanent.Should().BeFalse();
+            result.Reason.Should().BeNull(); // As per current implementation
+            result.LockoutStart.Should().BeNull(); // As per current implementation
+        }
+
+        [Fact]
+        public async Task GetUserLockoutInfoAsync_UserTemporarilyLockedOut_ReturnsCorrectInfo()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var userName = "lockeduser";
+            var user = new ApplicationUser { Id = userId, UserName = userName };
+            var lockoutEndDate = DateTimeOffset.UtcNow.AddHours(1);
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(true);
+            _mockUserManager.Setup(um => um.GetLockoutEndDateAsync(user)).ReturnsAsync(lockoutEndDate);
+
+            // Act
+            var result = await _userService.GetUserLockoutInfoAsync(userId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.UserId.Should().Be(userId.ToString());
+            result.UserName.Should().Be(userName);
+            result.IsLockedOut.Should().BeTrue();
+            result.LockoutEnd.Should().BeCloseTo(lockoutEndDate.UtcDateTime, TimeSpan.FromSeconds(1));
+            result.IsPermanent.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task GetUserLockoutInfoAsync_UserPermanentlyLockedOut_ReturnsCorrectInfo()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var userName = "permabanned";
+            var user = new ApplicationUser { Id = userId, UserName = userName };
+            var permanentLockoutEndDate = DateTimeOffset.MaxValue;
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(true);
+            _mockUserManager.Setup(um => um.GetLockoutEndDateAsync(user)).ReturnsAsync(permanentLockoutEndDate);
+
+            // Act
+            var result = await _userService.GetUserLockoutInfoAsync(userId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.UserId.Should().Be(userId.ToString());
+            result.UserName.Should().Be(userName);
+            result.IsLockedOut.Should().BeTrue();
+            result.LockoutEnd.Should().Be(permanentLockoutEndDate.UtcDateTime);
+            result.IsPermanent.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task GetUserLockoutInfoAsync_UserNameIsNull_SetsEmptyStringInDTO()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId, UserName = null }; // UserName is null
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(false);
+            _mockUserManager.Setup(um => um.GetLockoutEndDateAsync(user)).ReturnsAsync((DateTimeOffset?)null);
+
+            // Act
+            var result = await _userService.GetUserLockoutInfoAsync(userId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.UserName.Should().Be(string.Empty);
+        }
+
+        [Fact]
+        public async Task GetUserLockoutInfoAsync_FindByIdAsyncThrowsException_ReturnsNullAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var exception = new InvalidOperationException("DB error during find");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.GetUserLockoutInfoAsync(userId);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al obtener la información de bloqueo para el usuario '{userId}'.", typeof(InvalidOperationException));
+        }
+
+        [Fact]
+        public async Task GetUserLockoutInfoAsync_IsLockedOutAsyncThrowsException_ReturnsNullAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId, UserName = "testuser" };
+            var exception = new InvalidOperationException("DB error during IsLockedOutAsync");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.GetUserLockoutInfoAsync(userId);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al obtener la información de bloqueo para el usuario '{userId}'.", typeof(InvalidOperationException));
+        }
+
+        [Fact]
+        public async Task GetUserLockoutInfoAsync_GetLockoutEndDateAsyncThrowsException_ReturnsNullAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new ApplicationUser { Id = userId, UserName = "testuser" };
+            var exception = new InvalidOperationException("DB error during GetLockoutEndDateAsync");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(false); // Doesn't matter for this test path
+            _mockUserManager.Setup(um => um.GetLockoutEndDateAsync(user)).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.GetUserLockoutInfoAsync(userId);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al obtener la información de bloqueo para el usuario '{userId}'.", typeof(InvalidOperationException));
+        }
+
+        // Tests for GetPasswordResetTokenAsync
+        [Fact]
+        public async Task GetPasswordResetTokenAsync_UserNotFound_ReturnsNullAndLogsWarning()
+        {
+            // Arrange
+            var userIdOrEmail = "notfound@example.com";
+                    _mockUserManager.Setup(um => um.FindByEmailAsync(userIdOrEmail))
+                            .ReturnsAsync((ApplicationUser?)null);
+            _mockUserManager.Setup(um => um.FindByNameAsync(userIdOrEmail))
+                            .ReturnsAsync((ApplicationUser?)null);
+
+            // Act
+            var result = await _userService.GetPasswordResetTokenAsync(userIdOrEmail);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró un usuario activo con ID o email '{userIdOrEmail}' para generar token de reseteo de contraseña.");
+        }
+
+        [Fact]
+        public async Task GetPasswordResetTokenAsync_UserIsDeleted_ReturnsNullAndLogsWarning()
+        {
+            // Arrange
+            var userIdOrEmail = "deleted@example.com";
+            var user = new ApplicationUser { Id = Guid.NewGuid(), Email = userIdOrEmail, IsDeleted = true };
+            _mockUserManager.Setup(um => um.FindByEmailAsync(userIdOrEmail))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByNameAsync(userIdOrEmail))
+                            .ReturnsAsync(user);
+
+            // Act
+            var result = await _userService.GetPasswordResetTokenAsync(userIdOrEmail);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró un usuario activo con ID o email '{userIdOrEmail}' para generar token de reseteo de contraseña.");
+        }
+
+        [Fact]
+        public async Task GetPasswordResetTokenAsync_Success_ReturnsTokenAndLogsInformation()
+        {
+            // Arrange
+            var userIdOrEmail = "user@example.com";
+            var user = new ApplicationUser { Id = Guid.NewGuid(), Email = userIdOrEmail };
+            var token = "reset-token-123";
+            _mockUserManager.Setup(um => um.FindByEmailAsync(userIdOrEmail))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByNameAsync(userIdOrEmail))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.GeneratePasswordResetTokenAsync(user)).ReturnsAsync(token);
+
+            // Act
+            var result = await _userService.GetPasswordResetTokenAsync(userIdOrEmail);
+
+            // Assert
+            result.Should().Be(token);
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Token de reseteo de contraseña generado para el usuario '{userIdOrEmail}'.");
+        }
+
+        [Fact]
+        public async Task GetPasswordResetTokenAsync_FindUserThrowsException_ReturnsNullAndLogsError()
+        {
+            // Arrange
+            var userIdOrEmail = "error@example.com";
+            var exception = new InvalidOperationException("DB error during find");
+            _mockUserManager.Setup(um => um.FindByEmailAsync(userIdOrEmail)).ThrowsAsync(exception);
+            _mockUserManager.Setup(um => um.FindByNameAsync(userIdOrEmail)).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.GetPasswordResetTokenAsync(userIdOrEmail);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al generar token de reseteo de contraseña para '{userIdOrEmail}'.", typeof(InvalidOperationException));
+        }
+
+        [Fact]
+        public async Task GetPasswordResetTokenAsync_GeneratePasswordResetTokenThrowsException_ReturnsNullAndLogsError()
+        {
+            // Arrange
+            var userIdOrEmail = "user2@example.com";
+            var user = new ApplicationUser { Id = Guid.NewGuid(), Email = userIdOrEmail };
+            var exception = new InvalidOperationException("DB error during token generation");
+            _mockUserManager.Setup(um => um.FindByEmailAsync(userIdOrEmail))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByNameAsync(userIdOrEmail))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.GeneratePasswordResetTokenAsync(user)).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.GetPasswordResetTokenAsync(userIdOrEmail);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al generar token de reseteo de contraseña para '{userIdOrEmail}'.", typeof(InvalidOperationException));
+        }
+
+        // Tests for ResetPasswordAsync
+        [Fact]
+        public async Task ResetPasswordAsync_DTONull_ReturnsFalseAndLogsWarning()
+        {
+            // Act
+            var result = await _userService.ResetPasswordAsync(null);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), "El DTO para resetear contraseña no puede ser nulo.");
+        }
+
+        [Fact]
+        public async Task ResetPasswordAsync_UserNotFound_ReturnsFalseAndLogsWarning()
+        {
+            // Arrange
+            var dto = new ResetPasswordDTO { EmailOrUserId = "notfound@example.com", Token = "token", NewPassword = "NewPass123!" };
+            _mockUserManager.Setup(um => um.FindByEmailAsync(dto.EmailOrUserId))
+                            .ReturnsAsync((ApplicationUser?)null);
+            _mockUserManager.Setup(um => um.FindByNameAsync(dto.EmailOrUserId))
+                            .ReturnsAsync((ApplicationUser?)null);
+            _mockUserManager.Setup(um => um.FindByIdAsync(dto.EmailOrUserId.ToString())).ReturnsAsync((ApplicationUser?)null);
+
+            // Act
+            var result = await _userService.ResetPasswordAsync(dto);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró un usuario activo con ID o email '{dto.EmailOrUserId}' para resetear contraseña.");
+        }
+
+        [Fact]
+        public async Task ResetPasswordAsync_UserIsDeleted_ReturnsFalseAndLogsWarning()
+        {
+            // Arrange
+            var dto = new ResetPasswordDTO { EmailOrUserId = "deleted@example.com", Token = "token", NewPassword = "NewPass123!" };
+            var user = new ApplicationUser { Id = Guid.NewGuid(), Email = dto.EmailOrUserId, IsDeleted = true };
+            _mockUserManager.Setup(um => um.FindByEmailAsync(dto.EmailOrUserId))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByNameAsync(dto.EmailOrUserId))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByIdAsync(dto.EmailOrUserId.ToString())).ReturnsAsync(user);
+
+            // Act
+            var result = await _userService.ResetPasswordAsync(dto);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró un usuario activo con ID o email '{dto.EmailOrUserId}' para resetear contraseña.");
+        }
+
+        [Fact]
+        public async Task ResetPasswordAsync_SuccessfulResetAndUserNotLockedOut_LogsInfoAndReturnsTrue()
+        {
+            // Arrange
+            var dto = new ResetPasswordDTO { EmailOrUserId = "user@example.com", Token = "token", NewPassword = "NewPass123!" };
+            var user = new ApplicationUser { Id = Guid.NewGuid(), Email = dto.EmailOrUserId, LockoutEnd = null };
+            _mockUserManager.Setup(um => um.FindByEmailAsync(dto.EmailOrUserId))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByNameAsync(dto.EmailOrUserId))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByIdAsync(dto.EmailOrUserId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.ResetPasswordAsync(user, dto.Token, dto.NewPassword)).ReturnsAsync(IdentityResult.Success);
+
+            // Act
+            var result = await _userService.ResetPasswordAsync(dto);
+
+            // Assert
+            result.Should().BeTrue();
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Contraseña reseteada exitosamente para el usuario '{dto.EmailOrUserId}'.");
+            _mockUserManager.Verify(um => um.SetLockoutEndDateAsync(user, It.IsAny<DateTimeOffset?>()), Times.Never());
+        }
+
+        [Fact]
+        public async Task ResetPasswordAsync_SuccessfulResetAndUserWasLockedOut_UnlocksUserLogsInfoAndReturnsTrue()
+        {
+            // Arrange
+            var dto = new ResetPasswordDTO { EmailOrUserId = "locked@example.com", Token = "token", NewPassword = "NewPass123!" };
+            var user = new ApplicationUser { Id = Guid.NewGuid(), Email = dto.EmailOrUserId, LockoutEnd = DateTimeOffset.UtcNow.AddMinutes(30) };
+            _mockUserManager.Setup(um => um.FindByEmailAsync(dto.EmailOrUserId))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByNameAsync(dto.EmailOrUserId))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByIdAsync(dto.EmailOrUserId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.ResetPasswordAsync(user, dto.Token, dto.NewPassword)).ReturnsAsync(IdentityResult.Success);
+            _mockUserManager.Setup(um => um.SetLockoutEndDateAsync(user, It.IsAny<DateTimeOffset?>())).ReturnsAsync(IdentityResult.Success);
+
+            // Act
+            var result = await _userService.ResetPasswordAsync(dto);
+
+            // Assert
+            result.Should().BeTrue();
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Contraseña reseteada exitosamente para el usuario '{dto.EmailOrUserId}'.");
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Usuario '{dto.EmailOrUserId}' desbloqueado después del reseteo de contraseña.");
+            _mockUserManager.Verify(um => um.SetLockoutEndDateAsync(user, It.IsAny<DateTimeOffset?>()), Times.Once());
+        }
+
+        [Fact]
+        public async Task ResetPasswordAsync_FailureInResetPassword_LogsErrorAndReturnsFalse()
+        {
+            // Arrange
+            var dto = new ResetPasswordDTO { EmailOrUserId = "fail@example.com", Token = "token", NewPassword = "NewPass123!" };
+            var user = new ApplicationUser { Id = Guid.NewGuid(), Email = dto.EmailOrUserId };
+            var errors = new List<IdentityError> { new IdentityError { Description = "Password too weak" } };
+            _mockUserManager.Setup(um => um.FindByEmailAsync(dto.EmailOrUserId))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByNameAsync(dto.EmailOrUserId))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByIdAsync(dto.EmailOrUserId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.ResetPasswordAsync(user, dto.Token, dto.NewPassword)).ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
+
+            // Act
+            var result = await _userService.ResetPasswordAsync(dto);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error al resetear la contraseña para el usuario '{dto.EmailOrUserId}': {errors.First().Description}");
+        }
+
+        [Fact]
+        public async Task ResetPasswordAsync_FindUserThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var dto = new ResetPasswordDTO { EmailOrUserId = "error@example.com", Token = "token", NewPassword = "NewPass123!" };
+            var exception = new InvalidOperationException("DB error during find");
+            _mockUserManager.Setup(um => um.FindByEmailAsync(dto.EmailOrUserId)).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.ResetPasswordAsync(dto);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al resetear la contraseña para '{dto.EmailOrUserId}'.", typeof(InvalidOperationException));
+        }
+
+        [Fact]
+        public async Task ResetPasswordAsync_ResetPasswordThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var dto = new ResetPasswordDTO { EmailOrUserId = "user2@example.com", Token = "token", NewPassword = "NewPass123!" };
+            var user = new ApplicationUser { Id = Guid.NewGuid(), Email = dto.EmailOrUserId };
+            var exception = new InvalidOperationException("DB error during reset password");
+            _mockUserManager.Setup(um => um.FindByEmailAsync(dto.EmailOrUserId))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByNameAsync(dto.EmailOrUserId))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByIdAsync(dto.EmailOrUserId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.ResetPasswordAsync(user, dto.Token, dto.NewPassword)).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.ResetPasswordAsync(dto);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al resetear la contraseña para '{dto.EmailOrUserId}'.", typeof(InvalidOperationException));
+        }
+
+        [Fact]
+        public async Task ResetPasswordAsync_SetLockoutEndDateThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var dto = new ResetPasswordDTO { EmailOrUserId = "locked2@example.com", Token = "token", NewPassword = "NewPass123!" };
+            var user = new ApplicationUser { Id = Guid.NewGuid(), Email = dto.EmailOrUserId, LockoutEnd = DateTimeOffset.UtcNow.AddMinutes(30) };
+            _mockUserManager.Setup(um => um.FindByEmailAsync(dto.EmailOrUserId))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByNameAsync(dto.EmailOrUserId))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByIdAsync(dto.EmailOrUserId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.ResetPasswordAsync(user, dto.Token, dto.NewPassword)).ReturnsAsync(IdentityResult.Success);
+            var exception = new InvalidOperationException("DB error during unlock");
+            _mockUserManager.Setup(um => um.SetLockoutEndDateAsync(user, It.IsAny<DateTimeOffset?>())).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.ResetPasswordAsync(dto);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Contraseña reseteada exitosamente para el usuario '{dto.EmailOrUserId}'.");
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al resetear la contraseña para '{dto.EmailOrUserId}'.", typeof(InvalidOperationException));
+        }
+
+        // Tests for ChangePasswordAsync
+        [Fact]
+        public async Task ChangePasswordAsync_UserIdOrDtoInvalid_ReturnsFalseAndLogsWarning()
+        {
+            // Act
+            var result1 = await _userService.ChangePasswordAsync(Guid.Empty, null);
+            var result2 = await _userService.ChangePasswordAsync(Guid.NewGuid(), new ChangePasswordDTO());
+
+            // Assert
+            result1.Should().BeFalse();
+            result2.Should().BeFalse();
+
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Exactly(3), "ID de usuario o DTO de cambio de contraseña inválidos.");
+        }
+
+        [Fact]
+        public async Task ChangePasswordAsync_UserNotFound_ReturnsFalseAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var dto = new ChangePasswordDTO { CurrentPassword = "old", NewPassword = "new" };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser?)null);
+
+            // Act
+            var result = await _userService.ChangePasswordAsync(userId, dto);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró un usuario activo con ID '{userId}' para cambiar contraseña.");
+        }
+
+        [Fact]
+        public async Task ChangePasswordAsync_UserIsDeleted_ReturnsFalseAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var dto = new ChangePasswordDTO { CurrentPassword = "old", NewPassword = "new" };
+            var user = new ApplicationUser { Id = userId, IsDeleted = true };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+
+            // Act
+            var result = await _userService.ChangePasswordAsync(userId, dto);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró un usuario activo con ID '{userId}' para cambiar contraseña.");
+        }
+
+        [Fact]
+        public async Task ChangePasswordAsync_SuccessfulChange_LogsInfoAndReturnsTrue()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var dto = new ChangePasswordDTO { CurrentPassword = "old", NewPassword = "new" };
+            var user = new ApplicationUser { Id = userId };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword)).ReturnsAsync(IdentityResult.Success);
+
+            // Act
+            var result = await _userService.ChangePasswordAsync(userId, dto);
+
+            // Assert
+            result.Should().BeTrue();
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Contraseña cambiada exitosamente para el usuario '{userId}'.");
+        }
+
+        [Fact]
+        public async Task ChangePasswordAsync_FailureInChangePassword_LogsErrorAndReturnsFalse()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var dto = new ChangePasswordDTO { CurrentPassword = "old", NewPassword = "new" };
+            var user = new ApplicationUser { Id = userId };
+            var errors = new List<IdentityError> { new IdentityError { Description = "Password too weak" } };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword)).ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
+
+            // Act
+            var result = await _userService.ChangePasswordAsync(userId, dto);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error al cambiar la contraseña para el usuario '{userId}': {errors.First().Description}");
+        }
+
+        [Fact]
+        public async Task ChangePasswordAsync_FindByIdThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var dto = new ChangePasswordDTO { CurrentPassword = "old", NewPassword = "new" };
+            var exception = new InvalidOperationException("DB error during find");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.ChangePasswordAsync(userId, dto);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al cambiar la contraseña para el usuario '{userId}'.", typeof(InvalidOperationException));
+        }
+
+        [Fact]
+        public async Task ChangePasswordAsync_ChangePasswordThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var dto = new ChangePasswordDTO { CurrentPassword = "old", NewPassword = "new" };
+            var user = new ApplicationUser { Id = userId };
+            var exception = new InvalidOperationException("DB error during change password");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword)).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.ChangePasswordAsync(userId, dto);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al cambiar la contraseña para el usuario '{userId}'.", typeof(InvalidOperationException));
+        }
+
+        // Tests for ConfirmEmailAsync
+        [Fact]
+        public async Task ConfirmEmailAsync_UserIdOrTokenInvalid_ReturnsFalseAndLogsWarning()
+        {
+            // Act
+            var result1 = await _userService.ConfirmEmailAsync(Guid.Empty, null);
+            var result2 = await _userService.ConfirmEmailAsync(Guid.Empty, "token");
+            var result3 = await _userService.ConfirmEmailAsync(Guid.NewGuid(), "");
+            var result4 = await _userService.ConfirmEmailAsync(Guid.NewGuid(), "token");
+            var result5 = await _userService.ConfirmEmailAsync(Guid.Empty, "   ");
+
+            // Assert
+            result1.Should().BeFalse();
+            result2.Should().BeFalse();
+            result3.Should().BeFalse();
+            result4.Should().BeFalse();
+            result5.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Exactly(5), "ID de usuario o token de confirmación de email inválidos.");
+        }
+
+        [Fact]
+        public async Task ConfirmEmailAsync_UserNotFound_ReturnsFalseAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var token = "token";
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser?)null);
+
+            // Act
+            var result = await _userService.ConfirmEmailAsync(userId, token);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró el usuario con ID '{userId}' para confirmar email.");
+        }
+
+        [Fact]
+        public async Task ConfirmEmailAsync_SuccessfulConfirmation_LogsInfoAndReturnsTrue()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var token = "token";
+            var user = new ApplicationUser { Id = userId };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.ConfirmEmailAsync(user, token)).ReturnsAsync(IdentityResult.Success);
+
+            // Act
+            var result = await _userService.ConfirmEmailAsync(userId, token);
+
+            // Assert
+            result.Should().BeTrue();
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Email confirmado exitosamente para el usuario '{userId}'.");
+        }
+
+        [Fact]
+        public async Task ConfirmEmailAsync_FailureInConfirmEmail_LogsErrorAndReturnsFalse()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var token = "token";
+            var user = new ApplicationUser { Id = userId };
+            var errors = new List<IdentityError> { new IdentityError { Description = "Invalid token" } };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.ConfirmEmailAsync(user, token)).ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
+
+            // Act
+            var result = await _userService.ConfirmEmailAsync(userId, token);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error al confirmar el email para el usuario '{userId}': {errors.First().Description}");
+        }
+
+        [Fact]
+        public async Task ConfirmEmailAsync_FindByIdThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var token = "token";
+            var exception = new InvalidOperationException("DB error during find");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.ConfirmEmailAsync(userId, token);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al confirmar el email para el usuario '{userId}'.", typeof(InvalidOperationException));
+        }
+
+        [Fact]
+        public async Task ConfirmEmailAsync_ConfirmEmailThrowsException_ReturnsFalseAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var token = "token";
+            var user = new ApplicationUser { Id = userId };
+            var exception = new InvalidOperationException("DB error during confirm email");
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.ConfirmEmailAsync(user, token)).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.ConfirmEmailAsync(userId, token);
+
+            // Assert
+            result.Should().BeFalse();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al confirmar el email para el usuario '{userId}'.", typeof(InvalidOperationException));
+        }
+
+        // Tests for ResendConfirmationEmailAsync
+
+        [Fact]
+        public async Task ResendConfirmationEmailAsync_UserNotFound_ReturnsNullAndLogsWarning()
+        {
+            // Arrange
+            var userIdOrEmail = "notfound@example.com";
+                    _mockUserManager.Setup(um => um.FindByEmailAsync(userIdOrEmail))
+                            .ReturnsAsync((ApplicationUser?)null);
+            _mockUserManager.Setup(um => um.FindByNameAsync(userIdOrEmail))
+                            .ReturnsAsync((ApplicationUser?)null);
+
+            // Act
+            var result = await _userService.ResendConfirmationEmailAsync(userIdOrEmail);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró un usuario activo con ID o email '{userIdOrEmail}' para reenviar email de confirmación.");
+        }
+
+        [Fact]
+        public async Task ResendConfirmationEmailAsync_UserIsDeleted_ReturnsNullAndLogsWarning()
+        {
+            // Arrange
+            var userIdOrEmail = "deleted@example.com";
+            var user = new ApplicationUser { Id = Guid.NewGuid(), Email = userIdOrEmail, IsDeleted = true };
+            _mockUserManager.Setup(um => um.FindByEmailAsync(userIdOrEmail))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByNameAsync(userIdOrEmail))
+                            .ReturnsAsync(user);
+
+            // Act
+            var result = await _userService.ResendConfirmationEmailAsync(userIdOrEmail);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró un usuario activo con ID o email '{userIdOrEmail}' para reenviar email de confirmación.");
+        }
+
+        [Fact]
+        public async Task ResendConfirmationEmailAsync_EmailAlreadyConfirmed_ReturnsNullAndLogsInfo()
+        {
+            // Arrange
+            var userIdOrEmail = "confirmed@example.com";
+            var user = new ApplicationUser { Id = Guid.NewGuid(), Email = userIdOrEmail };
+            _mockUserManager.Setup(um => um.FindByEmailAsync(userIdOrEmail))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByNameAsync(userIdOrEmail))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsEmailConfirmedAsync(user)).ReturnsAsync(true);
+
+            // Act
+            var result = await _userService.ResendConfirmationEmailAsync(userIdOrEmail);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"El email del usuario '{userIdOrEmail}' ya está confirmado. No se reenviará token.");
+        }
+
+        [Fact]
+        public async Task ResendConfirmationEmailAsync_Success_ReturnsTokenAndLogsInfo()
+        {
+            // Arrange
+            var userIdOrEmail = "user@example.com";
+            var user = new ApplicationUser { Id = Guid.NewGuid(), Email = userIdOrEmail };
+            var token = "confirmation-token-123";
+            _mockUserManager.Setup(um => um.FindByEmailAsync(userIdOrEmail))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByNameAsync(userIdOrEmail))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsEmailConfirmedAsync(user)).ReturnsAsync(false);
+            _mockUserManager.Setup(um => um.GenerateEmailConfirmationTokenAsync(user)).ReturnsAsync(token);
+
+            // Act
+            var result = await _userService.ResendConfirmationEmailAsync(userIdOrEmail);
+
+            // Assert
+            result.Should().Be(token);
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Nuevo token de confirmación de email generado para el usuario '{userIdOrEmail}'.");
+        }
+
+        [Fact]
+        public async Task ResendConfirmationEmailAsync_FindUserThrowsException_ReturnsNullAndLogsError()
+        {
+            // Arrange
+            var userIdOrEmail = "error@example.com";
+            var exception = new InvalidOperationException("DB error during find");
+            _mockUserManager.Setup(um => um.FindByEmailAsync(userIdOrEmail)).ThrowsAsync(exception);
+            _mockUserManager.Setup(um => um.FindByNameAsync(userIdOrEmail)).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.ResendConfirmationEmailAsync(userIdOrEmail);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al reenviar el email de confirmación para '{userIdOrEmail}'.", typeof(InvalidOperationException));
+        }
+
+        [Fact]
+        public async Task ResendConfirmationEmailAsync_GenerateTokenThrowsException_ReturnsNullAndLogsError()
+        {
+            // Arrange
+            var userIdOrEmail = "user2@example.com";
+            var user = new ApplicationUser { Id = Guid.NewGuid(), Email = userIdOrEmail };
+            var exception = new InvalidOperationException("DB error during token generation");
+            _mockUserManager.Setup(um => um.FindByEmailAsync(userIdOrEmail))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByNameAsync(userIdOrEmail))
+                            .ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.IsEmailConfirmedAsync(user)).ReturnsAsync(false);
+            _mockUserManager.Setup(um => um.GenerateEmailConfirmationTokenAsync(user)).ThrowsAsync(exception);
+
+            // Act
+            var result = await _userService.ResendConfirmationEmailAsync(userIdOrEmail);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al reenviar el email de confirmación para '{userIdOrEmail}'.", typeof(InvalidOperationException));
+        }
+
+        // Tests for UpdateUserAsync
+        [Fact]
+        public async Task UpdateUserAsync_DTONull_ThrowsArgumentNullExceptionAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+
+            // Act
+            Func<Task> act = async () => await _userService.UpdateUserAsync(userId, null);
+
+            // Assert
+            await act.Should().ThrowAsync<ArgumentNullException>();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), "El DTO para actualizar usuario no puede ser nulo.");
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_IdsDoNotMatch_ThrowsArgumentExceptionAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var dto = new UpdateUserDTO { Id = Guid.NewGuid() };
+
+            // Act
+            Func<Task> act = async () => await _userService.UpdateUserAsync(userId, dto);
+
+            // Assert
+            await act.Should().ThrowAsync<ArgumentException>();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), It.Is<string>(msg => msg.Contains("no coinciden")));
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_UserNotFoundOrDeleted_ReturnsNullAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var dto = new UpdateUserDTO { Id = userId };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser?)null);
+
+            // Act
+            var result = await _userService.UpdateUserAsync(userId, dto);
+
+            // Assert
+            result.Should().BeNull();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), $"No se encontró el usuario con ID '{userId}' para actualizar o está marcado como eliminado.");
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_UserNameInUse_ThrowsInvalidOperationExceptionAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var dto = new UpdateUserDTO { Id = userId, UserName = "newuser" };
+            var user = new ApplicationUser { Id = userId, UserName = "olduser" };
+            var otherUser = new ApplicationUser { Id = Guid.NewGuid(), UserName = "newuser" };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByNameAsync(dto.UserName)).ReturnsAsync(otherUser);
+
+            // Act
+            Func<Task> act = async () => await _userService.UpdateUserAsync(userId, dto);
+
+            // Assert
+            await act.Should().ThrowAsync<InvalidOperationException>();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), It.Is<string>(msg => msg.Contains("UserName")));
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_EmailInUse_ThrowsInvalidOperationExceptionAndLogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var dto = new UpdateUserDTO { Id = userId, Email = "new@mail.com" };
+            var user = new ApplicationUser { Id = userId, Email = "old@mail.com" };
+            var otherUser = new ApplicationUser { Id = Guid.NewGuid(), Email = "new@mail.com" };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.FindByEmailAsync(dto.Email)).ReturnsAsync(otherUser);
+
+            // Act
+            Func<Task> act = async () => await _userService.UpdateUserAsync(userId, dto);
+
+            // Assert
+            await act.Should().ThrowAsync<InvalidOperationException>();
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), It.Is<string>(msg => msg.Contains("Email")));
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_UpdateFails_ThrowsInvalidOperationExceptionAndLogsError()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var dto = new UpdateUserDTO { Id = userId };
+            var user = new ApplicationUser { Id = userId };
+            var errors = new List<IdentityError> { new IdentityError { Description = "Update failed" } };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.UpdateAsync(user)).ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
+
+            // Act
+            Func<Task> act = async () => await _userService.UpdateUserAsync(userId, dto);
+
+            // Assert
+            await act.Should().ThrowAsync<InvalidOperationException>();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), It.Is<string>(msg => msg.Contains("Error al actualizar datos del usuario")));
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_SuccessfulUpdateAndRoles_LogsInfoAndReturnsUserResponseDTO()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var dto = new UpdateUserDTO { Id = userId, Roles = new List<string> { "Admin", "User" } };
+            var user = new ApplicationUser { Id = userId, UserName = "testuser" };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
+            _mockUserManager.Setup(um => um.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
+            _mockUserManager.Setup(um => um.AddToRolesAsync(user, It.Is<IEnumerable<string>>(r => r.Contains("Admin")))).ReturnsAsync(IdentityResult.Success);
+            _mockUserManager.Setup(um => um.RemoveFromRolesAsync(user, It.Is<IEnumerable<string>>(r => r.Contains("User")))).ReturnsAsync(IdentityResult.Success);
+            _mockMapper.Setup(m => m.Map<UserResponseDTO>(user)).Returns(new UserResponseDTO { Id = user.Id, UserName = user.UserName, Email = user.Email });
+
+            // Act
+            var result = await _userService.UpdateUserAsync(userId, dto);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Id.Should().Be(userId);
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Datos del usuario '{userId}' actualizados correctamente.");
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_AddRolesFails_LogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var dto = new UpdateUserDTO { Id = userId, Roles = new List<string> { "Admin" } };
+            var user = new ApplicationUser { Id = userId, UserName = "testuser" };
+            var errors = new List<IdentityError> { new IdentityError { Code = "RoleError", Description = "Role add failed" } };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
+            _mockUserManager.Setup(um => um.GetRolesAsync(user)).ReturnsAsync(new List<string>());
+            _mockUserManager.Setup(um => um.AddToRolesAsync(user, It.IsAny<IEnumerable<string>>())).ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
+            _mockMapper.Setup(m => m.Map<UserResponseDTO>(user)).Returns(new UserResponseDTO { Id = user.Id, UserName = user.UserName, Email = user.Email });
+
+            // Act
+            var result = await _userService.UpdateUserAsync(userId, dto);
+
+            // Assert
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), It.Is<string>(msg => msg.Contains("Error al añadir roles")));
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_RemoveRolesFails_LogsWarning()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var dto = new UpdateUserDTO { Id = userId, Roles = new List<string>() };
+            var user = new ApplicationUser { Id = userId, UserName = "testuser" };
+            var errors = new List<IdentityError> { new IdentityError { Code = "RoleError", Description = "Role remove failed" } };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
+            _mockUserManager.Setup(um => um.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
+            _mockUserManager.Setup(um => um.RemoveFromRolesAsync(user, It.IsAny<IEnumerable<string>>())).ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
+            _mockMapper.Setup(m => m.Map<UserResponseDTO>(user)).Returns(new UserResponseDTO { Id = user.Id, UserName = user.UserName, Email = user.Email });
+
+            // Act
+            var result = await _userService.UpdateUserAsync(userId, dto);
+
+            // Assert
+            _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), It.Is<string>(msg => msg.Contains("Error al remover roles")));
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_UnexpectedException_LogsErrorAndThrows()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var dto = new UpdateUserDTO { Id = userId };
+            var user = new ApplicationUser { Id = userId };
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ThrowsAsync(new InvalidOperationException("DB error"));
+
+            // Act
+            Func<Task> act = async () => await _userService.UpdateUserAsync(userId, dto);
+
+            // Assert
+            await act.Should().ThrowAsync<InvalidOperationException>();
+            _mockLogger.VerifyLog(LogLevel.Error, Times.AtLeastOnce(), It.Is<string>(msg => msg.Contains("Error inesperado")));
+        }
+
+    }
+
+    public static class LoggerExtensions
+    {
+        public static void VerifyLog<T>(this Mock<ILogger<T>> loggerMock, LogLevel level, Times times, string expectedMessage, Type? exceptionType = null)
+        {
+            loggerMock.Verify(
                 x => x.Log(
-                    LogLevel.Error,
+                    level,
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v != null && v.ToString()!.Contains($"Error al obtener el perfil del usuario con ID '{userId}'.")),
-                    It.Is<Exception>(ex => ex != null && ex.Message == exceptionMessage),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains(expectedMessage)),
+                    exceptionType == null ? null : It.IsAny<Exception>(),
                     It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
-                Times.Once);
+                times);
         }
     }
 }

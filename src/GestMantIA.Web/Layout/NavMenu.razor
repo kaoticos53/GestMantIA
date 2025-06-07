@@ -1,31 +1,48 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">GestMantIA.Web</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+<MudList T="object" Dense="true">
+    <!-- Inicio -->
+    <MudNavLink Href="/" Match="NavLinkMatch.All">
+        <MudIcon Icon="@Icons.Material.Filled.Home" Class="mr-2" />
+        <MudText>Inicio</MudText>
+    </MudNavLink>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+    <!-- Gestión de Usuarios -->
+    <AuthorizeView Roles="Admin">
+        <MudNavGroup Title="Administración" Icon="@Icons.Material.Filled.AdminPanelSettings">
+            <MudNavLink Href="/admin/usuarios">
+                <MudIcon Icon="@Icons.Material.Filled.People" Class="mr-2" />
+                <MudText>Usuarios</MudText>
+            </MudNavLink>
+            <MudNavLink Href="/admin/roles">
+                <MudIcon Icon="@Icons.Material.Filled.AssignmentInd" Class="mr-2" />
+                <MudText>Roles</MudText>
+            </MudNavLink>
+        </MudNavGroup>
+    </AuthorizeView>
+
+    <!-- Mantenimientos -->
+    <MudNavGroup Title="Mantenimientos" Icon="@Icons.Material.Filled.Build">
+        <MudNavLink Href="/mantenimientos/equipos">
+            <MudIcon Icon="@Icons.Material.Filled.Devices" Class="mr-2" />
+            <MudText>Equipos</MudText>
+        </MudNavLink>
+        <MudNavLink Href="/mantenimientos/tareas">
+            <MudIcon Icon="@Icons.Material.Filled.Assignment" Class="mr-2" />
+            <MudText>Tareas</MudText>
+        </MudNavLink>
+    </MudNavGroup>
+
+    <!-- Reportes -->
+    <MudNavGroup Title="Reportes" Icon="@Icons.Material.Filled.BarChart">
+        <MudNavLink Href="/reportes/estadisticas">
+            <MudIcon Icon="@Icons.Material.Filled.Analytics" Class="mr-2" />
+            <MudText>Estadísticas</MudText>
+        </MudNavLink>
+        <MudNavLink Href="/reportes/bitacora">
+            <MudIcon Icon="@Icons.Material.Filled.History" Class="mr-2" />
+            <MudText>Bitácora</MudText>
+        </MudNavLink>
+    </MudNavGroup>
+</MudList>
 
 @code {
     private bool collapseNavMenu = true;

@@ -281,6 +281,12 @@ namespace GestMantIA.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("PasswordResetToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("PasswordResetTokenExpiration")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
@@ -437,7 +443,6 @@ namespace GestMantIA.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("ResolutionNotes")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTimeOffset?>("ResolvedAt")

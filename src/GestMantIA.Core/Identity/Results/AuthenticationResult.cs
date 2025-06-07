@@ -48,7 +48,7 @@ namespace GestMantIA.Core.Identity.Results
             string refreshToken,
             DateTime accessTokenExpiration,
             UserInfo userInfo,
-            string message = null)
+            string? message = null)
         {
             return new AuthenticationResult
             {

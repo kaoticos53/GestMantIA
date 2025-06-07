@@ -35,12 +35,14 @@ namespace GestMantIA.API.Extensions
                 options.AddDefaultPolicy(policy =>
                 {
                     policy.WithOrigins(
-                            "http://localhost:3000",  // React
-                            "http://localhost:4200",  // Angular
-                            "http://localhost:5000",  // .NET
-                            "https://localhost:5001", // .NET con HTTPS
-                            "http://localhost:6080",  // Puerto de desarrollo HTTP
-                            "https://localhost:6001"  // Puerto de desarrollo HTTPS
+                        "*",
+                        "http://localhost:3000",  // React
+                        "http://localhost:4200",  // Angular
+                        "http://localhost:5000",  // .NET
+                        "https://localhost:5001", // .NET con HTTPS
+                        "http://localhost:6080",  // Puerto de desarrollo HTTP
+                        "https://localhost:6001",  // Puerto de desarrollo HTTPS
+                        "https://localhost:7123"   // Puerto típico de Blazor WASM
                           )
                           .AllowAnyHeader()
                           .AllowAnyMethod()

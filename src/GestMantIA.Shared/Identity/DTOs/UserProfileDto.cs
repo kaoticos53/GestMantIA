@@ -13,7 +13,7 @@ namespace GestMantIA.Shared.Identity.DTOs
         /// <summary>
         /// Identificador del usuario (clave foránea a ApplicationUser.Id).
         /// </summary>
-        public string UserId { get; init; } = string.Empty;
+        public Guid UserId { get; init; } = Guid.Empty;
 
         /// <summary>
         /// Nombre del usuario.
@@ -69,5 +69,22 @@ namespace GestMantIA.Shared.Identity.DTOs
         /// País.
         /// </summary>
         public string? Country { get; init; }
+
+        // Propiedades de ApplicationUser
+        public string? UserName { get; init; }
+        public string? Email { get; init; }
+        public bool EmailConfirmed { get; init; }
+        public bool PhoneNumberConfirmed { get; init; } // Ya existe PhoneNumber, pero este es el estado de confirmación.
+        public bool TwoFactorEnabled { get; init; }
+        public DateTimeOffset? LockoutEnd { get; init; }
+        public bool LockoutEnabled { get; init; }
+        public bool IsActive { get; init; } = true;
+        public List<string> Roles { get; init; } = new();
+
+        // Propiedades de IAuditableEntity (pueden venir de UserProfile o ApplicationUser)
+        public DateTime CreatedAt { get; init; }
+        public DateTime? UpdatedAt { get; init; }
+        public string? CreatedBy { get; init; }
+        public string? UpdatedBy { get; init; }
     }
 }

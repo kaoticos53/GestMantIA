@@ -9,7 +9,11 @@ namespace GestMantIA.Core.UnitTests.Identity.Entities
         public void Constructor_Should_Initialize_Properties_Correctly()
         {
             // Arrange & Act
-            var log = new SecurityLog();
+            var log = new SecurityLog
+            {
+                EventType = SecurityEventTypes.LoginSucceeded,
+                Description = "Test log entry"
+            };
 
             // Assert
             // Propiedades de BaseEntity
@@ -20,22 +24,27 @@ namespace GestMantIA.Core.UnitTests.Identity.Entities
             log.DeletedAt.Should().BeNull();
             log.DeletedBy.Should().BeNull();
 
-            // Propiedades de SecurityLog con valores por defecto de C# o inicializadores
+            // Propiedades de SecurityLog
             log.UserId.Should().BeNull();
             log.User.Should().BeNull();
-            log.EventType.Should().BeNull(); // [Required] pero null por defecto hasta asignación
-            log.Description.Should().BeNull(); // [Required] pero null por defecto hasta asignación
+            log.EventType.Should().NotBeNull();
+            log.Description.Should().NotBeNull();
             log.IpAddress.Should().BeNull();
             log.UserAgent.Should().BeNull();
             log.AdditionalData.Should().BeNull();
-            log.Succeeded.Should().BeTrue(); // Inicializado a true
+            log.Succeeded.Should().BeTrue();
         }
 
         [Fact]
         public void Properties_Should_Set_And_Get_Correctly()
         {
             // Arrange
-            var log = new SecurityLog();
+            var log = new SecurityLog
+            {
+                EventType = SecurityEventTypes.LoginSucceeded,
+                Description = "Test log entry"
+            };
+            
             var testUser = new ApplicationUser { Id = Guid.NewGuid(), UserName = "testUser" };
             var testDate = DateTime.UtcNow;
             var userId = Guid.NewGuid();

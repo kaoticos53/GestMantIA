@@ -34,12 +34,12 @@ namespace GestMantIA.API.Controllers
         /// <param name="durationMinutes">Duración del bloqueo en minutos (opcional, si no se especifica, el bloqueo es indefinido).</param>
         /// <param name="reason">Razón del bloqueo (opcional).</param>
         /// <returns>Resultado de la operación.</returns>
-        [HttpPost("{userId}/lock")]
+        [HttpPost("{userId:guid}/lock")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> LockUser(
-            [FromRoute] string userId,
+            [FromRoute] Guid userId,
             [FromQuery] int? durationMinutes = null,
             [FromQuery] string? reason = null)
         {
@@ -80,11 +80,11 @@ namespace GestMantIA.API.Controllers
         /// </summary>
         /// <param name="userId">ID del usuario a desbloquear.</param>
         /// <returns>Resultado de la operación.</returns>
-        [HttpPost("{userId}/unlock")]
+        [HttpPost("{userId:guid}/unlock")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UnlockUser([FromRoute] string userId)
+        public async Task<IActionResult> UnlockUser([FromRoute] Guid userId)
         {
             try
             {
@@ -108,10 +108,10 @@ namespace GestMantIA.API.Controllers
         /// </summary>
         /// <param name="userId">ID del usuario.</param>
         /// <returns>Información de bloqueo del usuario.</returns>
-        [HttpGet("{userId}/lockout-info")]
+        [HttpGet("{userId:guid}/lockout-info")]
         [ProducesResponseType(typeof(UserLockoutInfo), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetUserLockoutInfo([FromRoute] string userId)
+        public async Task<IActionResult> GetUserLockoutInfo([FromRoute] Guid userId)
         {
             try
             {

@@ -18,10 +18,10 @@
 
 <MudLayout>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Small" Class="fill-height">
-            <MudGrid Class="fill-height" AlignItems="AlignItems.Center" Justify="Justify.Center">
+        <MudContainer Class="fill-height">
+            <MudGrid Class="fill-height align-center justify-center">
                 <MudItem xs="12" sm="10" md="8" lg="6" xl="4">
-                    <MudCard Class="pa-4">
+                    <MudCard Class="pa-2 pa-sm-4 auth-form-card">
                         <MudCardHeader>
                             <MudAvatar Size="Size.Large" Class="mx-auto mb-4" Color="Color.Primary">
                                 <MudIcon Icon="@Icons.Material.Filled.PersonAdd" Size="Size.Large" />
@@ -31,91 +31,86 @@
                         </MudCardHeader>
 
                         <MudCardContent>
-                            <MudForm Model="@_registerModel" OnValidSubmit="HandleRegister">
-                                    <MudGrid>
-                                        <MudItem xs="12" sm="6" Class="pr-sm-2">
-                                            <MudTextField @bind-Value="_registerModel.FirstName"
-                                                        Label="Nombre"
-                                                        Required="true"
-                                                        RequiredError="El nombre es obligatorio"
-                                                        Adornment="@Adornment.Start"
-                                                        AdornmentIcon="@Icons.Material.Filled.Person"
-                                                        Class="mb-4" />
-                                        </MudItem>
-                                        <MudItem xs="12" sm="6" Class="pl-sm-2">
-                                            <MudTextField @bind-Value="_registerModel.LastName"
-                                                        Label="Apellidos"
-                                                        Required="true"
-                                                        RequiredError="Los apellidos son obligatorios"
-                                                        Adornment="@Adornment.Start"
-                                                        AdornmentIcon="@Icons.Material.Filled.PersonOutline"
-                                                        Class="mb-4" />
-                                        </MudItem>
-                                    </MudGrid>
+                            <EditForm Model="@_registerModel" OnValidSubmit="HandleRegister">
+                                <DataAnnotationsValidator />
+                                <MudGrid>
+                                    <MudItem xs="12" sm="6" Class="pr-sm-2">
+                                        <MudTextField @bind-Value="_registerModel.FirstName"
+                                                    For="@(() => _registerModel.FirstName)"
+                                                    Label="Nombre"
+                                                    Adornment="@Adornment.Start"
+                                                    AdornmentIcon="@Icons.Material.Filled.Person"
+                                                    Class="mb-4" />
+                                    </MudItem>
+                                    <MudItem xs="12" sm="6" Class="pl-sm-2">
+                                        <MudTextField @bind-Value="_registerModel.LastName"
+                                                    For="@(() => _registerModel.LastName)"
+                                                    Label="Apellidos"
+                                                    Adornment="@Adornment.Start"
+                                                    AdornmentIcon="@Icons.Material.Filled.PersonOutline"
+                                                    Class="mb-4" />
+                                    </MudItem>
+                                </MudGrid>
 
-                                    <MudTextField @bind-Value="_registerModel.UserName"
-                                                Label="Nombre de Usuario"
-                                                Required="true"
-                                                RequiredError="El nombre de usuario es obligatorio"
-                                                Adornment="@Adornment.Start"
-                                                AdornmentIcon="@Icons.Material.Filled.AlternateEmail"
-                                                Class="mb-4" />
+                                <MudTextField @bind-Value="_registerModel.UserName"
+                                            For="@(() => _registerModel.UserName)"
+                                            Label="Nombre de Usuario"
+                                            Adornment="@Adornment.Start"
+                                            AdornmentIcon="@Icons.Material.Filled.AlternateEmail"
+                                            Class="mb-4" />
 
-                                    <MudTextField @bind-Value="_registerModel.Email"
-                                                Label="Correo Electrónico"
-                                                InputType="InputType.Email"
-                                                Required="true"
-                                                RequiredError="El correo electrónico es obligatorio"
-                                                Adornment="@Adornment.Start"
-                                                AdornmentIcon="@Icons.Material.Filled.Email"
-                                                Class="mb-4" />
+                                <MudTextField @bind-Value="_registerModel.Email"
+                                            For="@(() => _registerModel.Email)"
+                                            Label="Correo Electrónico"
+                                            InputType="InputType.Email"
+                                            Adornment="@Adornment.Start"
+                                            AdornmentIcon="@Icons.Material.Filled.Email"
+                                            Class="mb-4" />
 
-                                    <MudTextField @bind-Value="_registerModel.Password"
-                                                Label="Contraseña"
-                                                InputType="InputType.Password"
-                                                Required="true"
-                                                RequiredError="La contraseña es obligatoria"
-                                                Adornment="@Adornment.Start"
-                                                AdornmentIcon="@Icons.Material.Filled.Lock"
-                                                Class="mb-4"
-                                                HelperText="La contraseña debe tener al menos 6 caracteres">
-                                    </MudTextField>
+                                <MudTextField @bind-Value="_registerModel.Password"
+                                            For="@(() => _registerModel.Password)"
+                                            Label="Contraseña"
+                                            InputType="InputType.Password"
+                                            Adornment="@Adornment.Start"
+                                            AdornmentIcon="@Icons.Material.Filled.Lock"
+                                            Class="mb-4"
+                                            HelperText="La contraseña debe tener al menos 6 caracteres">
+                                </MudTextField>
 
-                                    <MudTextField @bind-Value="_registerModel.ConfirmPassword"
-                                                Label="Confirmar Contraseña"
-                                                InputType="InputType.Password"
-                                                Required="true"
-                                                RequiredError="Debes confirmar la contraseña"
-                                                Adornment="@Adornment.Start"
-                                                AdornmentIcon="@Icons.Material.Filled.Lock"
-                                                Class="mb-4" />
+                                <MudTextField @bind-Value="_registerModel.ConfirmPassword"
+                                            For="@(() => _registerModel.ConfirmPassword)"
+                                            Label="Confirmar Contraseña"
+                                            InputType="InputType.Password"
+                                            Adornment="@Adornment.Start"
+                                            AdornmentIcon="@Icons.Material.Filled.Lock"
+                                            Class="mb-4" />
 
-                                    @if (!string.IsNullOrEmpty(_errorMessage))
+                                @if (!string.IsNullOrEmpty(_errorMessage))
+                                {
+                                    <MudAlert Severity="Severity.Error" Class="mb-4">
+                                        @_errorMessage
+                                    </MudAlert>
+                                }
+                                else if (!string.IsNullOrEmpty(_successMessage))
+                                {
+                                    <MudAlert Severity="Severity.Success" Class="mb-4">
+                                        @_successMessage
+                                    </MudAlert>
+                                }
+
+                                <MudButton ButtonType="ButtonType.Submit"
+                                         Variant="Variant.Filled"
+                                         Color="Color.Primary"
+                                         FullWidth="true"
+                                         Class="mt-2 mb-3"
+                                         Disabled="@_isLoading">
+                                    @if (_isLoading)
                                     {
-                                        <MudAlert Severity="Severity.Error" Class="mb-4">
-                                            @_errorMessage
-                                        </MudAlert>
+                                        <MudProgressCircular Color="Color.Inherit" Size="Size.Small" Indeterminate="true" Class="me-2" />
                                     }
-                                    else if (!string.IsNullOrEmpty(_successMessage))
-                                    {
-                                        <MudAlert Severity="Severity.Success" Class="mb-4">
-                                            @_successMessage
-                                        </MudAlert>
-                                    }
-
-                                    <MudButton ButtonType="ButtonType.Submit"
-                                             Variant="Variant.Filled"
-                                             Color="Color.Primary"
-                                             FullWidth="true"
-                                             Class="mt-2 mb-3"
-                                             Disabled="@_isLoading">
-                                        @if (_isLoading)
-                                        {
-                                            <MudProgressCircular Color="Color.Inherit" Size="Size.Small" Indeterminate="true" Class="me-2" />
-                                        }
-                                        Registrarse
-                                    </MudButton>
-                            </MudForm>
+                                    Registrarse
+                                </MudButton>
+                            </EditForm>
                         </MudCardContent>
 
                         <MudCardActions Class="flex-column">
@@ -156,14 +151,7 @@
 
         try
         {
-            // Validar que las contraseñas coincidan
-            if (_registerModel.Password != _registerModel.ConfirmPassword)
-            {
-                _errorMessage = "Las contraseñas no coinciden. Por favor, verifica e inténtalo de nuevo.";
-                Snackbar.Add(_errorMessage, Severity.Error);
-                return;
-            }
-
+            // La validación de coincidencia de contraseñas ahora es manejada por DataAnnotations [Compare("Password")]
             var result = await AuthService.RegisterAsync(_registerModel);
 
             if (result.Success)

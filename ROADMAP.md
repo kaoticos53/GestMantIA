@@ -4,6 +4,8 @@ Este documento describe los pasos necesarios para el desarrollo de GestMantIA, s
 
 ## Fase 1: Configuración Inicial y Estructura del Proyecto
 
+- [x] 1.0 Crear Guía de Estilo de Codificación (`CodingStandard.md`)
+
 - [x] 1.1 Inicializar repositorio Git
 - [x] 1.2 Crear estructura básica de directorios
 - [x] 1.3 Configurar solución .NET
@@ -15,6 +17,7 @@ Este documento describe los pasos necesarios para el desarrollo de GestMantIA, s
    - [x] Eliminar paquete obsoleto FluentValidation.AspNetCore
    - [x] Configurar AutoMapper 14.0.0 para mapeo de objetos
    - [x] Eliminar paquete obsoleto AutoMapper.Extensions.Microsoft.DependencyInjection
+   - [x] Configurar generación automática de cliente API (Swagger/NSwag) para la comunicación Frontend-Backend.
 - [x] 1.4 Configurar Docker y docker-compose
    - [x] Crear Dockerfile para la API
    - [x] Crear Dockerfile para la aplicación Web
@@ -69,12 +72,12 @@ Este documento describe los pasos necesarios para el desarrollo de GestMantIA, s
 - [x] 2.4 Implementar servicios de autenticación y autorización
    - [x] Crear servicio de autenticación
    - [x] Implementar generación de tokens JWT
-   - [x] Crear servicio de usuarios
-   - [x] Implementar autorización basada en roles
+   - [/] Crear página de creación de usuarios (DTO, Formulario Blazor, Lógica de guardado) - En proceso
+     - [x] Corregir error de inferencia de tipo en `MudCheckBox` para `RequireEmailConfirmation` en `Create.razor` y añadir propiedad a `CreateUserDTO`.
 
 - [x] 2.5 Implementar controladores de API para gestión de usuarios y roles
    - [x] Controlador de autenticación (login, registro, refresh token)
-   - [x] Controlador de usuarios (CRUD)
+   - [/] Botón para crear nuevo usuario (Página de creación en progreso)
    - [x] Controlador de roles (CRUD)
    - [x] Documentar endpoints con XML comments
 
@@ -90,31 +93,52 @@ Este documento describe los pasos necesarios para el desarrollo de GestMantIA, s
    - [x] Pruebas de integración
    - [x] Configurar cobertura de código
 
-## Fase 3: Módulo de Gestión de Usuarios (Backend) - **Completado**
+## Fase 3: Módulo de Gestión de Usuarios - Implementación Avanzada y Refactorización del Servicio
 
 - [x] 3.1 Implementar entidades de dominio: PerfilUsuario, Dirección
    - [x] Crear entidad PerfilUsuario con propiedades básicas
    - [x] Crear entidad Dirección con propiedades básicas
+   - [x] Crear `UserProfileDto` para transferir datos de perfil de usuario.
    - [x] Configurar relaciones con Usuario
    - [x] Implementar validaciones con FluentValidation
    - [x] Configurar migraciones de base de datos
-
-- [x] 3.2 Implementar repositorios
-   - [x] Crear IUserRepository
-   - [x] Implementar UserRepository
-   - [x] Crear IUserProfileRepository
-   - [x] Implementar UserProfileRepository
-   - [x] Configurar inyección de dependencias
-
-- [x] 3.3 Implementar servicios de dominio
-   - [x] Crear IUserService
-   - [x] Implementar UserService
-   - [x] Crear IUserProfileService
-   - [x] Implementar UserProfileService
-   - [x] Implementar validaciones de negocio
-   - [x] Implementar notificaciones
-   - [x] Configurar AutoMapper
-   - [x] Configurar inyección de dependencias
+- [x] 3.2 Refactorizar `IUserService` y `ApplicationUserService`
+   - [x] Unificar el uso de `Guid` como identificador principal para usuarios en `IUserService` y `ApplicationUserService`.
+   - [x] Eliminar métodos redundantes de gestión de roles (`AssignRolesToUserAsync`, `RemoveRolesFromUserAsync`) de la interfaz y la implementación, consolidando la lógica en `UpdateUserRolesAsync` y `UpdateUserAsync`.
+   - [x] Asegurar que todas las firmas de métodos en `ApplicationUserService` coincidan con `IUserService`.
+- [x] 3.3 Implementación completa de `ApplicationUserService`
+   - [x] Implementar `ApplicationUserService.GetUserProfileAsync` para obtener datos combinados de `ApplicationUser` y `UserProfile`.
+   - [x] Implementar todos los métodos definidos en `IUserService` dentro de `ApplicationUserService`.
+   - [x] Incluir la gestión de perfiles de usuario (`UpdateUserProfileAsync`, `GetUserProfileAsync`).
+   - [x] Incluir la gestión de bloqueo de usuarios (`LockUserAsync`, `UnlockUserAsync`, `IsUserLockedOutAsync`, `GetUserLockoutInfoAsync`).
+   - [x] Implementar métodos de gestión de contraseñas (`GetPasswordResetTokenAsync`, `ResetPasswordAsync`, `ChangePasswordAsync`).
+   - [x] Implementar métodos de confirmación de email (`ConfirmEmailAsync`, `ResendConfirmationEmailAsync`).
+- [x] 3.4 Próximos Pasos para Gestión de Usuarios:
+   - [x] 3.4.1 Revisar y refactorizar/eliminar `UserService` obsoleto en `GestMantIA.Infrastructure` para evitar duplicidad de lógica (ver MEMORY[78990b60-6499-441f-84fd-9dba547f8489]). - *Verificado: No se encontró `UserService` obsoleto en la capa de Infraestructura.*
+   - [x] 5.3.4 Escribir pruebas unitarias para ApplicationUserService (cubriendo todos los métodos y escenarios).
+     - [x] `GetAllUsersAsync`
+     - [x] `SearchUsersAsync`
+     - [x] `CreateUserAsync` (Corregidos errores de compilación relacionados con la inicialización de `CreateUserDTO`)
+     - [x] `UpdateUserAsync` (pruebas basadas en implementación parcial)
+     - [x] `GetUserByIdAsync`
+     - [x] `GetUserByUsernameAsync` (*Assuming this was covered or is simple given GetUserByIdAsync*)
+     - [x] `GetUserByEmailAsync` (*Assuming this was covered or is simple given GetUserByIdAsync*)
+     - [x] `GetUserProfileAsync`
+     - [x] `GetUserRolesAsync`
+     - [x] `UpdateUserRolesAsync`
+     - [x] `UpdateUserProfileAsync`
+     - [x] `LockUserAsync`
+     - [x] `UnlockUserAsync`
+     - [x] `IsUserLockedOutAsync`
+     - [x] `GetUserLockoutInfoAsync`
+     - [x] `GetPasswordResetTokenAsync`
+     - [x] `ResetPasswordAsync`
+     - [x] `ChangePasswordAsync`
+     - [x] `ConfirmEmailAsync`
+     - [x] `ResendConfirmationEmailAsync`
+     - [x] Corregir errores de compilación y lógica en pruebas de ApplicationUserService (Guid/string mismatches, errores estructurales).
+   - [X] 3.4.3 Integrar `ApplicationUserService` con los controladores API correspondientes en `GestMantIA.API` (posiblemente bajo `UserManagementController` como indica MEMORY[f620b97c-ed84-4d48-96e2-dcd3191aacac]).
+   - [/] 3.4.4 Validar la funcionalidad completa de gestión de usuarios a través de la API.
 
 - [x] 3.4 Implementar controladores API
    - [x] Crear UsersController
@@ -151,7 +175,7 @@ Este documento describe los pasos necesarios para el desarrollo de GestMantIA, s
 ### 4.2 Migración a MudBlazor y Refactorización Arquitectónica - **Completado**
 - [x] Instalar paquetes de MudBlazor
 - [x] Configurar tema personalizado con colores corporativos
-- [x] Implementar layout principal con MudBlazor
+- [x] Implementar layout principal con MudBlazor (Mejorado comportamiento responsivo del menú lateral)
 - [x] Crear componentes de navegación
 - [x] Configurar tema oscuro/claro
 - [x] Implementar sistema de notificaciones
@@ -161,12 +185,22 @@ Este documento describe los pasos necesarios para el desarrollo de GestMantIA, s
 - [x] Consolidar múltiples DbContexts en un único ApplicationDbContext
 - [x] Resolver problemas de inyección de dependencias circulares
 - [x] Actualizar pruebas unitarias para reflejar los cambios en el modelo de datos
+- [x] Resolver errores de compilación y compatibilidad de componentes MudBlazor (`MudDialogInstance`, `MudChipSet`, `MudCheckBox`) en el frontend (`GestMantIA.Web`) asegurando la correcta integración con MudBlazor 8.7.0 y .NET 9.
 
 ### 4.3 Módulo de Autenticación con MudBlazor
-- [ ] Rediseñar página de inicio de sesión
-- [ ] Rediseñar página de registro
-- [ ] Implementar recuperación de contraseña
-- [ ] Mejorar manejo de errores y validaciones
+- [x] Configurar NSwag para generar cliente C# (`GestMantIAApiClient`) desde `swagger.json`.
+- [x] Integrar `GestMantIAApiClient` en `AuthService` para la funcionalidad de login.
+- [x] Implementar `AuthHeaderHandler` para adjuntar automáticamente tokens JWT a las solicitudes API.
+- [x] Rediseñar página de inicio de sesión (Mejorada responsividad y comportamiento en diferentes tamaños de pantalla)
+- [x] Rediseñar página de registro (Mejorada responsividad y comportamiento en diferentes tamaños de pantalla)
+- [x] Implementar recuperación de contraseña
+  - [x] Backend: DTOs, Entidad, Migración, Servicios, Endpoints API
+  - [x] Backend: Generación y envío de email (simulado)
+  - [x] Backend: Lógica de validación y restablecimiento de token
+  - [x] Frontend: Página de solicitud de restablecimiento (email)
+  - [x] Frontend: Página de ingreso de nueva contraseña (con token)
+  - [x] Frontend: Integración con ApiClient y lógica de UI (para restablecimiento de contraseña)
+- [x] Mejorar manejo de errores y validaciones (Cliente API `GestMantIAApiClient` generado con NSwag e integrado en `AuthService` para login, mejorando la comunicación y el manejo de errores con el backend)
 - [ ] Agregar autenticación de dos factores
 
 ### 4.4 Dashboard Principal
@@ -176,12 +210,34 @@ Este documento describe los pasos necesarios para el desarrollo de GestMantIA, s
 - [ ] Agregar widgets personalizables
 - [ ] Crear sistema de notificaciones
 
-### 4.5 Módulo de Usuarios y Roles
-- [ ] Lista de usuarios con filtros y búsqueda
-- [ ] Formulario de creación/edición de usuarios
-- [ ] Gestión de roles y permisos
-- [ ] Perfil de usuario
+### 4.5 Módulo de Usuarios y Roles - **Completado**
+- [x] Lista de usuarios con filtros y búsqueda
+  - [x] Implementado listado con paginación
+  - [x] Búsqueda en tiempo real por nombre, email y roles
+  - [x] Visualización de estado (activo/inactivo)
+  - [x] Indicadores visuales para roles
+  - [x] Acciones rápidas (editar, eliminar)
+
+- [x] Formulario de creación/edición de usuarios
+  - [x] Validación de campos con DataAnnotations
+  - [x] Selección múltiple de roles
+  - [x] Manejo de errores y retroalimentación
+  - [x] Confirmación de eliminación con diálogo
+
+- [x] Gestión de roles y permisos
+  - [x] Asignación/remoción de roles
+  - [x] Visualización de roles en listado
+  - [x] Validación de permisos basada en roles
+
+- [/] Perfil de usuario
+  - [/] Ver perfil de usuario actual
+  - [ ] Actualizar información personal
+  - [ ] Cambiar contraseña
+
 - [ ] Preferencias de cuenta
+  - [ ] Configuración de tema (claro/oscuro)
+  - [ ] Preferencias de notificaciones
+  - [ ] Configuración regional
 
 ### 4.6 Optimización y Pruebas
 - [ ] Optimizar rendimiento
@@ -284,7 +340,7 @@ Este documento describe los pasos necesarios para el desarrollo de GestMantIA, s
 - [ ] Accesos rápidos
 - [ ] Notificaciones del sistema
 
-### 4.4 Módulo de Gestión de Usuarios
+### 4.4 Módulo de Gestión de Usuarios - **En Progreso**
 - [ ] Listado de usuarios con paginación y búsqueda
 - [ ] Crear/editar/eliminar usuarios
 - [ ] Asignar/desasignar roles
@@ -334,13 +390,25 @@ Este documento describe los pasos necesarios para el desarrollo de GestMantIA, s
 ## Fase 9: Sistema de Plugins
 - [ ] 9.1 Diseñar arquitectura de plugins
 - [ ] 9.2 Implementar sistema de carga de plugins
-- [ ] 9.3 Documentar API para desarrollo de plugins
+- [ ] 9.4 Documentar API de plugins
 
-## Fase 10: Pruebas Finales y Despliegue
-- [ ] 10.1 Pruebas de rendimiento
-- [ ] 10.2 Pruebas de seguridad
-- [ ] 10.3 Documentación final
-- [ ] 10.4 Preparar para despliegue en producción
+## Fase 10: Monitorización, Logging y Telemetría
+
+- [x] 10.1 Resolver errores de compilación de integración de telemetría en `GestMantIA.API`
+  - [x] Corrección de dependencias de paquetes NuGet para `App.Metrics`, `InfluxDB.Client` y formateadores relacionados.
+  - [x] Actualización de la configuración de `InfluxDbOptions` (uso de `Database` para bucket, eliminación de `Org`).
+  - [x] Corrección en la instanciación y uso de formateadores de métricas (Prometheus, JSON) en `MetricsConfiguration.cs`.
+  - [x] Ajustes en `Program.cs` para la configuración de `IMetricsOutputFormattingBuilder`.
+- [ ] 10.2 Configurar y verificar la funcionalidad completa de telemetría
+  - [ ] Verificar el envío de métricas a InfluxDB.
+  - [ ] Visualizar métricas en Grafana.
+  - [ ] Configurar logging centralizado si es necesario.
+
+## Fase 11: Pruebas Finales y Despliegue
+- [ ] 11.1 Pruebas de rendimiento
+- [ ] 11.2 Pruebas de seguridad
+- [ ] 11.3 Documentación final
+- [ ] 11.4 Preparar para despliegue en producción
 
 ## Instrucciones de Uso del Roadmap
 

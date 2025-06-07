@@ -26,11 +26,11 @@ public class UsersControllerTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var userDto = new UserResponseDTO { Id = userId.ToString(), UserName = "Test User", Email = "test@example.com" };
-        _mockUserService.Setup(s => s.GetUserProfileAsync(userId.ToString())).ReturnsAsync(userDto);
+        var userDto = new UserResponseDTO { Id = userId, UserName = "Test User", Email = "test@example.com" };
+        _mockUserService.Setup(s => s.GetUserProfileAsync(userId)).ReturnsAsync(userDto);
 
         // Act
-        var result = await _controller.GetUserProfile(userId.ToString());
+        var result = await _controller.GetUserProfile(userId);
 
         // Assert
         var okResult = result.Result.Should().BeOfType<OkObjectResult>().Subject;
@@ -43,10 +43,10 @@ public class UsersControllerTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        _mockUserService.Setup(s => s.GetUserProfileAsync(userId.ToString())).ReturnsAsync((UserResponseDTO?)null);
+        _mockUserService.Setup(s => s.GetUserProfileAsync(userId)).ReturnsAsync((UserResponseDTO?)null);
 
         // Act
-        var result = await _controller.GetUserProfile(userId.ToString());
+        var result = await _controller.GetUserProfile(userId);
 
         // Assert
         result.Result.Should().BeOfType<NotFoundResult>();

@@ -2,6 +2,7 @@
 @page "/login"
 
 @using GestMantIA.Web.Models
+@using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
 @using MudBlazor
 @using GestMantIA.Web.Services
@@ -11,79 +12,76 @@
 @inject NavigationManager NavigationManager
 @inject ILayoutService LayoutService
 @inject ISnackbar Snackbar
-
-<MudThemeProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+@using GestMantIA.Web.HttpClients // Para ApiException
+@using System.Text.Json // Para JsonDocument y JsonSerializer
 
 <MudLayout>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Small" Class="fill-height">
-            <MudGrid Class="fill-height" AlignItems="AlignItems.Center" Justify="Justify.Center">
+        <MudContainer Class="fill-height">
+            <MudGrid Class="fill-height align-center justify-center">
                 <MudItem xs="12" sm="10" md="8" lg="6" xl="4">
-                    <MudCard Class="pa-4">
-                        <MudCardHeader>
-                            <MudAvatar Size="Size.Large" Class="mx-auto mb-4">
-                                <MudIcon Icon="@Icons.Material.Filled.Lock" Size="Size.Large" />
-                            </MudAvatar>
-                            <MudText Typo="Typo.h4" Class="text-center mb-2">Iniciar Sesión</MudText>
-                            <MudText Class="text-center text-secondary mb-4">Ingresa tus credenciales para acceder al sistema</MudText>
-                        </MudCardHeader>
+                    <EditForm Model="@_loginModel" OnValidSubmit="HandleLogin">
+                        <DataAnnotationsValidator />
+                        <MudCard Class="pa-2 pa-sm-4 auth-form-card">
+                            <MudCardHeader>
+                                <MudAvatar Size="Size.Large" Class="mx-auto mb-4">
+                                    <MudIcon Icon="@Icons.Material.Filled.Lock" Size="Size.Large" />
+                                </MudAvatar>
+                                <MudText Typo="Typo.h4" Class="text-center mb-2">Iniciar Sesión</MudText>
+                                <MudText Class="text-center text-secondary mb-4">Ingresa tus credenciales para acceder al sistema</MudText>
+                            </MudCardHeader>
 
-                        <MudCardContent>
-                            <MudForm Model="@_loginModel" OnValidSubmit="HandleLogin">
-                                    <MudTextField @bind-Value="_loginModel.Email"
-                                                Label="Correo Electrónico"
-                                                InputType="InputType.Email"
-                                                Required="true"
-                                                RequiredError="El correo electrónico es obligatorio"
-                                                Adornment="@Adornment.Start"
-                                                AdornmentIcon="@Icons.Material.Filled.Email"
-                                                Class="mb-4" />
+                            <MudCardContent>
+                                <MudTextField @bind-Value="_loginModel.Email"
+                                              For="@(() => _loginModel.Email)"
+                                              Label="Correo Electrónico"
+                                              InputType="InputType.Email"
+                                              Adornment="@Adornment.Start"
+                                              AdornmentIcon="@Icons.Material.Filled.Email"
+                                              Class="mb-4" />
 
-                                    <MudTextField @bind-Value="_loginModel.Password"
-                                                Label="Contraseña"
-                                                InputType="InputType.Password"
-                                                Required="true"
-                                                RequiredError="La contraseña es obligatoria"
-                                                Adornment="@Adornment.Start"
-                                                AdornmentIcon="@Icons.Material.Filled.Lock"
-                                                Class="mb-4" />
+                                <MudTextField @bind-Value="_loginModel.Password"
+                                              For="@(() => _loginModel.Password)"
+                                              Label="Contraseña"
+                                              InputType="InputType.Password"
+                                              Adornment="@Adornment.Start"
+                                              AdornmentIcon="@Icons.Material.Filled.Lock"
+                                              Class="mb-4" />
 
-                                    <MudCheckBox T="bool" @bind-Checked="_loginModel.RememberMe" Label="Recordarme" Class="mb-4" />
+                                <MudCheckBox T="bool" @bind-Checked="_loginModel.RememberMe" Label="Recordarme" Class="mb-4" />
 
-                                    <MudButton ButtonType="ButtonType.Submit"
-                                             Variant="Variant.Filled"
-                                             Color="Color.Primary"
-                                             FullWidth="true"
-                                             Class="mt-2 mb-3"
-                                             Disabled="@_isLoading">
-                                        @if (_isLoading)
-                                        {
-                                            <MudProgressCircular Color="Color.Inherit" Size="Size.Small" Indeterminate="true" Class="me-2" />
-                                        }
-                                        Iniciar Sesión
-                                    </MudButton>
-
-                                    @if (!string.IsNullOrEmpty(_errorMessage))
+                                <MudButton ButtonType="ButtonType.Submit"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           FullWidth="true"
+                                           Class="mt-2 mb-3"
+                                           Disabled="@_isLoading">
+                                    @if (_isLoading)
                                     {
-                                        <MudAlert Severity="Severity.Error" Class="mb-4">
-                                            @_errorMessage
-                                        </MudAlert>
+                                        <MudProgressCircular Color="Color.Inherit" Size="Size.Small" Indeterminate="true" Class="me-2" />
                                     }
-                            </MudForm>
-                        </MudCardContent>
+                                    Iniciar Sesión
+                                </MudButton>
 
-                        <MudCardActions Class="flex-column">
-                            <MudText Class="text-center mt-2 mb-2">
-                                ¿No tienes una cuenta? 
-                                <MudLink Href="/auth/register" Color="Color.Primary">Regístrate</MudLink>
-                            </MudText>
-                            <MudText Class="text-center mb-0">
-                                <MudLink Href="/auth/forgot-password" Color="Color.Secondary">¿Olvidaste tu contraseña?</MudLink>
-                            </MudText>
-                        </MudCardActions>
-                    </MudCard>
+                                @if (!string.IsNullOrEmpty(_errorMessageFromServer))
+                                {
+                                    <MudAlert Severity="Severity.Error" Class="mb-4">
+                                        @_errorMessageFromServer
+                                    </MudAlert>
+                                }
+                            </MudCardContent>
+
+                            <MudCardActions Class="flex-column">
+                                <MudText Class="text-center mt-2 mb-2">
+                                    ¿No tienes una cuenta? 
+                                    <MudLink Href="/auth/register" Color="Color.Primary">Regístrate</MudLink>
+                                </MudText>
+                                <MudText Class="text-center mb-0">
+                                    <MudLink Href="/auth/forgot-password" Color="Color.Secondary">¿Olvidaste tu contraseña?</MudLink>
+                                </MudText>
+                            </MudCardActions>
+                        </MudCard>
+                    </EditForm>
                 </MudItem>
             </MudGrid>
         </MudContainer>
@@ -92,14 +90,13 @@
 
 @code {
     private LoginModel _loginModel = new();
-    private string _errorMessage = string.Empty;
+    private string _errorMessageFromServer = string.Empty;
     private bool _isLoading = false;
 
     protected override async Task OnInitializedAsync()
     {
         await LayoutService.SetTitleAsync("Iniciar Sesión");
         
-        // Si ya está autenticado, redirigir al dashboard
         if (await AuthService.IsAuthenticatedAsync())
         {
             NavigationManager.NavigateTo("/dashboard");
@@ -109,32 +106,85 @@
     private async Task HandleLogin()
     {
         _isLoading = true;
-        _errorMessage = string.Empty;
+        _errorMessageFromServer = string.Empty;
+        // StateHasChanged(); // Opcional: Descomentar si hay un retraso visible antes de que aparezca el spinner.
 
         try
         {
             var result = await AuthService.LoginAsync(_loginModel);
             if (result.Success)
             {
-                Snackbar.Add("¡Bienvenido a GestMantIA!", Severity.Success);
-                NavigationManager.NavigateTo("/");
+                Snackbar.Add("Inicio de sesión exitoso.", Severity.Success);
+                NavigationManager.NavigateTo("/dashboard", forceLoad: true); // forceLoad para asegurar que el estado de autenticación se actualice completamente.
             }
             else
             {
-                _errorMessage = result.Message ?? "Error al iniciar sesión. Por favor, verifica tus credenciales.";
-                Snackbar.Add(_errorMessage, Severity.Error);
+                // Error de lógica de negocio devuelto por la API (ej: credenciales incorrectas)
+                _errorMessageFromServer = result.Message ?? "Credenciales incorrectas o error desconocido.";
+                Console.WriteLine($"Login.razor: Login failed. Result.Success: {result.Success}, Result.Message: '{result.Message}'");
+                Console.WriteLine($"Login.razor: Setting _errorMessageFromServer to: '{_errorMessageFromServer}'");
+                Snackbar.Add(_errorMessageFromServer, Severity.Error, options => { 
+                    options.VisibleStateDuration = 10000; // Aumentar duración para asegurar visibilidad
+                    options.HideTransitionDuration = 500;
+                    options.ShowTransitionDuration = 500;
+                    options.SnackbarVariant = Variant.Filled; // Asegurar que sea visible
+                });
+                Console.WriteLine($"Login.razor: Snackbar.Add called with message: '{_errorMessageFromServer}'");
             }
         }
-        catch (Exception ex)
+        catch (ApiException apiEx)
         {
-            _errorMessage = "Error al conectar con el servidor. Por favor, inténtalo de nuevo más tarde.";
-            Snackbar.Add(_errorMessage, Severity.Error);
-            Console.WriteLine($"Error en el inicio de sesión: {ex.Message}");
+            _isLoading = false; 
+            Console.WriteLine($"API Exception during login: StatusCode: {apiEx.StatusCode}, Response: {apiEx.Response}");
+            
+            if (apiEx.StatusCode == 401) // Unauthorized
+            {
+                _errorMessageFromServer = "Credenciales incorrectas. Por favor, verifica tu correo y contraseña.";
+            }
+            else if (apiEx.StatusCode == 400 && !string.IsNullOrEmpty(apiEx.Response)) // Bad Request with a response body
+            {
+                try
+                {
+                    using var jsonDoc = JsonDocument.Parse(apiEx.Response);
+                    if (jsonDoc.RootElement.TryGetProperty("title", out var titleElement) && titleElement.ValueKind == JsonValueKind.String)
+                    {
+                        _errorMessageFromServer = titleElement.GetString();
+                    }
+                    else if (jsonDoc.RootElement.TryGetProperty("detail", out var detailElement) && detailElement.ValueKind == JsonValueKind.String)
+                    {
+                        _errorMessageFromServer = detailElement.GetString();
+                    }
+                    else
+                    {
+                        _errorMessageFromServer = "Error en la solicitud. Por favor, revisa los datos ingresados.";
+                    }
+                }
+                catch (JsonException)
+                {
+                    _errorMessageFromServer = "Error al procesar la respuesta del servidor. Inténtalo de nuevo.";
+                }
+            }
+            else if (apiEx.StatusCode == 400) // Bad Request without a parsable response body
+            {
+                 _errorMessageFromServer = "Error en la solicitud. Por favor, revisa los datos ingresados.";
+            }
+            else
+            {
+                _errorMessageFromServer = $"Error de comunicación con el servidor (Código: {apiEx.StatusCode}). Inténtalo más tarde.";
+            }
+            Snackbar.Add(_errorMessageFromServer, Severity.Error, options => { options.VisibleStateDuration = 7000; });
+        }
+        catch (Exception ex) // General fallback for other exceptions
+        {
+            _isLoading = false;
+            _errorMessageFromServer = "Ocurrió un error inesperado al intentar iniciar sesión. Por favor, inténtalo de nuevo más tarde.";
+            Snackbar.Add(_errorMessageFromServer, Severity.Error, options => { options.VisibleStateDuration = 7000; });
+            Console.WriteLine($"Excepción general durante el inicio de sesión: {ex.ToString()}");
         }
         finally
         {
             _isLoading = false;
-            StateHasChanged();
+            StateHasChanged(); // Asegura que la UI se actualice para _isLoading, especialmente si ocurrió una excepción.
         }
     }
 }

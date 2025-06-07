@@ -7,7 +7,7 @@ namespace GestMantIA.Core.Identity.Results
     {
         public VerifyEmailResult()
         {
-            UserId = string.Empty;
+            UserId = Guid.Empty;
             Succeeded = false;
             Message = "Operación completada";
             Errors = new List<string>();
@@ -16,7 +16,7 @@ namespace GestMantIA.Core.Identity.Results
         /// <summary>
         /// Identificador del usuario verificado.
         /// </summary>
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Indica si el correo electrónico fue verificado correctamente.
@@ -29,9 +29,9 @@ namespace GestMantIA.Core.Identity.Results
         /// <param name="userId">Identificador del usuario verificado.</param>
         /// <param name="message">Mensaje descriptivo opcional.</param>
         /// <returns>Instancia de VerifyEmailResult con EmailVerified en true.</returns>
-        public static VerifyEmailResult Success(string userId, string? message = null)
+        public static VerifyEmailResult Success(Guid userId, string? message = null)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (userId == Guid.Empty)
             {
                 throw new ArgumentException("El ID de usuario no puede estar vacío.", nameof(userId));
             }

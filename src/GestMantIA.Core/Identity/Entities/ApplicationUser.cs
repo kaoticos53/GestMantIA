@@ -93,6 +93,16 @@ namespace GestMantIA.Core.Identity.Entities
         public DateTime? LastLoginDate { get; set; }
 
         /// <summary>
+        /// Token utilizado para el restablecimiento de contraseña.
+        /// </summary>
+        public string? PasswordResetToken { get; set; }
+
+        /// <summary>
+        /// Fecha y hora de expiración del token de restablecimiento de contraseña.
+        /// </summary>
+        public DateTime? PasswordResetTokenExpiration { get; set; }
+
+        /// <summary>
         /// Fecha en que se marcó como eliminado.
         /// </summary>
         public DateTime? DeletedAt { get; set; }

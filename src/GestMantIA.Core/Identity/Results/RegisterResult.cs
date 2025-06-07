@@ -7,15 +7,16 @@ namespace GestMantIA.Core.Identity.Results
     {
         public RegisterResult()
         {
-            UserId = string.Empty;
+            UserId = Guid.Empty;
             Succeeded = false;
             Message = "Operación completada";
             Errors = new List<string>();
         }
+
         /// <summary>
         /// Identificador del usuario recién registrado.
         /// </summary>
-        public string UserId { get; set; }
+        public Guid UserId { get; set; } // Fixed property name to match usage
 
         /// <summary>
         /// Indica si se requiere confirmación de correo electrónico.
@@ -29,9 +30,9 @@ namespace GestMantIA.Core.Identity.Results
         /// <param name="requiresEmailConfirmation">Indica si se requiere confirmación de correo electrónico.</param>
         /// <param name="message">Mensaje descriptivo opcional.</param>
         /// <returns>Instancia de RegisterResult con los datos del registro.</returns>
-        public static RegisterResult Success(string userId, bool requiresEmailConfirmation = false, string? message = null)
+        public static RegisterResult Success(Guid userId, bool requiresEmailConfirmation = false, string? message = null)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (userId == Guid.Empty) // Fixed validation for Guid.Empty
             {
                 throw new ArgumentException("El ID de usuario no puede estar vacío.", nameof(userId));
             }

@@ -9,6 +9,7 @@ using GestMantIA.Infrastructure.Features.UserManagement.Repositories;
 using GestMantIA.Infrastructure.Identity.Factories;
 using GestMantIA.Infrastructure.Services.Auth;
 using GestMantIA.Infrastructure.Services.Email;
+using GestMantIA.Infrastructure.Services;
 using Microsoft.AspNetCore.Hosting; // Para IWebHostEnvironment
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -92,6 +93,9 @@ namespace GestMantIA.Infrastructure
             // Configurar servicios de autenticación
             services.AddScoped<ITokenService, JwtTokenService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+            // Servicio para la gestión de cuentas, incluyendo recuperación de contraseña
+            services.AddScoped<IAccountService, AccountService>();
 
             return services;
         }

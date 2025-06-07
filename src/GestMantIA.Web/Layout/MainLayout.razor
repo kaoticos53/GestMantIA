@@ -1,17 +1,99 @@
-﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
+@inherits LayoutComponentBase
+@implements IDisposable 
+@inject ILayoutService LayoutService
+@inject IThemeService ThemeService // Asumo que IThemeService y ThemeService.CurrentTheme están bien
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+<MudThemeProvider Theme="ThemeService.CurrentTheme" @bind-IsDarkMode="_isDarkMode" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="ToggleDrawer" />
+        <MudText Typo="Typo.h5" Class="ml-3">GestMantIA</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="ToggleDarkTheme" />
+        <AuthorizeView>
+            <Authorized>
+                <MudMenu Icon="@Icons.Material.Filled.Person" Color="Color.Inherit">
+                    <MudMenuItem>@context.User.Identity?.Name</MudMenuItem>
+                    <MudMenuItem OnClick="LogoutAsync">Cerrar Sesión</MudMenuItem>
+                </MudMenu>
+            </Authorized>
+            <NotAuthorized>
+                <MudButton Href="/authentication/login" Color="Color.Inherit">Iniciar Sesión</MudButton>
+            </NotAuthorized>
+        </AuthorizeView>
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="_isDrawerOpen" Elevation="1" Variant="@DrawerVariant.Responsive">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">Menú</MudText>
+        </MudDrawerHeader>
         <NavMenu />
-    </div>
+    </MudDrawer>
 
-    <main>
-        <div class="top-row px-4 auth">
-            <LoginDisplay />
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
+    <MudMainContent Class="pt-16 px-4">
+        <MudContainer MaxWidth="MaxWidth.False">
             @Body
-        </article>
-    </main>
-</div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool _isDarkMode;
+    private bool _isDrawerOpen;
+
+    protected override async Task OnInitializedAsync()
+    {
+        LayoutService.MajorUpdateOccured += OnMajorUpdateOccured;
+        LayoutService.OnTitleChanged += OnTitleChanged; // Suscribirse también a cambios de título si es necesario refrescar
+
+        _isDarkMode = LayoutService.IsDarkMode;
+        _isDrawerOpen = LayoutService.IsDrawerOpen;
+        
+        // Si ThemeService necesita inicialización, asegurarse que se haga.
+        // Si ThemeService.CurrentTheme depende de LayoutService.IsDarkMode,
+        // podría ser necesario un orden específico o una notificación.
+        await ThemeService.InitializeAsync(); 
+        await LayoutService.InitializeAsync(); // Asegurar que LayoutService también se inicialice
+    }
+
+    private void OnMajorUpdateOccured()
+    {
+        _isDarkMode = LayoutService.IsDarkMode;
+        _isDrawerOpen = LayoutService.IsDrawerOpen;
+        InvokeAsync(StateHasChanged); // Asegurarse que se ejecuta en el hilo de UI
+    }
+
+    private void OnTitleChanged()
+    {
+        InvokeAsync(StateHasChanged); // Para refrescar el título si se muestra en el layout
+    }
+
+    private async Task ToggleDrawer()
+    {
+        await LayoutService.ToggleDrawerAsync();
+        // _isDrawerOpen se actualizará a través de OnMajorUpdateOccured
+    }
+
+    private async Task ToggleDarkTheme()
+    {
+        await LayoutService.ToggleDarkModeAsync();
+        // _isDarkMode se actualizará a través de OnMajorUpdateOccured
+    }
+
+    private async Task LogoutAsync()
+    {
+        await AuthService.LogoutAsync();
+        NavigationManager.NavigateTo("/auth/login", forceLoad: true); // forceLoad para asegurar un refresco completo
+    }
+
+    public void Dispose()
+    {
+        LayoutService.MajorUpdateOccured -= OnMajorUpdateOccured;
+        LayoutService.OnTitleChanged -= OnTitleChanged;
+    }
+}

@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  influxdb:
+    image: influxdb:2.7
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=admin123
+      - DOCKER_INFLUXDB_INIT_ORG=gestmantia
+      - DOCKER_INFLUXDB_INIT_BUCKET=gestmantia
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-auth-token
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+    networks:
+      - telemetry-net
+
+  telegraf:
+    image: telegraf:1.29
+    container_name: telegraf
+    depends_on:
+      - influxdb
+    volumes:
+      - ./docker/telemetry/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    environment:
+      - INFLUX_TOKEN=my-super-secret-auth-token
+    networks:
+      - telemetry-net
+    # Esto permite que Telegraf recopile métricas del host
+    # Descomenta las siguientes líneas si necesitas monitorizar el host
+    # pid: "host"
+    # network_mode: "host"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    depends_on:
+      - influxdb
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./docker/telemetry/grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - telemetry-net
+
+networks:
+  telemetry-net:
+    driver: bridge
+
+volumes:
+  influxdb-data:
+  grafana-storage:

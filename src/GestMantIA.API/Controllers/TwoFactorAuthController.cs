@@ -43,15 +43,15 @@ namespace GestMantIA.API.Controllers
         {
             try
             {
-                var userId = User.FindFirst("uid")?.Value;
+                var uId = User.FindFirst("uid")?.Value;
                 var userEmail = User.FindFirst("email")?.Value;
 
-                if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(userEmail))
+                if (string.IsNullOrEmpty(uId) || string.IsNullOrEmpty(userEmail) || !Guid.TryParse(uId, out _))
                 {
                     return Unauthorized("No se pudo identificar al usuario.");
                 }
 
-                var result = await _authService.GenerateTwoFactorSetupAsync(userId, userEmail);
+                var result = await _authService.GenerateTwoFactorSetupAsync(Guid.Parse(uId), userEmail);
 
                 if (!result.Succeeded)
                 {
@@ -85,13 +85,13 @@ namespace GestMantIA.API.Controllers
 
             try
             {
-                var userId = User.FindFirst("uid")?.Value;
-                if (string.IsNullOrEmpty(userId))
+                var uId = User.FindFirst("uid")?.Value;
+                if (string.IsNullOrEmpty(uId) || !Guid.TryParse(uId, out _))
                 {
                     return Unauthorized("No se pudo identificar al usuario.");
                 }
 
-                var result = await _authService.EnableTwoFactorAsync(userId, request.Code);
+                var result = await _authService.EnableTwoFactorAsync(Guid.Parse(uId), request.Code);
 
                 if (!result.Succeeded)
                 {
@@ -119,13 +119,13 @@ namespace GestMantIA.API.Controllers
         {
             try
             {
-                var userId = User.FindFirst("uid")?.Value;
-                if (string.IsNullOrEmpty(userId))
+                var uId = User.FindFirst("uid")?.Value;
+                if (string.IsNullOrEmpty(uId) || !Guid.TryParse(uId, out _))
                 {
                     return Unauthorized("No se pudo identificar al usuario.");
                 }
 
-                var result = await _authService.DisableTwoFactorAsync(userId);
+                var result = await _authService.DisableTwoFactorAsync(Guid.Parse(uId));
 
                 if (!result.Succeeded)
                 {
@@ -159,14 +159,14 @@ namespace GestMantIA.API.Controllers
 
             try
             {
-                var userId = User.FindFirst("uid")?.Value;
-                if (string.IsNullOrEmpty(userId))
+                var uId = User.FindFirst("uid")?.Value;
+                if (string.IsNullOrEmpty(uId) || !Guid.TryParse(uId, out _))
                 {
                     return Unauthorized("No se pudo identificar al usuario.");
                 }
 
 
-                var isValid = await _authService.VerifyTwoFactorTokenAsync(userId, request.Code);
+                var isValid = await _authService.VerifyTwoFactorTokenAsync(Guid.Parse(uId), request.Code);
 
                 if (!isValid)
                 {

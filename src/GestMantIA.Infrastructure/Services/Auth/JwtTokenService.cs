@@ -56,11 +56,12 @@ namespace GestMantIA.Infrastructure.Services.Auth
 
             // Agregar los roles como claims individuales para compatibilidad con ASP.NET Core
             // Importante: No agregar los roles como un array, sino como múltiples claims "role" (uno por cada rol)
-            //var userRoles = await _userManager.GetRolesAsync(user);
-            //foreach (var role in userRoles)
-            //{
-            //    claims.Add(new Claim(ClaimTypes.Role, role)); // Cada rol se agrega como claim independiente
-            //}
+            var userRoles = await _userManager.GetRolesAsync(user);
+            foreach (var role in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role)); // Cada rol se agrega como claim independiente
+                claims.Add(new Claim("role", role)); // Para compatibilidad con estándares JWT
+            }
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

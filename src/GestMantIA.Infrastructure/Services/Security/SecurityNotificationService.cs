@@ -46,8 +46,10 @@ namespace GestMantIA.Infrastructure.Services.Security
                 {
                     Id = Guid.NewGuid(),
                     UserId = userId,
-                    Title = title,
-                    Message = message,
+                    // No asignamos User aquí ya que no tenemos acceso directo al UserManager
+                    // La relación se establecerá automáticamente cuando se guarde en la base de datos
+                    Title = title ?? "Notificación de seguridad",
+                    Message = message ?? "Sin detalles adicionales",
                     NotificationType = notificationType,
                     RelatedEventId = relatedEventId,
                     IsRead = false,

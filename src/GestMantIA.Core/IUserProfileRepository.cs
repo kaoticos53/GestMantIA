@@ -7,6 +7,6 @@ namespace GestMantIA.Core.Repositories // El namespace se mantiene
     {
         // Aquí se pueden añadir métodos específicos para UserProfile si son necesarios en el futuro.
         // Por ejemplo:
-        // Task<UserProfile?> GetByUserIdAsync(string userId);
+        // Task<UserProfile?> GetByUserIdAsync(Guid userId);
     }
 }

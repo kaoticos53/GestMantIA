@@ -1,0 +1,15 @@
+{
+  "runtime": "Net90",
+  "codeGenerators": {
+    "openApiToCSharpClient": {
+      "input": "swagger.json",
+      "output": "Generated/ApiClient.cs",
+      "namespace": "GestMantIA.Web.HttpClients",
+      "className": "GestMantIAApiClient",
+      "generateClientInterfaces": true,
+      "injectHttpClient": true,
+      "jsonLibrary": "NewtonsoftJson",
+      "operationGenerationMode": "SingleClientFromOperationId"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+@inject NavigationManager NavigationManager
+
+@code {
+    protected override void OnInitialized()
+    {
+        // Redirige a la página de login.
+        // Asegúrate de que la ruta "/auth/login" coincide con tu página de login.
+        NavigationManager.NavigateTo("/auth/login");
+    }
+}

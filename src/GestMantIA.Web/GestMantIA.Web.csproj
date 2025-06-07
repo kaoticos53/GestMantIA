@@ -1,18 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
-    <PWAManifest>manifest.json</PWAManifest>
+    <PWAManifest>wwwroot/manifest.webmanifest</PWAManifest>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <StaticWebAssetBasePath>_content/$(MSBuildProjectName)</StaticWebAssetBasePath>
+    <!-- <StaticWebAssetBasePath>_content/$(MSBuildProjectName)</StaticWebAssetBasePath> -->
+    <ServiceWorkerEnabled>true</ServiceWorkerEnabled>
+    <OutputType>Exe</OutputType>
+    <BlazorPWAAssetsBehavior>OfflineAllowed</BlazorPWAAssetsBehavior>
   </PropertyGroup>
 
   <ItemGroup>
     <!-- MudBlazor -->
     <PackageReference Include="MudBlazor" />
-    
     <!-- Autenticación y Estado -->
     <PackageReference Include="Blazored.LocalStorage" />
     <PackageReference Include="Blazored.Toast" />
@@ -21,23 +22,46 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NSwag.ApiDescription.Client" />
+    <PackageReference Include="NSwag.MSBuild" />
     <PackageReference Include="System.Net.Http.Json" />
-    
+    <PackageReference Include="Microsoft.Extensions.Http" />
     <!-- Utilidades -->
   </ItemGroup>
-
   <ItemGroup>
-  </ItemGroup>
-
-    <ItemGroup>
     <ProjectReference Include="..\GestMantIA.Shared\GestMantIA.Shared.csproj" />
-    <!-- <ProjectReference Include="..\GestMantIA.Core\GestMantIA.Core.csproj" /> --> 
-    <!-- <ProjectReference Include="..\GestMantIA.Infrastructure\GestMantIA.Infrastructure.csproj" /> --> 
+    <ProjectReference Include="..\GestMantIA.Core\GestMantIA.Core.csproj" />
+    <ProjectReference Include="..\GestMantIA.Application\GestMantIA.Application.csproj" />
+    <!-- <ProjectReference Include="..\GestMantIA.Infrastructure\GestMantIA.Infrastructure.csproj" /> -->
   </ItemGroup>
-
   <ItemGroup>
     <Content Remove="wwwroot\sample-data\weather.json" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
 
+  <Target Name="CopySwaggerFileFromApi" BeforeTargets="PrepareForBuild" Condition="'$(Configuration)'=='Debug'">
+    <PropertyGroup>
+      <!-- Ajusta esta ruta si la estructura de tu solución o la configuración de salida de la API es diferente -->
+      <ApiSwaggerSourcePath>..\GestMantIA.API\swagger.json</ApiSwaggerSourcePath>
+      <LocalSwaggerTargetPath>swagger.json</LocalSwaggerTargetPath>
+    </PropertyGroup>
+    <Copy SourceFiles="$(ApiSwaggerSourcePath)" DestinationFiles="$(LocalSwaggerTargetPath)" SkipUnchangedFiles="false" Condition="Exists('$(ApiSwaggerSourcePath)')" />
+    <Message Text="Copiando swagger.json desde $(ApiSwaggerSourcePath) a $(LocalSwaggerTargetPath)" Importance="high" Condition="Exists('$(ApiSwaggerSourcePath)')" />
+    <Warning Text="No se encontró el archivo swagger.json de la API en $(ApiSwaggerSourcePath). El cliente API puede no estar actualizado." Condition="!Exists('$(ApiSwaggerSourcePath)')" />
+  </Target>
+
+  <Target Name="GenerateApiClient" AfterTargets="CopySwaggerFileFromApi" Condition="Exists('swagger.json')">
+    <PropertyGroup>
+      <InputSwaggerFile>swagger.json</InputSwaggerFile>
+      <OutputApiClientFile>Generated\ApiClient.cs</OutputApiClientFile>
+      <ApiClientClassName>GestMantIAApiClient</ApiClientClassName>
+      <ApiClientNamespace>GestMantIA.Web.HttpClients</ApiClientNamespace>
+    </PropertyGroup>
+    <Exec Command="$(NSwagExe_Net90) openapi2csclient /Input:$(InputSwaggerFile) /Output:$(OutputApiClientFile) /ClassName:$(ApiClientClassName) /Namespace:$(ApiClientNamespace) /GenerateClientInterfaces:true /InjectHttpClient:true /JsonLibrary:NewtonsoftJson /DisposeHttpClient:false" />
+    <Message Text="Cliente API generado en $(OutputApiClientFile) desde $(InputSwaggerFile)" Importance="high" />
+  </Target>
 </Project>

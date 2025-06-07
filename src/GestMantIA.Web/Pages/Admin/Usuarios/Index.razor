@@ -1,0 +1,356 @@
+@page "/admin/usuarios"
+@attribute [Authorize(Roles = "Admin")]
+
+@using GestMantIA.Core.Shared
+@using GestMantIA.Web.Models.Users
+@using GestMantIA.Web.Services.Interfaces
+@using GestMantIA.Web.Components.Shared
+@using MudBlazor
+@using MudBlazor.Services
+@inject IUserService UserService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@inject IDialogService DialogService
+
+<PageTitle>Gestión de Usuarios - GestMantIA</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudText Typo="Typo.h4" Class="mb-4">Gestión de Usuarios</MudText>
+
+            <!-- Barra de búsqueda y botón de nuevo -->
+            <MudPaper Class="d-flex align-center pa-4 mb-4" Elevation="1">
+                <MudTextField @bind-Value="_searchString" 
+                            Placeholder="Buscar usuarios........" 
+                            Adornment="Adornment.Start"
+                            AdornmentIcon="@Icons.Material.Filled.Search"
+                            Class="mr-4" 
+                            Style="width: 300px;" />
+
+                <MudSpacer />
+
+                <MudButton Variant="Variant.Filled" 
+                           Color="Color.Primary" 
+                           StartIcon="@Icons.Material.Filled.Add" 
+                           Class="ml-2"
+                           OnClick="@(() => NavigationManager.NavigateTo("/admin/usuarios/nuevo"))"
+                           Disabled="@_isLoading">
+                    Nuevo Usuario
+                </MudButton>
+            </MudPaper>
+
+
+            <!-- Tabla de usuarios -->
+            <MudPaper Elevation="3" Class="pa-4">
+                Uno
+                @if (_isLoading)
+                {
+                    <div class="d-flex justify-center">
+                        dos 
+                        <MudProgressCircular Color="Color.Primary" Size="Size.Large" />
+                    </div>
+                }
+                else if (_pagedResult?.Items == null || !_pagedResult.Items.Any())
+                {
+                    <MudText>No se encontraron usuarios.</MudText>
+                }
+                else
+                {
+                    <MudText>se encontraron usuarios.</MudText>
+                    <MudTable Items="@_pagedResult.Items" 
+                    Hover="true" 
+                    Striped="true"
+                    @bind-CurrentPage="_currentPage"
+                    TotalItems="@(_pagedResult?.TotalCount ?? 0)"
+                    Filter="new Func<UserListModel, bool>(item => FilterFunc(item, _searchString))"
+                    T="UserListModel"
+                    ServerData="@LoadServerData"
+                    @bind-Page="_currentPage">
+                        <ToolBarContent>
+                            <MudText Typo="Typo.h6">Lista de Usuarios</MudText>
+                        </ToolBarContent>
+                        <HeaderContent>
+                            <MudTh>Usuario</MudTh>
+                            <MudTh>Nombre</MudTh>
+                            <MudTh>Email</MudTh>
+                            <MudTh>Roles</MudTh>
+                            <MudTh>Estado</MudTh>
+                            <MudTh>Acciones</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Usuario">
+                                <div class="d-flex align-center">
+                                    <MudAvatar Color="Color.Primary" Size="Size.Small" Class="mr-2">
+                                        @GetInitials(context.FirstName, context.LastName, context.UserName)
+                                    </MudAvatar>
+                                    <div>
+                                        <MudText>@context.UserName</MudText>
+                                        <MudText Typo="Typo.body2" Color="Color.Default">@context.Email</MudText>
+                                    </div>
+                                </div>
+                            </MudTd>
+                            <MudTd DataLabel="Nombre">
+                                @if (!string.IsNullOrEmpty(context.FirstName) || !string.IsNullOrEmpty(context.LastName))
+                                {
+                                    <MudText>@($"{context.FirstName} {context.LastName}".Trim())</MudText>
+                                }
+                                else
+                                {
+                                    <MudText Typo="Typo.caption" Color="Color.Default">No especificado</MudText>
+                                }
+                            </MudTd>
+                            <MudTd DataLabel="Email">
+                                <MudText>@context.Email</MudText>
+                                @if (!context.EmailConfirmed)
+                                {
+                                    <MudTooltip Text="Email no confirmado">
+                                        <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" Size="Size.Small" Class="ml-1" />
+                                    </MudTooltip>
+                                }
+                            </MudTd>
+                            <MudTd DataLabel="Roles">
+                                <div class="d-flex flex-wrap">
+                                    @foreach (var role in context.Roles)
+                                    {
+                                        <MudChip T="string"
+                                        Color="GetRoleColor(role)" 
+                                        Size="Size.Small" 
+                                        Class="mr-1 mb-1">
+                                            @role
+                                        </MudChip>
+                                    }
+                                    @if (!context.Roles.Any())
+                                    {
+                                        <MudText Typo="Typo.caption" Color="Color.Default">Sin roles</MudText>
+                                    }
+                                </div>
+                            </MudTd>
+                            <MudTd DataLabel="Estado">
+                                @if (context.EmailConfirmed)
+                                {
+                                    <MudChip T="string" Color="Color.Success" Size="Size.Small" Variant="Variant.Filled">
+                                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Class="mr-1" />
+                                        Activo
+                                    </MudChip>
+                                }
+                                else
+                                {
+                                    <MudChip T="string" Color="Color.Error" Size="Size.Small" Variant="Variant.Filled">
+                                        <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Class="mr-1" />
+                                        Inactivo
+                                    </MudChip>
+                                }
+                            </MudTd>
+                            <MudTd DataLabel="Acciones" Class="text-right">
+                                <MudTooltip Text="Editar usuario">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" 
+                                    Color="Color.Primary" 
+                                    Size="Size.Small"
+                                    OnClick="@(e => EditarUsuario(context.Id))" />
+                                </MudTooltip>
+                                <MudTooltip Text="Eliminar usuario">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" 
+                                    Color="Color.Error" 
+                                    Size="Size.Small"
+                                    OnClick="@(e => EliminarUsuario(context))"
+                                    Class="ml-1" />
+                                </MudTooltip>
+                                <MudTooltip Text="Actualizar lista">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" 
+                                    Color="Color.Primary" 
+                                    Variant="Variant.Outlined" 
+                                    OnClick="@CargarUsuarios"
+                                    Class="ml-2"
+                                    Disabled="@_isLoading" />
+                                </MudTooltip>
+                            </MudTd>
+                        </RowTemplate>
+                        <PagerContent>
+                            <MudTablePager 
+                            TotalItems="@(_pagedResult?.TotalCount ?? 0)" 
+                            PageSize="@_pageSize" 
+                            PageSizeOptions="@(new[] { 5, 10, 25, 50 })" 
+                            CurrentPage="@_currentPage" 
+                            OnPageSizeChanged="@(EventCallback.Factory.Create<int>(this, OnPageSizeChanged))" 
+                            OnPageChanged="@(EventCallback.Factory.Create<int>(this, OnPageChanged))" />
+                        </PagerContent>
+                    </MudTable>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private PagedResult<UserListModel> _pagedResult = new();
+    private string _searchString = string.Empty;
+    private bool _isLoading = true;
+    private int _currentPage = 1;
+    private int _pageSize = 10;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarUsuarios();
+    }
+
+    private async Task OnPageChanged(int page)
+    {
+        _currentPage = page;
+        await CargarUsuarios();
+    }
+
+    private async Task OnPageSizeChanged(int size)
+    {
+        _pageSize = size;
+        _currentPage = 1;
+        await CargarUsuarios();
+    }
+
+    private async Task<TableData<UserListModel>> LoadServerData(TableState state, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            _currentPage = state.Page + 1; // MudBlazor usa base 0, nuestro servicio usa base 1
+            _pageSize = state.PageSize;
+
+            _pagedResult = await UserService.GetAllUsersAsync(
+                pageNumber: _currentPage,
+                pageSize: _pageSize,
+                searchTerm: string.IsNullOrWhiteSpace(_searchString) ? null : _searchString,
+                activeOnly: true);
+
+            return new TableData<UserListModel> { 
+                TotalItems = _pagedResult.TotalCount, 
+                Items = _pagedResult.Items 
+            };
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al cargar usuarios: {ex.Message}", Severity.Error);
+            _pagedResult = new PagedResult<UserListModel> { Items = new List<UserListModel>(), TotalCount = 0 };
+            return new TableData<UserListModel> { 
+                TotalItems = 0, 
+                Items = new List<UserListModel>() 
+            };
+        }
+    }
+
+    private async Task CargarUsuarios()
+    {
+        _isLoading = true;
+        await LoadServerData(new TableState { Page = _currentPage - 1, PageSize = _pageSize });
+        _isLoading = false;
+    }
+
+    private static bool FilterFunc(UserListModel user, string? filterString)
+    {
+        if (string.IsNullOrWhiteSpace(filterString))
+            return true;
+
+        if (user.UserName?.Trim().Contains(filterString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (user.FirstName?.Trim().Contains(filterString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (user.LastName?.Trim().Contains(filterString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (user.Email?.Trim().Contains(filterString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (user.Roles != null && user.Roles.Any(r => r?.Trim().Contains(filterString, StringComparison.OrdinalIgnoreCase) == true))
+            return true;
+
+        return false;
+    }
+    
+    private string GetInitials(string? firstName, string? lastName, string? userName)
+    {
+        if (!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(lastName))
+            return $"{firstName[0]}{lastName[0]}".ToUpper();
+        
+        if (!string.IsNullOrWhiteSpace(userName) && userName.Length >= 2)
+            return userName.Substring(0, 2).ToUpper();
+            
+        return "??";
+    }
+    
+    private Color GetRoleColor(string role)
+    {
+        return role.ToLower() switch
+        {
+            "admin" => Color.Primary,
+            "tecnico" => Color.Info,
+            "usuario" => Color.Secondary,
+            _ => Color.Default
+        };
+    }
+
+    private void NuevoUsuario()
+    {
+        NavigationManager.NavigateTo("/admin/usuarios/nuevo");
+    }
+
+    private void EditarUsuario(Guid userId)
+    {
+        NavigationManager.NavigateTo($"/admin/usuarios/editar/{userId}");
+    }
+
+    private async Task EliminarUsuario(UserListModel user)
+    {
+        if (user == null || user.Id == Guid.Empty || string.IsNullOrWhiteSpace(user.UserName)) 
+        {
+            Snackbar.Add("No se pudo identificar correctamente al usuario a eliminar", Severity.Error);
+            return;
+        }
+
+        var parameters = new DialogParameters
+        {
+            { "Title", "Confirmar Eliminación" },
+            { "ContentText", $"¿Está seguro de que desea eliminar al usuario '{user.UserName ?? user.Email}'? Esta acción no se puede deshacer." },
+            { "ButtonText", "Eliminar" },
+            { "Color", Color.Error }
+        };
+
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Confirmar Eliminación", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Canceled && result.Data is true)
+        {
+            try
+            {
+                _isLoading = true;
+                StateHasChanged();
+                
+                var response = await UserService.DeleteUserAsync(user.Id);
+
+                if (response.Success)
+                {
+                    Snackbar.Add(response.Message ?? "Usuario eliminado correctamente", Severity.Success);
+                    await CargarUsuarios();
+                }
+                else
+                {
+                    var errorMessage = "Error al eliminar el usuario.";
+                    if (!string.IsNullOrWhiteSpace(response.Message))
+                    {
+                        errorMessage = response.Message;
+                    }
+                    
+                    Snackbar.Add(errorMessage, Severity.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error al eliminar usuario: {ex.Message}", Severity.Error);
+            }
+            finally
+            {
+                _isLoading = false;
+                StateHasChanged();
+            }
+        }
+    }
+}

@@ -17,7 +17,7 @@ namespace GestMantIA.Core.Identity.Entities
         {
             Title = string.Empty;
             Message = string.Empty;
-            ResolutionNotes = string.Empty;
+            ResolutionNotes = null;
         }
 
         /// <summary>
@@ -54,9 +54,9 @@ namespace GestMantIA.Core.Identity.Entities
         public DateTimeOffset? ResolvedAt { get; set; }
 
         /// <summary>
-        /// Comentarios adicionales sobre la resolución de la alerta.
+        /// Notas adicionales sobre la resolución de la alerta.
         /// </summary>
-        public string ResolutionNotes { get; set; }
+        public string? ResolutionNotes { get; set; }
 
         /// <summary>
         /// ID del usuario que resolvió la alerta (si aplica).

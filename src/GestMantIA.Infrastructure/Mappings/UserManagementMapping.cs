@@ -50,7 +50,7 @@ namespace GestMantIA.Infrastructure.Mappings
                 .ForMember(dest => dest.DateRegistered, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.IsLockedOut, opt => opt.Ignore())
                 .ForMember(dest => dest.LockoutEnd, opt => opt.Ignore())
-                .ForMember(dest => dest.LockoutReason, opt => opt.Ignore())
+
                 .ForMember(dest => dest.Roles, opt => opt.Ignore());
         }
     }

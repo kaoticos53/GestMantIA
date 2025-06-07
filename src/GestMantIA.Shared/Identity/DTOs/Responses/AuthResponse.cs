@@ -12,7 +12,7 @@ namespace GestMantIA.Shared.Identity.DTOs.Responses
         {
             Token = string.Empty;
             RefreshToken = string.Empty;
-            User = new UserResponseDTO();
+            
         }
 
         /// <summary>
@@ -32,6 +32,6 @@ namespace GestMantIA.Shared.Identity.DTOs.Responses
         /// <summary>
         /// Información del usuario autenticado.
         /// </summary>
-        public UserResponseDTO User { get; set; }
+        public UserResponseDTO? User { get; set; }
     }
 }

@@ -8,12 +8,12 @@ namespace GestMantIA.Shared.Identity.DTOs
         /// <summary>
         /// ID del usuario.
         /// </summary>
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Nombre de usuario.
         /// </summary>
-        public string UserName { get; set; }
+        public required string UserName { get; set; }
 
         /// <summary>
         /// Indica si el usuario está actualmente bloqueado.
@@ -28,7 +28,7 @@ namespace GestMantIA.Shared.Identity.DTOs
         /// <summary>
         /// Razón del bloqueo (si se especificó).
         /// </summary>
-        public string Reason { get; set; }
+        public string? Reason { get; set; }
 
         /// <summary>
         /// Fecha y hora en que se inició el bloqueo.

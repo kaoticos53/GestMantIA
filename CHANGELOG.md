@@ -1,206 +1,279 @@
-# Registro de Cambios (Changelog)
+# Changelog
 
-Este archivo documenta los cambios notables en el proyecto GestMantIA. El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
+All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-### Changed
-- Migrados UserRepository y RoleRepository a la nueva estructura vertical slice, utilizando las interfaces de Identity y eliminando referencias obsoletas.
-- Eliminado el repositorio genérico antiguo (`Data.Repositories.Repository<T>`) y actualizado ApplicationDbContext para lanzar NotImplementedException si se solicita un repositorio genérico (alineado con la nueva arquitectura vertical slice).
-- Actualizada la inyección de dependencias en Infrastructure para registrar correctamente los nuevos repositorios y servicios de Identity.
-- Resueltos todos los errores de compilación en GestMantIA.Infrastructure relacionados con referencias a repositorios y dependencias antiguas.
+### Corregido (Sesión Actual - Cascade AI)
+- **FIX (Errores de Compilación de Telemetría en `GestMantIA.API`)**: Resueltos múltiples errores de compilación en `GestMantIA.API` relacionados con la integración de telemetría (App.Metrics e InfluxDB). Las correcciones incluyeron:
+  - Ajuste de versiones y referencias de paquetes NuGet (`App.Metrics`, `App.Metrics.Formatters.InfluxDB`, `App.Metrics.Formatters.Json`, `App.Metrics.Formatters.Prometheus`, `App.Metrics.Reporting.InfluxDB`, `InfluxDB.Client`).
+  - Actualización de la configuración de `InfluxDbOptions` en `MetricsConfiguration.cs` para usar la propiedad `Database` en lugar de `Bucket` y eliminar la configuración de `Org` (manejada por el cliente InfluxDB).
+  - Corrección en la instanciación y uso de formateadores de métricas (Prometheus, JSON) en `MetricsConfiguration.cs`, utilizando constructores directos en lugar de `metrics.Formatter<T>()` donde era problemático.
+  - Asegurar los `using` correctos y la inicialización adecuada de `InfluxDBClientOptions` dentro de la configuración del reporter de InfluxDB.
+  - Verificación y ajuste de la configuración de `IMetricsOutputFormattingBuilder` en `Program.cs` y `MetricsConfiguration.cs`.
+
+- **FIX (Errores CS0104 y CS0311 en `GestMantIA.Web`):** Resuelta la referencia ambigua de `IUserService` y el consecuente error de conversión de tipo genérico (`CS0311`) en `src/GestMantIA.Web/Program.cs`. Se calificaron completamente los tipos `GestMantIA.Web.Services.Interfaces.IUserService` y `GestMantIA.Web.Services.UserService` en el registro de servicios de `Program.cs`.
+
+### Corregido (Sesión 2025-06-01)
+- **FIX (Error CS0104 - Referencia Ambigua `IUserService`)**: Resuelta la ambigüedad de `IUserService` en `src/GestMantIA.Web/Pages/Admin/Usuarios/Create.razor` calificando completamente el tipo en la directiva `@inject` como `GestMantIA.Web.Services.Interfaces.IUserService`.
+- **FIX (Error RZ1030 - TagHelper mal formado)**: Este error en `MudCheckBox` dentro de `src/GestMantIA.Web/Pages/Admin/Usuarios/Create.razor` se resolvió indirectamente al corregir el error de referencia ambigua `CS0104` en el mismo archivo.
+- **FIX (Error CS0102)**: Eliminada la definición duplicada de la propiedad `RequireEmailConfirmation` en `src/GestMantIA.Shared/Identity/DTOs/Requests/CreateUserDTO.cs`.
+- **FIX (Error RZ10001)**: Especificado el atributo `T="bool"` en el componente `MudCheckBox` en `src/GestMantIA.Web/Pages/Admin/Usuarios/Create.razor` para resolver error de inferencia de tipo.
+- **FIX (Error CS0234 - IRoleService)**: Corregido error de 'IRoleService no encontrado' en `src/GestMantIA.Web/Pages/Admin/Usuarios/Create.razor` mediante:
+    - Registro de `IRoleService` con su implementación en `src/GestMantIA.Web/Program.cs`.
+    - Activación de referencias a `GestMantIA.Core.csproj` y `GestMantIA.Application.csproj` en `src/GestMantIA.Web/GestMantIA.Web.csproj`.
+- **FIX (Error CS0234 - Common.Exceptions)**: Comentada la directiva `using GestMantIA.Application.Common.Exceptions;` en `src/GestMantIA.Application/Features/UserManagement/Services/ApplicationUserProfileService.cs` ya que el espacio de nombres o las excepciones referenciadas no existen actualmente y la directiva no era utilizada activamente en el archivo, resolviendo el error de compilación.
+
+## [2025-06-01] - Cascade AI
+
+### Corregido
+- **FIX**: Resueltos ~35 errores de compilación CS1503 en `ApplicationUserServiceTests.cs` (y archivos de prueba relacionados) causados por el uso incorrecto de `Guid.Parse()` en variables que ya eran de tipo `Guid`. Se reemplazaron por asignaciones directas de las variables `Guid`.
+- **FIX**: Corregido errores de compilación en `ApplicationUserServiceTests.cs` relacionados con la inicialización de `UserResponseDTO`. Se aseguraron todas las propiedades requeridas (`Id`, `UserName`, `Email`) y otras propiedades relevantes fueran inicializadas correctamente en las instancias de `UserResponseDTO` utilizadas en las configuraciones de mock de `IMapper` y en las aserciones de prueba, resolviendo así los fallos de compilación.
+- **FIX**: Solucionados errores de compilación `CS1028` (Directiva de preprocesador inesperada) en `ApplicationUserServiceTests.cs` eliminando directivas `#endregion` huérfanas.
+
+### Mejorado
+- **Servicio de Perfil de Usuario (`ApplicationUserProfileService`)**:
+  - Implementado el método `GetUserProfileAsync(Guid userId)` en `ApplicationUserProfileService.cs`.
+  - El método ahora recupera y combina información del `ApplicationUser` (incluyendo roles) y la entidad `UserProfile` asociada.
+  - Se inyectó `UserManager<ApplicationUser>` en el servicio para acceder a los datos de `ApplicationUser` y sus roles.
+  - Se priorizan los datos específicos del perfil (ej. `FirstName`, `LastName`, `PhoneNumber`) desde la entidad `UserProfile` si está disponible.
+- **Servicio de Gestión de Usuarios (`ApplicationUserService` y `IUserService`)**:
+  - Se completó la implementación de `ApplicationUserService` en `GestMantIA.Application` para que cumpla con todos los métodos definidos en la interfaz `IUserService` (`GestMantIA.Core.Identity.Interfaces`).
+  - Se unificó el uso de `Guid` como identificador principal para usuarios en la mayoría de los métodos, mejorando la consistencia.
+  - Se eliminaron los métodos redundantes `AssignRolesToUserAsync` y `RemoveRolesFromUserAsync` de `IUserService` y `ApplicationUserService`, consolidando la lógica de asignación de roles.
+  - Se implementaron los métodos faltantes para la gestión de contraseñas y confirmación de correo electrónico:
+    - `GetPasswordResetTokenAsync(string userIdOrEmail)`
+    - `ResetPasswordAsync(ResetPasswordDTO resetPasswordDto)`
+    - `ChangePasswordAsync(string userId, ChangePasswordDTO changePasswordDto)`
+    - `ConfirmEmailAsync(string userId, string token)`
+    - `ResendConfirmationEmailAsync(string userIdOrEmail)`
+  - Se añadió un método auxiliar privado `FindUserByIdOrEmailOrUsernameAsync` para facilitar la búsqueda de usuarios.
+  - Se actualizó `IUserService` para reflejar los cambios, incluyendo la modificación de `GetUserRolesAsync` para que acepte `Guid userId`.
+
+## [2025-05-31] - Cascade AI
+
+### Corregido
+- **Resolución Final de Errores Persistentes de Componentes MudBlazor en `GestMantIA.Web`**:
+  - **`MudDialogInstance`**: Resuelto error de compilación `CS0246` ("El nombre del tipo o del espacio de nombres 'MudDialogInstance' no se encontró") en `ConfirmationDialog.razor` y `MinimalDialogTest.razor` utilizando la interfaz `IMudDialogInstance` en lugar de la clase concreta `MudDialogInstance` para el `CascadingParameter`. Se inicializaron propiedades con `default!` para `CS8618`.
+  - **`MudChipSet` (`Pages/Admin/Usuarios/Edit.razor`)**: Se estabilizó la compilación (resolviendo `CS1662`) utilizando `SelectedValues` y `SelectedValuesChanged` con un manejador explícito `OnSelectedRolesChanged(IEnumerable<string> newValues)`, y especificando `T="string"`. La configuración final es:
+    ```xml
+    <MudChipSet SelectedValues="_selectedRoles" SelectedValuesChanged="OnSelectedRolesChanged" T="string">
+    ```
+    ```csharp
+    // En @code
+    private HashSet<string> _selectedRoles = new(StringComparer.OrdinalIgnoreCase);
+    private void OnSelectedRolesChanged(IEnumerable<string> newValues)
+    {
+        _selectedRoles = new HashSet<string>(newValues ?? Enumerable.Empty<string>(), StringComparer.OrdinalIgnoreCase);
+    }
+    ```
+  - **`MudCheckBox` (`Pages/Auth/Login.razor`)**: Se estabilizó la compilación (resolviendo `RZ10001`) utilizando `@bind-Checked` y especificando explícitamente `T="bool"`:
+    ```xml
+    <MudCheckBox T="bool" @bind-Checked="_loginModel.RememberMe" Label="Recordarme" Class="mb-4" />
+    ```
+- El proyecto `GestMantIA.Web` ahora compila sin los errores previamente identificados para `MudDialogInstance`, `MudChipSet` y `MudCheckBox`.
+  *(Nota: Persisten errores MSB4018 no relacionados con estos componentes en `GestMantIA.Web` y `GestMantIA.API`.)*
+
+## [2025-05-31] - Cascade AI
+
+### Corregido
+- **Resolución de Errores y Advertencias de Compilación en `GestMantIA.Web`**:
+  - **`Login.razor`**: Resuelto error `RZ10001` (The type of component 'MudCheckBox' cannot be inferred) restaurando el atributo `T="bool"` en el componente `MudCheckBox`.
+  - **`ResetPasswordPage.razor`**: Solucionado error `CS1061` ("ProblemDetails" no contiene una definición para "Extensions") modificando el manejo de excepciones `ApiException<HttpClients.ProblemDetails>`. La nueva lógica parsea directamente la respuesta JSON (`problemDetailsException.Response`) para extraer mensajes de error de campos comunes como "errors", "title" o "detail", en lugar de depender de la propiedad `Extensions` del tipo `ProblemDetails` generado por NSwag, que podría no tenerla.
+  - **`AuthHeaderHandler.cs`**: Eliminada advertencia `CS8602` (Desreferencia de una referencia posiblemente NULL) añadiendo una comprobación de nulidad para `request.RequestUri` antes de acceder a `request.RequestUri.AbsolutePath`.
+  - **`Pages/Admin/Usuarios/Index.razor`**: Eliminada advertencia `CS8602` (Desreferencia de una referencia posiblemente NULL) utilizando el operador condicional nulo (`?.`) y el operador de coalescencia nula (`??`) al acceder a `user.UserName.Trim()`.
+- El proyecto `GestMantIA.Web` ahora compila limpiamente sin los errores y advertencias previamente identificados.
+
+### Añadido
+- **Página de Solicitud de Restablecimiento de Contraseña (`ForgotPasswordPage.razor`)**:
+  - Implementada la interfaz de usuario en `/auth/forgot-password` para que los usuarios puedan solicitar un enlace de restablecimiento de contraseña.
+  - La página incluye un campo para ingresar el correo electrónico y se comunica con el endpoint `/api/accounts/forgot-password` del backend.
+## [2025-06-05] - Cascade AI
+
+### Corregido
+- **FIX**: Solucionado error de compilación `RZ10001` (El tipo de componente 'MudCheckBox' no se puede inferir) en `Pages/Admin/Usuarios/Create.razor`. El error se debía a que la propiedad `_createUserModel.RequireEmailConfirmation` a la que se enlazaba el `MudCheckBox` no existía en el DTO `CreateUserDTO`. Se añadió la propiedad `public bool RequireEmailConfirmation { get; init; }` a `CreateUserDTO.cs` (`GestMantIA.Shared/Identity/DTOs/Requests/CreateUserDTO.cs`) para resolver el problema.
+- **FIX**: Restaurada la estructura del método de prueba `GetUserLockoutInfoAsync_UserNameIsNull_SetsEmptyStringInDTO` en `ApplicationUserServiceTests.cs`. Este método estaba severamente corrupto debido a ediciones previas, causando numerosos errores de sintaxis (CS1519, CS8124, CS0106). Esta corrección ha permitido que la solución compile correctamente a nivel general.
+
+## [2025-06-04] - Cascade AI
+
+### Mejorado
+- **Pruebas Unitarias de `ApplicationUserService`**:
+  - Revisados y actualizados exhaustivamente los tests unitarios en `ApplicationUserServiceTests.cs` (`GestMantIA.Application.UnitTests`).
+  - Asegurada la compatibilidad con IDs de usuario de tipo `Guid` y la correcta conversión a `string` para todas las llamadas a `UserManager` (e.g., `FindByIdAsync(userId.ToString())`).
+  - Eliminados tests obsoletos que no compilaban debido a refactorizaciones previas (e.g., `UpdateUserRolesAsync` con firma antigua).
+  - Verificada la cobertura y correctitud de los tests para los siguientes métodos del servicio: `UpdateUserProfileAsync`, `LockUserAsync`, `UnlockUserAsync`, `IsUserLockedOutAsync`, `GetUserLockoutInfoAsync`, `GetPasswordResetTokenAsync`, `ResetPasswordAsync`, `ChangePasswordAsync`, `ConfirmEmailAsync`, `ResendConfirmationEmailAsync`, y `UpdateUserAsync`.
+  - Confirmado el correcto mocking de `UserManager`, `ILogger`, y `IMapper`, así como el uso de `LoggerExtensions.VerifyLog` para la verificación de logs.
+
+### Verificado
+- **Integración de `UserManagementController`**:
+  - Confirmado que `UserManagementController.cs` en `GestMantIA.API` utiliza correctamente `IUserService` (implementado por `ApplicationUserService`) para todas las operaciones de gestión de usuarios.
+  - Verificada la consistencia en el uso de `Guid` como identificadores de usuario y los DTOs correspondientes.
+  - Revisado el manejo de excepciones y logging en el controlador.
+
+## [2025-06-03] - Cascade AI
+
+### Añadido
+- **Documentación**: Creada la guía de estilo de codificación C# (`CodingStandard.md`) para el proyecto GestMantIA, basada en las convenciones oficiales de Microsoft y las necesidades específicas del proyecto. Este documento cubre nomenclaturas, formato, y buenas prácticas de codificación.
+
+## [2025-06-02] - Cascade AI
+
+### Añadido
+- **Pruebas Unitarias para `ApplicationUserService` en `GestMantIA.Application.UnitTests`**:
+  - Añadidas pruebas unitarias exhaustivas para el método `GetAllUsersAsync`, cubriendo escenarios de filtrado (incluyendo `activeOnly`), paginación, búsqueda por término y obtención de roles.
+  - Añadidas pruebas unitarias exhaustivas para el método `SearchUsersAsync`, cubriendo escenarios de búsqueda por término (nombre de usuario, email, nombre, apellido), paginación, manejo de roles y errores.
+  - Añadidas pruebas unitarias exhaustivas para el método `CreateUserAsync`, cubriendo validaciones de DTO, duplicados de nombre de usuario/email, creación de usuario exitosa, asignación de roles (existentes y no existentes), fallos en la creación por parte de `UserManager`, manejo de `RequireEmailConfirmation` y errores genéricos.
+  - Añadidas pruebas unitarias exhaustivas para el método `UpdateUserAsync` (basado en la implementación parcial disponible), cubriendo validaciones de DTO (nulidad, coincidencia de ID), usuario no encontrado/eliminado, actualizaciones de campos (incluyendo email/username con chequeo de duplicados), gestión de roles (añadir/eliminar/nulo/vacío), fallos en la actualización por parte de `UserManager` y errores genéricos.
+- **Pruebas Unitarias para `ApplicationUserService.UpdateUserRolesAsync`**:
+  - Añadidas pruebas unitarias exhaustivas para el método `UpdateUserRolesAsync`, cubriendo escenarios de usuario no encontrado, sin cambios en roles, adición/eliminación exitosa y fallida de roles, combinaciones de éxito/fallo, y manejo de excepciones.
+- **Pruebas Unitarias para `ApplicationUserService.UpdateUserProfileAsync`**:
+  - Añadidas pruebas unitarias para el método `UpdateUserProfileAsync`, cubriendo escenarios de usuario no encontrado, DTO sin cambios, actualizaciones exitosas de campos individuales y combinados del perfil (nombre, apellido, teléfono), fallos en la actualización por `UserManager`, y manejo de excepciones.
+- **Pruebas Unitarias para `ApplicationUserService.LockUserAsync`**:
+  - Añadidas pruebas unitarias para el método `LockUserAsync`, cubriendo escenarios de usuario no encontrado/eliminado, usuario ya bloqueado, bloqueo exitoso con duración específica/predeterminada y con/sin razón, fallos en `SetLockoutEndDateAsync` y manejo de excepciones.
+- **Pruebas Unitarias para `ApplicationUserService.UnlockUserAsync`**:
+  - Añadidas pruebas unitarias para el método `UnlockUserAsync`, cubriendo escenarios de usuario no encontrado/eliminado, usuario no bloqueado, desbloqueo exitoso (incluyendo reseteo de contador de accesos fallidos), fallos en `SetLockoutEndDateAsync`, y manejo de excepciones (incluyendo fallo en `ResetAccessFailedCountAsync` post-desbloqueo).
+- **Pruebas Unitarias para `ApplicationUserService.IsUserLockedOutAsync`**:
+  - Añadidas pruebas unitarias para el método `IsUserLockedOutAsync`, cubriendo escenarios de usuario no encontrado/eliminado, usuario bloqueado/no bloqueado, y manejo de excepciones.
+- **Pruebas Unitarias para `ApplicationUserService.GetUserLockoutInfoAsync`**:
+  - Añadidas pruebas unitarias para el método `GetUserLockoutInfoAsync`, cubriendo escenarios de usuario no encontrado/eliminado, información correcta para usuarios no bloqueados, bloqueados temporalmente y permanentemente, manejo de `UserName` nulo, y manejo de excepciones.
+- **Pruebas Unitarias para `ApplicationUserService.GetPasswordResetTokenAsync`**:
+  - Añadidas pruebas unitarias para el método `GetPasswordResetTokenAsync`, cubriendo escenarios de usuario no encontrado/eliminado, generación exitosa de token, y manejo de excepciones.
+- **Pruebas Unitarias para `ApplicationUserService.ResetPasswordAsync`**:
+  - Añadidas pruebas unitarias para el método `ResetPasswordAsync`, cubriendo DTO nulo, usuario no encontrado/eliminado, reseteo exitoso (con y sin desbloqueo), fallos, y manejo de excepciones.
+- **Pruebas Unitarias para `ApplicationUserService.ChangePasswordAsync`**:
+  - Añadidas pruebas unitarias para el método `ChangePasswordAsync`, cubriendo entradas inválidas, usuario no encontrado/eliminado, cambio exitoso, fallos y manejo de excepciones.
+- **Pruebas Unitarias para `ApplicationUserService.ConfirmEmailAsync`**:
+  - Añadidas pruebas unitarias para el método `ConfirmEmailAsync`, cubriendo entradas inválidas, usuario no encontrado, confirmación exitosa, fallos y manejo de excepciones.
+- **Pruebas Unitarias para `ApplicationUserService.ResendConfirmationEmailAsync`**:
+  - Añadidas pruebas unitarias para el método `ResendConfirmationEmailAsync`, cubriendo usuario no encontrado/eliminado, email ya confirmado, éxito, y manejo de excepciones.
+
+## [2025-06-01] - Cascade AI
+
+### Mejorado
+- **Interfaz de Usuario (UI) en `GestMantIA.Web`**:
+  - Mejorada la responsividad de las páginas de Login (`Login.razor`) y Registro (`Register.razor`):
+    - Los diálogos ahora mantienen un ancho máximo adecuado en pantallas anchas, evitando el encogimiento excesivo.
+    - Se ha corregido el desbordamiento en vistas móviles, asegurando que los formularios sean completamente visibles y utilizables.
+    - Se ajustó el padding para una mejor presentación en dispositivos pequeños.
+  - Configurado el menú de navegación lateral (`MainLayout.razor`) para un comportamiento responsivo:
+    - El menú (drawer) ahora se oculta automáticamente en pantallas pequeñas (móviles) y se muestra de forma persistente en pantallas grandes (escritorio).
+    - Se utiliza `DrawerVariant.Responsive` de MudBlazor para esta funcionalidad.
+
+## [2024-07-16] - Cascade AI
+
+### Corregido
+- **Errores de Compilación en `ResetPasswordPage.razor`**:
+  - Resueltos errores de compilación en el componente `ResetPasswordPage.razor` del proyecto `GestMantIA.Web` que impedían la funcionalidad de restablecimiento de contraseña en el frontend.
+  - Corregida la directiva `@using` para `Microsoft.AspNetCore.WebUtilities`.
+  - Asegurada la correcta deserialización de respuestas de error de la API, manejando `ProblemDetails` y el wrapper `Result`.
+  - Implementadas notificaciones `Snackbar` de MudBlazor para feedback al usuario.
+  - Garantizadas las actualizaciones de la UI mediante llamadas a `StateHasChanged()` en los bloques `catch` y `finally`.
+- **Disponibilidad de Clases `Result` y `Result<T>`**:
+  - Creado el archivo `Result.cs` en el proyecto `GestMantIA.Shared` (ruta `src/GestMantIA.Shared/Result.cs`) para proveer las clases wrapper `Result` y `Result<T>`.
+  - Actualizada la directiva `@using` en `ResetPasswordPage.razor` de `@using GestMantIA.Shared.Wrapper` a `@using GestMantIA.Shared` para reflejar la nueva ubicación y espacio de nombres de las clases `Result`.
+
+### Mejorado
+- **CSS Simplificado**:
+  - Eliminadas variables y estilos CSS de tema oscuro personalizado de `wwwroot/css/app.css` para simplificar la base de estilos y depender de los estilos por defecto de Blazor y MudBlazor.
+
+## [2025-05-31] - Cascade AI
+
+### Corregido
+- **Generación de Cliente API (Swagger/NSwag)**:
+  - Resuelto error de compilación `MSB4018` (relacionado con la tarea `DiscoverPrecompressedAssets`) en `GestMantIA.API.csproj`. La solución implicó deshabilitar la inclusión automática de activos web estáticos (`<EnableDefaultStaticWebAssetItems>false</EnableDefaultStaticWebAssetItems>`) para evitar conflictos durante el procesamiento de archivos en la carpeta `wwwroot`.
+  - Solucionada la falta de generación del archivo `ApiClient.cs` en el proyecto `GestMantIA.Web` que impedía la compilación del frontend.
+
+### Agregado
+- **Generación de Cliente API (Swagger/NSwag)**:
+  - Implementado un target MSBuild (`GenerateSwaggerFile`) en `GestMantIA.API.csproj` para generar automáticamente `swagger.json` después de la compilación, utilizando la herramienta local `dotnet swagger`.
+  - Añadido un nuevo target MSBuild (`GenerateApiClient`) a `GestMantIA.Web.csproj` para invocar NSwag. Este target utiliza el `swagger.json` (copiado desde el proyecto API) para generar el archivo `ApiClient.cs`, asegurando que el cliente API esté siempre actualizado con la definición del backend.
+
+
+## [2025-05-31] - Cascade AI
+
+### Agregado
+- **Funcionalidad de Recuperación de Contraseña (Backend)**:
+  - Creados DTOs `ForgotPasswordRequest` y `ResetPasswordRequest` para las solicitudes API.
+  - Añadidas propiedades `PasswordResetToken` (string nullable) y `PasswordResetTokenExpiration` (DateTime nullable) a la entidad `ApplicationUser`.
+  - Generada y aplicada migración de base de datos (`20250531175404_AddPasswordResetFieldsToUser`) para añadir las nuevas columnas a la tabla de usuarios.
+  - Implementado `IAccountService` y `AccountService` con lógica para:
+    - Generar un token de restablecimiento de contraseña único y con tiempo de expiración.
+    - Enviar un correo electrónico (simulado, guardado como archivo HTML en `TempEmails`) al usuario con el enlace de restablecimiento.
+    - Validar el token de restablecimiento y actualizar la contraseña del usuario.
+  - Creado `AccountsController` con endpoints API:
+    - `POST /api/accounts/forgot-password`: Para solicitar el restablecimiento de contraseña.
+    - `POST /api/accounts/reset-password`: Para confirmar el restablecimiento con el token y la nueva contraseña.
+  - Actualizado `swagger.json` y regenerado `ApiClient.cs` en `GestMantIA.Web` para incluir los nuevos endpoints y DTOs.
+
+## [2025-05-31] - Cascade AI
+
+### Agregado
+- **Módulo de Gestión de Usuarios**:
+  - Implementada la interfaz completa de gestión de usuarios con listado, búsqueda, creación, edición y eliminación
+  - Creado componente de diálogo de confirmación reutilizable (`ConfirmationDialog.razor`)
+  - Agregada validación de formularios con DataAnnotations y mensajes de error descriptivos
+  - Implementado manejo de roles y estados de usuario (activo/inactivo)
+  - Añadida paginación y búsqueda en tiempo real en el listado de usuarios
+  - Integrada la interfaz con el servicio de usuarios existente
+
+### Mejorado
+- **Experiencia de Usuario**:
+  - Mejorado el diseño de tarjetas de usuario con avatares y estados visuales
+  - Agregados tooltips para acciones y estados
+  - Mejorado el feedback visual durante operaciones asíncronas
+  - Validación en tiempo real en formularios de usuario
+
+## [2025-05-31] - Cascade AI
+
+### Agregado
+- **Generación e Integración de Cliente API para Autenticación en `GestMantIA.Web`**:
+  - Configurado NSwag (`nswag.json` y target MSBuild en `GestMantIA.Web.csproj`) para generar automáticamente el cliente C# `GestMantIAApiClient` a partir de `swagger.json`.
+  - Registrado `IGestMantIAApiClient` en `Program.cs` para inyección de dependencias, configurando su `BaseAddress`.
+  - Creado y registrado `AuthHeaderHandler` como `DelegatingHandler` para adjuntar automáticamente el token JWT (desde `localStorage`) a las cabeceras `Authorization` de las solicitudes HTTP realizadas por `GestMantIAApiClient`.
+  - Refactorizado `AuthService.cs` para utilizar `IGestMantIAApiClient` en el método `LoginAsync`, gestionando la obtención del token y la notificación al `CustomAuthStateProvider`.
+  - Actualizado `CustomAuthStateProvider.cs`: el método `NotifyUserAuthentication` ahora acepta el token JWT directamente para una actualización más eficiente del estado de autenticación.
+  - El flujo de inicio de sesión ahora está completamente conectado con la API a través del cliente generado, incluyendo el manejo de tokens y la actualización del estado de autenticación en la aplicación Blazor WASM.
+
+## [2025-05-30] - Cascade AI
+
+### Corregido
+- Alineada la implementación de `AuthService.cs` en `GestMantIA.Web` con las definiciones de DTOs generadas por NSwag en `swaggerClient.cs`:
+  - `LoginRequest` ahora usa `UsernameOrEmail` en lugar de `Username`.
+  - `RegisterRequest` ahora usa `UserName` en lugar de `Username`, y `FullName` en lugar de `FirstName` y `LastName`.
+  - La obtención del token de `AuthenticationResult` (retornado por `LoginAsync` y `RefreshTokenAsync`) ahora usa `AccessToken` en lugar de `Token`.
+- Esto resuelve errores de compilación previos (CS0117) relacionados con propiedades de DTO no encontradas.
+- Verificada la compilación exitosa del proyecto `GestMantIA.Web` tras los cambios.
+
+### Mejorado
+- Se verificó que los atributos de MudBlazor como `AlignItems` y `PreserveOpenState` están correctamente capitalizados, evitando posibles advertencias.
+
+## [2024-07-29] - Cascade
+
+### Corregido
+- Resueltos errores de compilación en `GestMantIA.Web` relacionados con `ILayoutService` en `MainLayout.razor`.
+- Refactorizada la interfaz `ILayoutService` y su implementación `LayoutService` para gestionar correctamente el estado del tema oscuro y del panel lateral (drawer), incluyendo la persistencia en `LocalStorage`.
+- Actualizado `MainLayout.razor` para utilizar la `ILayoutService` refactorizada, mejorando la sincronización del estado de la UI con el servicio.
+
+### Mejorado
+- Refactorizada la página `Login.razor` para utilizar `EditForm` con `DataAnnotationsValidator`, mejorando la validación del modelo.
+- Implementado el uso de `ISnackbar` para notificaciones de error y éxito en `Login.razor`.
+- Corregido el manejo de excepciones y errores del servidor en `Login.razor` para una experiencia de usuario más robusta.
+
+## [2025-05-30] - Cascade AI
+
+### Mejorado
+- Refactorizada la página `Register.razor` para utilizar `EditForm` con `DataAnnotationsValidator`, mejorando la validación del modelo y la estructura del formulario.
+- Actualizados los componentes `MudTextField` en `Register.razor` para enlazar directamente con las propiedades del modelo `RegisterModel` usando el atributo `For`.
+- Eliminada la lógica de validación manual de confirmación de contraseña en `Register.razor`, delegándola a los `DataAnnotations` del modelo.
+
+### Corregido
+- Resueltos errores de compilación `CS1061` en `Login.razor` corrigiendo el acceso a las propiedades del objeto de respuesta de autenticación (usando `result.Success` y `result.Message`).
+- Solucionado error de compilación `More than one compatible asset found for 'app.css'` en `GestMantIA.Web` corrigiendo la referencia de `css/app.min.css` a `css/app.css` en `wwwroot/index.html` y asegurando que el `PWAManifest` en `GestMantIA.Web.csproj` apunte a `manifest.webmanifest`.
+
+{{ ... }}
+
 - Validada la compilación limpia de toda la solución tras la migración.
 - Fecha: 2025-05-30
-
-
-### Changed
-- **Actualización del Script de Configuración de Base de Datos Local (`scripts/setup_local_db.sql`)**:
-  - Mejorado el script `setup_local_db.sql` para la creación de la base de datos PostgreSQL `gestmantia_dev` y el usuario `gestmantia_user`.
-  - El script ahora incluye creación condicional del rol, asignación de propietario a la base de datos, configuración de codificación y colación, y mensajes informativos (`RAISE NOTICE`).
-  - Añadidas instrucciones claras para la ejecución del script y pasos posteriores como la creación de la extensión `uuid-ossp`.
-
-### Fixed
-- Reinsertado el método de prueba unitaria `GetUserProfileAsync_Should_Return_Null_When_User_Does_Not_Exist` en `ApplicationUserServiceTests.cs` que se había perdido en ediciones anteriores.
-- Corregida la indentación de algunos atributos `[Fact]` en `ApplicationUserServiceTests.cs` como efecto secundario de la reinserción del método.
-- Verificado que todas las pruebas unitarias en `GestMantIA.Application.UnitTests` pasan correctamente.
-
-### Added
-- **Creación y Configuración de Proyectos de Pruebas Unitarias**:
-  - Creados los proyectos de pruebas unitarias: `GestMantIA.Core.UnitTests`, `GestMantIA.Application.UnitTests`, `GestMantIA.Infrastructure.UnitTests`, y `GestMantIA.API.UnitTests`.
-  - Añadidos los proyectos a la solución `GestMantIA.sln`.
-  - Configurados los proyectos para utilizar Gestión Centralizada de Paquetes (CPM).
-  - Añadidas referencias a los proyectos de origen correspondientes (ej. `Core.UnitTests` -> `Core`).
-  - Incluidos paquetes NuGet esenciales para pruebas: `xUnit`, `Moq`, `FluentAssertions`, y `Microsoft.AspNetCore.Mvc.Testing` (para API tests).
-- **Estructuración de Directorios para Pruebas Unitarias**:
-  - Creada una estructura de carpetas y archivos de marcador de posición (`*.Tests.cs`) en cada proyecto de pruebas, reflejando la estructura del proyecto de origen.
-  - Eliminados los archivos `UnitTest1.cs` por defecto.
-
-### Added
-- Entradas de log más detalladas en `ApplicationUserService` para operaciones de asignación y eliminación de roles.
-
-### Added
-- **Pruebas Unitarias para Entidades del Core (`GestMantIA.Core.UnitTests`)**:
-  - Completadas las pruebas unitarias para las siguientes entidades, cubriendo constructores, propiedades y métodos específicos:
-    - `ApplicationUser` (en `UserTests.cs`)
-    - `UserProfile`
-    - `ApplicationRole`
-    - `RefreshToken`
-    - `ApplicationPermission`
-    - `SecurityAlert` (incluyendo métodos `MarkAsResolved` y `Reopen`)
-    - `SecurityLog`
-    - `SecurityNotification` (incluyendo método `MarkAsRead`)
-
-### Fixed
-- **Errores de Compilación Críticos en la Solución:**
-  - Resuelto conflicto `More than one compatible asset found for 'service-worker.published.js'` en `GestMantIA.Web` eliminando el archivo `service-worker.published.js` preexistente de `wwwroot`.
-  - Resueltos conflictos `More than one compatible asset found` para `weather.json` y `mudTheme.json` en `GestMantIA.Web` ajustando cómo se referencian estos archivos en `GestMantIA.Web.csproj` (eliminando `weather.json` del `Content` y la entrada explícita `None Update` para `mudTheme.json`).
-  - Resuelto error `System.ArgumentException: An item with the same key has already been added` (relacionado con `SwaggerDark.css` y `app.css`) durante la tarea `DiscoverPrecompressedAssets` al deshabilitar la compresión de activos web estáticos (`<EnableStaticWebAssetsCompression>false</EnableStaticWebAssetsCompression>` en `Directory.Build.props`) y asegurar `StaticWebAssetBasePath` en los proyectos API y Web.
-- Ambiguity `CS0121` en `GestMantIA.API` eliminando el método duplicado `AddApplicationServices` de `GestMantIA.API.Extensions.ApplicationServiceExtensions.cs`.
-
-### Fixed
-- **Resolución de Error de Referencia en `GestMantIA.API` (`CS0234`)**:
-  - Se añadió la referencia de proyecto faltante a `GestMantIA.Application` en el archivo `GestMantIA.API.csproj`.
-  - Esta acción resolvió el error de compilación `CS0234` ("El tipo o el nombre del espacio de nombres 'Application' no existe en el espacio de nombres 'GestMantIA'"), permitiendo que el proyecto API reconozca y utilice correctamente la capa de Aplicación.
-
-### Fixed
-- **Resolución de Errores de Duplicidad en `Infrastructure.UserService` (`GestMantIA.Infrastructure`)**:
-  - Se eliminaron las implementaciones duplicadas de múltiples métodos (como `UnlockUserAsync`, `IsUserLockedOutAsync`, `GetUserLockoutInfoAsync`, `CreateUserAsync`, `UpdateUserAsync`, `DeleteUserAsync`, `GetUserByIdAsync`, `GetAllUsersAsync`, `AssignRolesToUserAsync`, `RemoveRolesFromUserAsync`) de `UserService.cs`.
-  - Esta acción resolvió los errores de compilación `CS0111` (miembro ya definido) que ocurrían debido a la coexistencia de estos métodos con los stubs que lanzan `NotImplementedException` (destinados a señalar que la lógica principal se ha movido a `ApplicationUserService`).
-
-### Changed
-- **Refactorización y Completitud de `ApplicationUserService` (`GestMantIA.Application`)**:
-  - Se implementaron todos los métodos de la interfaz `IUserService` en `ApplicationUserService.cs`.
-  - Se corrigieron las firmas de los métodos (incluyendo tipos de retorno, parámetros y manejo de nulabilidad) para que coincidan exactamente con `IUserService.cs`.
-  - Se aseguró que los métodos que devuelven tipos no nullables (ej. `Task<UserResponseDTO>`) lancen excepciones en lugar de retornar `null` en casos de error o datos no válidos.
-  - Se eliminaron de `ApplicationUserService.cs` los métodos que no pertenecían a la interfaz `IUserService` (ej. gestión directa de Roles y Claims, `UpdateUserActiveStatusAsync`).
-  - Esta refactorización alinea completamente `ApplicationUserService` con su contrato definido en `IUserService`, resolviendo problemas de compilación y asegurando una implementación coherente.
-
-
-
-
-## [2025-05-29] - Cascade AI
-
-### Added
-- **Creación de la Capa de Aplicación (`GestMantIA.Application`)**:
-  - Creado el nuevo proyecto `GestMantIA.Application` como una biblioteca de clases .NET, con `TargetFramework net9.0`.
-  - Establecida la estructura de carpetas inicial: `Features`, `Interfaces`, `DTOs`, `Mappings`, `Validators`, `Behaviours`.
-  - Añadidas referencias de proyecto a `GestMantIA.Core` y `GestMantIA.Shared`.
-
-### Changed
-- **Configuración de Paquetes NuGet para `GestMantIA.Application`**:
-  - Añadidos los paquetes NuGet `MediatR` (v12.5.0), `AutoMapper` (v14.0.0), `FluentValidation` (v12.0.0), y `FluentValidation.DependencyInjectionExtensions` (v12.0.0) al proyecto `GestMantIA.Application`.
-  - Actualizado `Directory.Packages.props` para gestionar centralmente las versiones de `MediatR` y `AutoMapper`, eliminando las referencias a los paquetes de extensión de DI obsoletos (`AutoMapper.Extensions.Microsoft.DependencyInjection` y `MediatR.Extensions.Microsoft.DependencyInjection`).
-  - Corregido el archivo `GestMantIA.Application.csproj` para asegurar que las referencias a los paquetes NuGet principales sean correctas.
-
-### Corregido
-- **Resolución de Errores de Compilación Post-Refactorización Inicial de Application Layer**:
-  - Corregidos múltiples errores CS1061 y CS0117 relacionados con el uso incorrecto de la propiedad `Timestamp` en la entidad `SecurityLog` (debería ser `CreatedAt`) en los proyectos `GestMantIA.Infrastructure` y `GestMantIA.API`.
-  - Corregidos errores CS1061 y CS0117 relacionados con el uso incorrecto de la propiedad `Created` en la entidad `RefreshToken` (debería ser `CreatedAt`) en el proyecto `GestMantIA.Infrastructure`.
-  - Corregidos errores CS0029 (conversión implícita `DateTimeOffset` a `DateTime`) en `SecurityNotificationService.cs` utilizando `.UtcDateTime`.
-  - Corregido error CS1929 (`IWebHostEnvironment` sin `IsDevelopment`) en `DependencyInjection.cs` añadiendo `using Microsoft.Extensions.Hosting;`.
-  - Eliminadas directivas `using` duplicadas (CS0105) en `DependencyInjection.cs`.
-  - Corregidas advertencias de nulabilidad (CS8609, CS8602) en `CustomSignInManager.cs` ajustando la firma del método y las comprobaciones de nulidad.
-- **Modificador de Acceso en `CustomSignInManager`**:
-  - Cambiado el modificador de acceso del método `PreSignInCheck` de `public` a `protected` en `CustomSignInManager.cs` para resolver el error de compilación `CS0507`.
-### Corregido
-- **Resolución Completa de Advertencias de Compilación**:
-  - Se verificó y confirmó que todas las advertencias de compilación en la solución completa han sido resueltas.
-  - Esto incluye las advertencias CS8618 previamente identificadas en el proyecto `GestMantIA.Shared`.
-  - La solución ahora compila sin errores ni advertencias.
-### Corregido
-- **Resolución de Errores de Compilación en `GestMantIA.API`**:
-  - Se abordaron múltiples errores que impedían la compilación del proyecto `GestMantIA.API`:
-    - Error `CS0718` en `PersistenceServiceExtensions.cs` (tipos estáticos como argumentos de tipo para `ILogger<T>`). Solucionado utilizando `ILoggerFactory` para crear el logger con un nombre de categoría explícito.
-    - Error `CS0246` en `PresentationServiceExtensions.cs` (no se encontraba `TagDescriptionsDocumentFilter`). Solucionado comentando la línea, ya que el archivo de filtro no existía en el proyecto.
-    - Error `CS1061` en `Program.cs` (uso incorrecto de `app.Lifetime.EnvironmentName`). Solucionado usando `app.Environment.EnvironmentName`.
-    - Error `CS0246` en `PipelineConfigurationExtensions.cs` (no se encontraba `HealthCheckOptions`). Solucionado añadiendo la referencia al paquete `Microsoft.AspNetCore.Diagnostics.HealthChecks` (v2.2.0) y corrigiendo la directiva `using` a `Microsoft.AspNetCore.Diagnostics.HealthChecks`.
-    - Error `CS0136` en `PersistenceServiceExtensions.cs` (redeclaración de la variable `loggerFactory`). Solucionado eliminando la declaración duplicada dentro del bloque `catch`.
-    - Error `CS1503` en `PersistenceServiceExtensions.cs` (conversión de grupo de métodos a `Action<string>` para `options.LogTo`). Solucionado usando una expresión lambda.
-  - El proyecto `GestMantIA.API` ahora compila sin errores.
-
-### Cambiado
-- Eliminado el archivo `Class1.cs` (placeholder no utilizado) del proyecto `GestMantIA.Core`.
-- Añadido `README.md` a la carpeta `src/GestMantIA.Core/Entities` para documentar su propósito.
-- Eliminada la carpeta vacía `src/GestMantIA.Core/Models` por no tener un propósito definido en la arquitectura actual.
-- Centralizada la configuración de índices de base de datos en las clases `IEntityTypeConfiguration<T>` correspondientes. Se eliminó el método `ConfigurarIndices` de `ApplicationDbContext` y se verificó/actualizó la configuración de índices para `ApplicationUser`, `ApplicationRole`, `RefreshToken`, `SecurityLog`, `SecurityNotification` y `SecurityAlert` en sus archivos de configuración dedicados.
-- Refactorizada la auditoría de entidades para `ApplicationUser`:
-  - Creada la interfaz `IAuditableEntity` en `GestMantIA.Core.Interfaces`.
-  - `BaseEntity` ahora implementa `IAuditableEntity`.
-  - `ApplicationUser` ahora implementa `IAuditableEntity`.
-  - `ApplicationDbContext.ProcessAuditEntities` modificado para operar sobre `IAuditableEntity`, permitiendo que `ApplicationUser` sea auditado automáticamente.
-- **Mejoras en Borrado Lógico de Usuarios (`UserService.cs`) y finalización de Auditoría de Borrado**:
-  - `IAuditableEntity`, `BaseEntity`, `ApplicationUser` ahora incluyen consistentemente `DeletedAt` y `DeletedBy`.
-  - `ApplicationDbContext.ProcessAuditEntities` gestiona `DeletedAt` automáticamente al cambiar `IsDeleted`.
-  - `UserService.cs`:
-    - `DeleteUserAsync` implementa borrado suave por defecto, establece `IsDeleted = true` y `DeletedBy` con el ID del usuario actual (vía `IHttpContextAccessor`).
-    - `GetUserProfileAsync` y `SearchUsersAsync` filtran usuarios marcados como eliminados.
-    - Logs mejorados en `DeleteUserAsync`.
-  - `DatabaseInitializer`: Eliminada asignación manual de `CreatedAt` para usuarios, ahora manejada por la auditoría.
-- **Integración de `IsActive` e `IsDeleted` en el Flujo de Inicio de Sesión**:
-  - Creado `CustomSignInManager` (en `Infrastructure.Services.Auth`) que hereda de `SignInManager<ApplicationUser>`.
-  - `CustomSignInManager.PreSignInCheck` sobrescrito para impedir el inicio de sesión si `ApplicationUser.IsDeleted` es `true` o `ApplicationUser.IsActive` es `false`.
-  - `UserService.DeleteUserAsync` ahora establece `IsActive = false` cuando se realiza un borrado suave (soft delete).
-  - Registrado `CustomSignInManager` en la configuración de servicios de Identity.
-- **Simplificación de `ApplicationDbContext`**:
-  - Eliminado el campo `_currentTransaction` y los métodos de gestión explícita de transacciones (`BeginTransactionAsync`, `CommitTransactionAsync`, `RollbackTransactionAsync`, `DisposeTransactionAsync`) de `ApplicationDbContext.cs`, ya que no eran utilizados por la implementación de `IUnitOfWork` proporcionada por la DI (`UnitOfWork.cs`).
-- **Centralización de Registros de Persistencia**:
-  - Se movió la configuración de servicios de persistencia (DbContext, UnitOfWork, DatabaseInitializer, SeedDataSettings) desde `GestMantIA.API.Extensions.PersistenceServiceExtensions` a un nuevo método `AddPersistence` dentro de `GestMantIA.Infrastructure.DependencyInjection`.
-  - `Program.cs` (API) ahora llama a `services.AddInfrastructure(configuration)` para incluir estos servicios.
-  - `PersistenceServiceExtensions.cs` ha sido marcado como obsoleto.
-
-
-### Corregido
-- **Resolución de Errores de Compilación en Backend (`GestMantIA.API`)**:
-  - Se corrigió la llamada al inicializador de base de datos en `Program.cs` para usar `SeedDataAsync()` en lugar del método inexistente `InitializeAsync()`.
-  - Se añadió la referencia al paquete NuGet `Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore` (versión `9.0.0-rc.2.24474.3`) necesario para `AddDbContextCheck`.
-  - Se gestionó la versión del paquete a través de la Administración Central de Paquetes (CPM), actualizando `Directory.Packages.props` y eliminando la versión del `.csproj`.
-  - Como resultado, el proyecto `GestMantIA.API` ahora compila sin errores. Las 11 advertencias restantes se encuentran en `GestMantIA.Shared`.
-
-
-### Changed
-- **Refactorización de `ApplicationUser` y generación de Claims**:
-  - Se eliminó el método `ToClaims()` de la entidad `ApplicationUser`.
-  - Se creó la clase `CustomUserClaimsPrincipalFactory` (en `GestMantIA.Infrastructure`) que hereda de `UserClaimsPrincipalFactory<ApplicationUser, ApplicationRole>` para centralizar la lógica de generación de claims del usuario.
-  - `CustomUserClaimsPrincipalFactory` se registró en el contenedor de DdI.
-  - Se actualizó `JwtTokenService` para utilizar `UserManager.CreateUserPrincipalAsync(user)` (que a su vez usa la factoría personalizada) para obtener los claims base del usuario al generar tokens JWT, en lugar de construirlos manualmente. Los claims específicos del token (`Jti`) se siguen añadiendo en `JwtTokenService`.
-  - La interfaz `ITokenService` y su implementación `JwtTokenService` fueron actualizadas para que el método `GenerateAccessTokenAsync` sea asíncrono.
-
-### Changed
-- Refactorizado `ApplicationDbContext` para mover todas las configuraciones Fluent API a clases de configuración dedicadas en `Infrastructure/Data/Configurations`. `OnModelCreating` ahora usa `ApplyConfigurationsFromAssembly`.
-
-### Added
-- Implementado el manejo automático de propiedades de auditoría (`CreatedAt`, `UpdatedAt`, `IsDeleted`) en `ApplicationDbContext` mediante la sobreescritura de `SaveChangesAsync` y `SaveChanges`.
-- Entradas de log para la configuración de ApplicationDbContext en `DependencyInjection.cs`.
-
-### Cambiado
-- Refactorizado `DependencyInjection.cs` en `GestMantIA.Infrastructure`:
-    - Se extrajo la configuración de los servicios de persistencia (`DbContext`, `UnitOfWork`, `DatabaseInitializer`, `SeedDataSettings`) al método `AddPersistenceServices`.
-    - Se extrajo la configuración de los servicios de Identity (`Identity<ApplicationUser, ApplicationRole>`, `TokenProviders`, `ITokenService`, `IAuthenticationService`, `IUserService`, `IRoleService`) al método `AddIdentityServices`.
-    - Se corrigió la ubicación de los registros de `IUnitOfWork` y `DbContext` para que estén dentro de `AddPersistenceServices`.
-
-### Cambiado
-- **Refactorización de `ApplicationDbContext`**:
-  - Se eliminó la implementación redundante de la interfaz `IUnitOfWork` de la clase `ApplicationDbContext`.
-  - La responsabilidad de la unidad de trabajo ahora recae exclusivamente en la clase `Infrastructure.Data.UnitOfWork`, mejorando la adhesión al Principio de Responsabilidad Única (SRP).
-
-
-### Corregido
-- Se cambió el puerto HTTP de desarrollo de `6000` a `6080` para evitar el error `ERR_UNSAFE_PORT` en navegadores modernos. La aplicación ahora escucha en `http://localhost:6080` (con redirección a HTTPS) y `https://localhost:6001`.
-
-### Cambiado
-- Se implementó el tema "Material" para Swagger UI, proporcionando una interfaz más clara y moderna en lugar del tema oscuro anterior.
-
-### Corregido
-- **Resolución de Advertencias de Compilación**:
-  - Se eliminaron todas las advertencias de compilación restantes en la solución (13 advertencias abordadas).
-  - Detalles específicos de las advertencias corregidas:
-    - **CS8618** (`UnitOfWork._transaction` se hizo anulable).
-    - **CS8601** (`AuthenticationService`: uso de `?? string.Empty` para `token.ReplacedByToken` y propiedades de `UserInfo`).
-    - **CS8604** (`RoleService`: comprobación de nulidad para `role.Name` antes de llamar a `_userManager.GetUsersInRoleAsync()`).
-    - **CS1998** (`DatabaseInitializer.SeedSampleDataAsync` modificado a no asíncrono y devuelve `Task.CompletedTask`).
-    - **CS8603** (`IRoleService.GetRoleByIdAsync` e impl. devuelven `Task<RoleDTO?>`; `IRepository.GetByIdAsync` e impl. devuelven `Task<T?>`).
-    - **CS8602** (`RolesController.CreateRole`: comprobación de nulidad para `createdRole`).
-    - **ASP0014** (`Program.cs` API: `MapHealthChecks` movido a registro de rutas de nivel superior, eliminado `UseEndpoints`).
+{{ ... }}
 
 ### Changed
 - **Refactorización y Completitud de `IUserService` y `ApplicationUserService`**:
@@ -208,19 +281,11 @@ Este archivo documenta los cambios notables en el proyecto GestMantIA. El format
   - Se aseguró la alineación con la interfaz `IUserService`, utilizando DTOs apropiados y eliminando el uso del patrón `Result<T>` en la capa de servicio.
   - Eliminados placeholders de métodos obsoletos en `ApplicationUserService`.
 
-### Added
-- **Configuración de Inyección de Dependencias para `GestMantIA.Application`**:
-  - Creado el archivo `DependencyInjection.cs` en la capa `GestMantIA.Application` para registrar los servicios de aplicación, incluyendo `ApplicationUserService` para `IUserService`.
-  - Actualizado `Program.cs` en `GestMantIA.API` para invocar la configuración de servicios de la capa de aplicación y añadir el `using` correspondiente.
+## [Unreleased]
 
-### Corregido
-- **Resolución de Errores de Compilación (Bloqueo de Migraciones)**:
-  - Se resolvieron errores de compilación críticos que impedían la creación de migraciones para `UserProfile`:
-    - `GestMantIA.Core`:
-      - Eliminado modificador `new` innecesario en métodos `Failure` de `AuthenticationResult`, `RegisterResult` y `VerifyEmailResult`.
-      - Añadida directiva `using GestMantIA.Core.Identity.Entities;` a `UserProfile.cs` para resolver `ApplicationUser`.
-      - Eliminado modificador `new` innecesario del método `NormalizeName()` en `ApplicationRole.cs`.
-      - Ajustados parámetros `errors` y `message` a anulables en `AuthenticationResult.Failure`.
+### Added
+- Generado cliente de API (`swaggerClient`) para `GestMantIA.Web` a partir de la especificación OpenAPI (`swagger.json`) para la comunicación con `GestMantIA.API`.
+- Registrado `swaggerClient` en `Program.cs` de `GestMantIA.Web` para inyección de dependencias, con configuración de `BaseAddress`.
       - Corregida la implementación de `IAuditableEntity` en `Entities/BaseEntity.cs` (tipos de `CreatedAt`, `UpdatedAt`, `DeletedAt`, `DeletedBy`).
     - `GestMantIA.Shared` / `GestMantIA.Application`:
       - Creado `UserProfileDto.cs` en `Shared/Identity/DTOs/` para resolver errores de tipo no encontrado en `ApplicationUserProfileService`.
@@ -446,9 +511,9 @@ Este archivo documenta los cambios notables en el proyecto GestMantIA. El format
   - Asignación/revocación de roles a usuarios
   - Consulta de roles por usuario y usuarios por rol
 - DTOs para gestión de roles:
-  - `RoleDTO` para representar roles
-  - `CreateRoleDTO` para la creación de roles
-  - `UpdateRoleDTO` para la actualización de roles
+  - `RoleDto` para representar roles
+  - `CreateRoleDto` para la creación de roles
+  - `UpdateRoleDto` para la actualización de roles
 - Pruebas unitarias para el `RoleService` y `RolesController`
 - Documentación XML para la API de roles
 

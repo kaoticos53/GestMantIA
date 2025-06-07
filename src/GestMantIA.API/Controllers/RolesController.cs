@@ -33,10 +33,10 @@ namespace GestMantIA.API.Controllers
         /// </summary>
         /// <returns>Lista de roles.</returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoleDTO>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoleDto>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<IEnumerable<RoleDTO>>> GetAllRoles()
+        public async Task<ActionResult<IEnumerable<RoleDto>>> GetAllRoles()
         {
             try
             {
@@ -56,11 +56,11 @@ namespace GestMantIA.API.Controllers
         /// <param name="id">ID del rol.</param>
         /// <returns>El rol si existe.</returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoleDTO))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoleDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<RoleDTO>> GetRoleById(string id)
+        public async Task<ActionResult<RoleDto>> GetRoleById(string id)
         {
             try
             {
@@ -81,14 +81,14 @@ namespace GestMantIA.API.Controllers
         /// <summary>
         /// Crea un nuevo rol.
         /// </summary>
-        /// <param name="roleDto">Datos del rol a crear.</param>
+        /// <param name="RoleDto">Datos del rol a crear.</param>
         /// <returns>El rol creado.</returns>
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(RoleDTO))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(RoleDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<RoleDTO>> CreateRole([FromBody] RoleDTO roleDto)
+        public async Task<ActionResult<RoleDto>> CreateRole([FromBody] RoleDto RoleDto)
         {
             if (!ModelState.IsValid)
             {
@@ -97,23 +97,23 @@ namespace GestMantIA.API.Controllers
 
             try
             {
-                var result = await _roleService.CreateRoleAsync(roleDto);
+                var result = await _roleService.CreateRoleAsync(RoleDto);
                 if (!result.Success)
                 {
                     return BadRequest(new { Message = result.Message, Errors = result.Errors });
                 }
 
-                var createdRole = await _roleService.GetRoleByIdAsync(roleDto.Id);
+                var createdRole = await _roleService.GetRoleByIdAsync(RoleDto.Id);
                 if (createdRole == null)
                 {
-                    _logger.LogError("No se pudo encontrar el rol recién creado con ID: {RoleId}", roleDto.Id);
+                    _logger.LogError("No se pudo encontrar el rol recién creado con ID: {RoleId}", RoleDto.Id);
                     return Problem("No se pudo recuperar el rol después de la creación.", statusCode: StatusCodes.Status500InternalServerError);
                 }
                 return CreatedAtAction(nameof(GetRoleById), new { id = createdRole.Id }, createdRole);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear el rol: {RoleName}", roleDto.Name);
+                _logger.LogError(ex, "Error al crear el rol: {RoleName}", RoleDto.Name);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocurrió un error al procesar la solicitud.");
             }
         }
@@ -122,7 +122,7 @@ namespace GestMantIA.API.Controllers
         /// Actualiza un rol existente.
         /// </summary>
         /// <param name="id">ID del rol a actualizar.</param>
-        /// <param name="roleDto">Datos actualizados del rol.</param>
+        /// <param name="RoleDto">Datos actualizados del rol.</param>
         /// <returns>Respuesta sin contenido si la actualización fue exitosa.</returns>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -130,9 +130,9 @@ namespace GestMantIA.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> UpdateRole(string id, [FromBody] RoleDTO roleDto)
+        public async Task<IActionResult> UpdateRole(string id, [FromBody] RoleDto RoleDto)
         {
-            if (id != roleDto.Id)
+            if (id != RoleDto.Id)
             {
                 return BadRequest("El ID de la ruta no coincide con el ID del rol.");
             }
@@ -144,7 +144,7 @@ namespace GestMantIA.API.Controllers
 
             try
             {
-                var result = await _roleService.UpdateRoleAsync(roleDto);
+                var result = await _roleService.UpdateRoleAsync(RoleDto);
                 if (!result.Success)
                 {
                     if (result.Message.Contains("no existe") || result.Message.Contains("no encontrado"))
@@ -208,7 +208,7 @@ namespace GestMantIA.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> AddUserToRole(string userId, string roleName)
+        public async Task<IActionResult> AddUserToRole(Guid userId, string roleName)
         {
             try
             {
@@ -238,7 +238,7 @@ namespace GestMantIA.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> RemoveUserFromRole(string userId, string roleName)
+        public async Task<IActionResult> RemoveUserFromRole(Guid userId, string roleName)
         {
             try
             {
@@ -267,7 +267,7 @@ namespace GestMantIA.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<IEnumerable<string>>> GetUserRoles(string userId)
+        public async Task<ActionResult<IEnumerable<string>>> GetUserRoles(Guid userId)
         {
             try
             {

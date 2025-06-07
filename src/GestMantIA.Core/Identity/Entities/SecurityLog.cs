@@ -25,14 +25,14 @@ namespace GestMantIA.Core.Identity.Entities
         /// </summary>
         [Required]
         [MaxLength(50)]
-        public string EventType { get; set; }
+        public required string EventType { get; set; }
 
         /// <summary>
         /// Descripción detallada del evento.
         /// </summary>
         [Required]
         [MaxLength(1000)]
-        public string Description { get; set; }
+        public required string Description { get; set; }
 
         /// <summary>
         /// Dirección IP desde donde se originó el evento.

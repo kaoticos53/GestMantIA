@@ -312,7 +312,7 @@ namespace GestMantIA.Infrastructure.Services.Auth
             await SendVerificationEmail(user, verificationToken, origin);
 
             return RegisterResult.Success(
-                user.Id.ToString(),
+                user.Id,
                 requiresEmailConfirmation: true,
                 "Registro exitoso. Por favor revise su correo electrónico para verificar su cuenta.");
         }
@@ -343,7 +343,7 @@ namespace GestMantIA.Infrastructure.Services.Auth
             if (user.EmailConfirmed)
             {
                 _logger.LogInformation("El correo ya ha sido verificado anteriormente: {UserId}", user.Id);
-                return VerifyEmailResult.Success(user.Id.ToString(), "El correo electrónico ya ha sido verificado");
+                return VerifyEmailResult.Success(user.Id, "El correo electrónico ya ha sido verificado");
             }
 
             var result = await _userManager.ConfirmEmailAsync(user, verificationToken);
@@ -355,7 +355,7 @@ namespace GestMantIA.Infrastructure.Services.Auth
             }
 
             _logger.LogInformation("Correo verificado exitosamente: {UserId}", user.Id);
-            return VerifyEmailResult.Success(user.Id.ToString(), "Correo electrónico verificado exitosamente");
+            return VerifyEmailResult.Success(user.Id, "Correo electrónico verificado exitosamente");
         }
 
         #region Métodos auxiliares privados
@@ -609,11 +609,11 @@ namespace GestMantIA.Infrastructure.Services.Auth
         #region Two-Factor Authentication
 
         /// <inheritdoc />
-        public async Task<TwoFactorSetupResult> GenerateTwoFactorSetupAsync(string userId, string email)
+        public async Task<TwoFactorSetupResult> GenerateTwoFactorSetupAsync(Guid userId, string email)
         {
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
+                var user = await _userManager.FindByIdAsync(userId.ToString());
                 if (user == null)
                     return new TwoFactorSetupResult("Usuario no encontrado.");
 
@@ -642,11 +642,11 @@ namespace GestMantIA.Infrastructure.Services.Auth
         }
 
         /// <inheritdoc />
-        public async Task<OperationResult> EnableTwoFactorAsync(string userId, string code)
+        public async Task<OperationResult> EnableTwoFactorAsync(Guid userId, string code)
         {
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
+                var user = await _userManager.FindByIdAsync(userId.ToString());
                 if (user == null)
                     return OperationResult.CreateFailure(new[] { "Usuario no encontrado." });
 
@@ -679,11 +679,11 @@ namespace GestMantIA.Infrastructure.Services.Auth
         }
 
         /// <inheritdoc />
-        public async Task<OperationResult> DisableTwoFactorAsync(string userId)
+        public async Task<OperationResult> DisableTwoFactorAsync(Guid userId)
         {
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
+                var user = await _userManager.FindByIdAsync(userId.ToString());
                 if (user == null)
                     return OperationResult.CreateFailure(new[] { "Usuario no encontrado." });
 
@@ -709,11 +709,11 @@ namespace GestMantIA.Infrastructure.Services.Auth
         }
 
         /// <inheritdoc />
-        public async Task<bool> VerifyTwoFactorTokenAsync(string userId, string code)
+        public async Task<bool> VerifyTwoFactorTokenAsync(Guid userId, string code)
         {
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
+                var user = await _userManager.FindByIdAsync(userId.ToString());
                 if (user == null)
                     return false;
 

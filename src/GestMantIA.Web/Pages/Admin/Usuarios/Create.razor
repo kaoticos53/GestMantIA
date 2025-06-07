@@ -1,0 +1,153 @@
+@page "/admin/usuarios/crear"
+@attribute [Authorize(Roles = "Admin")]
+
+@using GestMantIA.Shared.Identity.DTOs.Requests
+@using GestMantIA.Web.Models.Users
+@using GestMantIA.Shared.Identity.DTOs // Para RoleDto
+@using GestMantIA.Web.Services.Interfaces // Para IUserService
+@using GestMantIA.Core.Identity.Interfaces // Para IRoleService
+@using MudBlazor
+
+@inject GestMantIA.Web.Services.Interfaces.IUserService UserService
+@inject IRoleService RoleService // Para obtener la lista de roles
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+
+<PageTitle>Crear Nuevo Usuario - GestMantIA</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-4">
+    <MudText Typo="Typo.h4" GutterBottom="true">Crear Nuevo Usuario</MudText>
+
+    <EditForm Model="_createUserModel" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <MudGrid>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="_createUserModel.UserName" For="() => _createUserModel.UserName" Label="Nombre de Usuario" Variant="Variant.Outlined" Required="true" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="_createUserModel.Email" For="() => _createUserModel.Email" Label="Email" InputType="InputType.Email" Variant="Variant.Outlined" Required="true" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="_createUserModel.Password" For="() => _createUserModel.Password" Label="Contraseña" InputType="InputType.Password" Variant="Variant.Outlined" Required="true" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="_createUserModel.ConfirmPassword" For="() => _createUserModel.ConfirmPassword" Label="Confirmar Contraseña" InputType="InputType.Password" Variant="Variant.Outlined" Required="true" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="_createUserModel.FirstName" For="() => _createUserModel.FirstName" Label="Nombre" Variant="Variant.Outlined" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="_createUserModel.LastName" For="() => _createUserModel.LastName" Label="Apellidos" Variant="Variant.Outlined" />
+            </MudItem>
+            <MudItem xs="12">
+                // CAMBIO: Eliminado Placeholder por compatibilidad
+<MudSelect T="string" Label="Roles" MultiSelection="true" @bind-SelectedValues="_selectedRoleNames">
+                    @if (_loadingRoles)
+                    {
+                        <MudSelectItem T="string" Disabled="true">Cargando roles...</MudSelectItem>
+                    }
+                    else if (_allRoles.Any())
+                    {
+                        foreach (var role in _allRoles)
+                        {
+                            <MudSelectItem T="string" Value="@role.Name">@role.Name</MudSelectItem>
+                        }
+                    }
+                    else
+                    {
+                        <MudSelectItem T="string" Disabled="true">No hay roles disponibles</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12">
+                <MudCheckBox T="bool" @bind-Checked="_createUserModel.RequireEmailConfirmation" Label="Requerir Confirmación de Email" Color="Color.Primary" />
+            </MudItem>
+        </MudGrid>
+
+        <MudPaper Class="d-flex justify-end gap-4 mt-8 pa-4" Elevation="0">
+            <MudButton Variant="Variant.Text" OnClick="@(() => NavigationManager.NavigateTo("/admin/usuarios"))" Disabled="_isSubmitting">Cancelar</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Disabled="_isSubmitting">
+                @if (_isSubmitting)
+                {
+                    <MudProgressCircular Class="mr-1" Size="Size.Small" Indeterminate="true" />
+                    <span>Creando...</span>
+                }
+                else
+                {
+                    <span>Crear Usuario</span>
+                }
+            </MudButton>
+        </MudPaper>
+        <ValidationSummary />
+    </EditForm>
+</MudContainer>
+
+@code {
+    private CreateUserModel _createUserModel = new()
+{
+    UserName = string.Empty,
+    Email = string.Empty,
+    Password = string.Empty,
+    ConfirmPassword = string.Empty,
+    Roles = new List<string>(),
+    RequireEmailConfirmation = false
+};
+    private IEnumerable<RoleDto> _allRoles = new List<RoleDto>();
+    private bool _loadingRoles = true;
+    private string? _errorMessage;
+    // private string? _successMessage; // Eliminada porque no se usa
+
+    // Para el MudSelect de roles, ya que CreateUserDTO.Roles es ICollection<string>
+    // y queremos seleccionar múltiples roles por su nombre.
+    // CAMBIO: Usar HashSet<string> para compatibilidad con MudBlazor MultiSelection
+private IEnumerable<string> _selectedRoleNames = new List<String>();
+
+    private bool _isSubmitting = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _allRoles = await RoleService.GetAllRolesAsync();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Error al cargar roles: {ex.Message}";
+        }
+        finally
+        {
+            _loadingRoles = false;
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        _errorMessage = null;
+        // _successMessage = null; // Eliminada porque no se usa
+        _createUserModel.Roles = _selectedRoleNames.ToList(); // Asignar los roles seleccionados
+
+        _isSubmitting = true;
+        try
+        {
+            var result = await UserService.CreateUserAsync(_createUserModel);
+            if (result.Success)
+            {
+                Snackbar.Add("Usuario creado exitosamente.", Severity.Success);
+                NavigationManager.NavigateTo("/admin/usuarios");
+            }
+            else
+            {
+                var errorMessage = string.IsNullOrWhiteSpace(result.Message) ? "Error desconocido al crear el usuario." : result.Message;
+                Snackbar.Add($"Error al crear usuario: {errorMessage}", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error inesperado: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+}

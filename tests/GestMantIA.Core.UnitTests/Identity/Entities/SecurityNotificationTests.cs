@@ -10,7 +10,15 @@ namespace GestMantIA.Core.UnitTests.Identity.Entities
         public void Constructor_Should_Initialize_Properties_Correctly()
         {
             // Arrange & Act
-            var notification = new SecurityNotification();
+            var testUser = new ApplicationUser { Id = Guid.NewGuid(), UserName = "testUser" };
+            var notification = new SecurityNotification
+            {
+                UserId = testUser.Id,
+                User = testUser,
+                Title = "Test Notification",
+                Message = "This is a test notification",
+                NotificationType = SecurityNotificationType.SecurityAlert
+            };
 
             // Assert
             // Propiedades de BaseEntity
@@ -21,12 +29,12 @@ namespace GestMantIA.Core.UnitTests.Identity.Entities
             notification.DeletedAt.Should().BeNull();
             notification.DeletedBy.Should().BeNull();
 
-            // Propiedades de SecurityNotification con valores por defecto de C#
-            notification.UserId.Should().Be(Guid.Empty); // [Required] pero Guid.Empty por defecto
-            notification.User.Should().BeNull();
-            notification.Title.Should().BeNull(); // [Required] pero null por defecto
-            notification.Message.Should().BeNull(); // [Required] pero null por defecto
-            notification.NotificationType.Should().Be(default(SecurityNotificationType)); // [Required] pero default enum por defecto
+            // Propiedades de SecurityNotification
+            notification.UserId.Should().NotBe(Guid.Empty);
+            notification.User.Should().NotBeNull();
+            notification.Title.Should().NotBeNull();
+            notification.Message.Should().NotBeNull();
+            notification.NotificationType.Should().Be(SecurityNotificationType.SecurityAlert);
             notification.RelatedEventId.Should().BeNull();
             notification.IsRead.Should().BeFalse();
             notification.ReadAt.Should().BeNull();
@@ -36,17 +44,23 @@ namespace GestMantIA.Core.UnitTests.Identity.Entities
         public void Properties_Should_Set_And_Get_Correctly()
         {
             // Arrange
-            var notification = new SecurityNotification();
             var testUser = new ApplicationUser { Id = Guid.NewGuid(), UserName = "notifyUser" };
+            var notification = new SecurityNotification
+            {
+                UserId = testUser.Id,
+                User = testUser,
+                Title = "Initial Title",
+                Message = "Initial Message",
+                NotificationType = SecurityNotificationType.SecurityAlert
+            };
+            
             var testDate = DateTimeOffset.UtcNow;
             var relatedEventGuid = Guid.NewGuid();
 
             // Act
-            notification.UserId = testUser.Id;
-            notification.User = testUser;
             notification.Title = "Password Change Alert";
             notification.Message = "Your password was recently changed.";
-            notification.NotificationType = SecurityNotificationType.SecuritySettingsChanged; // Asumiendo que es un valor del enum
+            notification.NotificationType = SecurityNotificationType.SecuritySettingsChanged;
             notification.RelatedEventId = relatedEventGuid;
             notification.IsRead = true;
             notification.ReadAt = testDate;
@@ -81,7 +95,15 @@ namespace GestMantIA.Core.UnitTests.Identity.Entities
         public void MarkAsRead_Should_Update_Properties_When_Not_Read()
         {
             // Arrange
-            var notification = new SecurityNotification { IsRead = false, ReadAt = null };
+            var notification = new SecurityNotification
+            {
+                UserId = Guid.NewGuid(),
+                Title = "Test Notification",
+                Message = "This is a test notification",
+                NotificationType = SecurityNotificationType.SecurityAlert,
+                IsRead = false,
+                ReadAt = null
+            };
 
             // Act
             notification.MarkAsRead();
@@ -98,6 +120,10 @@ namespace GestMantIA.Core.UnitTests.Identity.Entities
             var originalReadAt = DateTimeOffset.UtcNow.AddHours(-1);
             var notification = new SecurityNotification
             {
+                UserId = Guid.NewGuid(),
+                Title = "Test Notification",
+                Message = "This is a test notification",
+                NotificationType = SecurityNotificationType.SecurityAlert,
                 IsRead = true,
                 ReadAt = originalReadAt
             };

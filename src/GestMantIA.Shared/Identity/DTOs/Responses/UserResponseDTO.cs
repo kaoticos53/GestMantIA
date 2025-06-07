@@ -1,115 +1,93 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace GestMantIA.Shared.Identity.DTOs.Responses
+namespace GestMantIA.Shared.Identity.DTOs.Responses; // Mantendré el namespace por ahora
+
+/// <summary>
+/// Data Transfer Object para la respuesta de operaciones de usuario, incluyendo detalles.
+/// </summary>
+public record UserResponseDTO
 {
     /// <summary>
-    /// DTO para la respuesta de operaciones de usuario.
+    /// Identificador único del usuario.
     /// </summary>
-    public class UserResponseDTO
-    {
-        /// <summary>
-        /// Inicializa una nueva instancia de la clase <see cref="UserResponseDTO"/>
-        /// </summary>
-        /// <summary>
-        /// Inicializa una nueva instancia de la clase <see cref="UserResponseDTO"/>
-        /// </summary>
-        public UserResponseDTO()
-        {
-            Id = string.Empty;
-            UserName = string.Empty;
-            Email = string.Empty;
-            FirstName = string.Empty;
-            LastName = string.Empty;
-            PhoneNumber = string.Empty;
-            LockoutReason = string.Empty;
-            Roles = new List<string>();
-            Claims = new Dictionary<string, string>();
-        }
+    public required Guid Id { get; init; }
 
-        /// <summary>
-        /// ID único del usuario.
-        /// </summary>
-        public string Id { get; set; }
+    /// <summary>
+    /// Nombre de usuario.
+    /// </summary>
+    [Required(ErrorMessage = "El nombre de usuario es obligatorio")]
+    public required string UserName { get; init; }
 
-        /// <summary>
-        /// Nombre de usuario para el inicio de sesión.
-        /// </summary>
-        [Display(Name = "Nombre de usuario")]
-        public string UserName { get; set; }
+    /// <summary>
+    /// Dirección de correo electrónico del usuario.
+    /// </summary>
+    [Required(ErrorMessage = "El correo electrónico es obligatorio")]
+    [EmailAddress(ErrorMessage = "El formato del correo electrónico no es válido")]
+    public required string Email { get; init; }
 
-        /// <summary>
-        /// Correo electrónico del usuario.
-        /// </summary>
-        public string Email { get; set; }
+    /// <summary>
+    /// Indica si el correo electrónico del usuario ha sido confirmado.
+    /// </summary>
+    public bool EmailConfirmed { get; init; }
 
-        /// <summary>
-        /// Indica si el correo electrónico está confirmado.
-        /// </summary>
-        public bool EmailConfirmed { get; set; }
+    /// <summary>
+    /// Nombre del usuario.
+    /// </summary>
+    public string? FirstName { get; init; }
 
-        /// <summary>
-        /// Nombre del usuario.
-        /// </summary>
-        public string FirstName { get; set; }
+    /// <summary>
+    /// Apellidos del usuario.
+    /// </summary>
+    public string? LastName { get; init; }
 
-        /// <summary>
-        /// Apellidos del usuario.
-        /// </summary>
-        public string LastName { get; set; }
+    /// <summary>
+    /// Número de teléfono del usuario.
+    /// </summary>
+    public string? PhoneNumber { get; init; }
 
-        /// <summary>
-        /// Número de teléfono del usuario.
-        /// </summary>
-        public string PhoneNumber { get; set; }
+    /// <summary>
+    /// Indica si el número de teléfono está confirmado.
+    /// </summary>
+    public bool PhoneNumberConfirmed { get; init; }
 
-        /// <summary>
-        /// Indica si el número de teléfono está confirmado.
-        /// </summary>
-        public bool PhoneNumberConfirmed { get; set; }
+    /// <summary>
+    /// Fecha de registro del usuario.
+    /// </summary>
+    public DateTime DateRegistered { get; init; }
+    
+    /// <summary>
+    /// Indica si el usuario está activo.
+    /// </summary>
+    public bool IsActive { get; init; }
 
-        /// <summary>
-        /// Indica si el usuario está activo
-        /// </summary>
-        public bool IsActive { get; set; }
+    /// <summary>
+    /// Indica si la autenticación de dos factores está habilitada para el usuario.
+    /// </summary>
+    public bool TwoFactorEnabled { get; init; }
 
-        /// <summary>
-        /// Indica si la autenticación en dos factores está habilitada
-        /// </summary>
-        public bool TwoFactorEnabled { get; set; }
+    /// <summary>
+    /// Indica si el usuario está actualmente bloqueado.
+    /// </summary>
+    public bool IsLockedOut { get; init; }
 
-        /// <summary>
-        /// Fecha de registro del usuario
-        /// </summary>
-        public DateTime DateRegistered { get; set; }
+    /// <summary>
+    /// Fecha y hora hasta la cual el usuario está bloqueado (si aplica).
+    /// </summary>
+    public DateTimeOffset? LockoutEnd { get; init; }
 
-        /// <summary>
-        /// Fecha de la última actualización del usuario
-        /// </summary>
-        public DateTime? UpdatedAt { get; set; }
 
-        /// <summary>
-        /// Lista de roles del usuario
-        /// </summary>
-        public List<string> Roles { get; set; } = new List<string>();
+    /// <summary>
+    /// Fecha de la última actualización del usuario.
+    /// </summary>
+    public DateTime? UpdatedAt { get; init; }
 
-        /// <summary>
-        /// Lista de claims del usuario.
-        /// </summary>
-        public IDictionary<string, string> Claims { get; set; } = new Dictionary<string, string>();
+    /// <summary>
+    /// Lista de nombres de roles asignados al usuario.
+    /// </summary>
+    public ICollection<string> Roles { get; init; } = new List<string>();
 
-        /// <summary>
-        /// Indica si el usuario está bloqueado
-        /// </summary>
-        public bool IsLockedOut { get; set; }
-
-        /// <summary>
-        /// Fecha de fin del bloqueo (si está bloqueado)
-        /// </summary>
-        public DateTimeOffset? LockoutEnd { get; set; }
-
-        /// <summary>
-        /// Razón del bloqueo (si está bloqueado)
-        /// </summary>
-        public string? LockoutReason { get; set; }
-    }
+    /// <summary>
+    /// Lista de claims del usuario.
+    /// </summary>
+    public IDictionary<string, string> Claims { get; init; } = new Dictionary<string, string>();
 }

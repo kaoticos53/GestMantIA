@@ -1,0 +1,58 @@
+@using MudBlazor
+@using Microsoft.AspNetCore.Components
+
+<MudDialog Options="_options">
+    <TitleContent>
+        <MudText Typo="Typo.h6">@Title</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText>@ContentText</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="HandleCancel">Cancelar</MudButton>
+        <MudButton Color="@Color" Variant="Variant.Filled" OnClick="HandleConfirm">@ButtonText</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Inject] 
+    private IDialogService DialogService { get; set; } = default!; // for MessageBox
+
+    [CascadingParameter]
+        IMudDialogInstance MudDialog { get; set; } = default!;
+    
+    private readonly DialogOptions _options = new()
+    {
+        CloseButton = true,
+        MaxWidth = MaxWidth.Small,
+        FullWidth = true,
+        CloseOnEscapeKey = true,
+    };
+    
+    [Parameter] 
+    public string Title { get; set; } = "Confirmar";
+    
+    [Parameter] 
+    public string? ContentText { get; set; } = string.Empty;
+    
+    [Parameter] 
+    public string ButtonText { get; set; } = "Aceptar";
+    
+    [Parameter] 
+    public Color Color { get; set; } = Color.Primary;
+
+    // The OnClose EventCallback is not typically used when dialogs are shown via DialogService.
+    // The result is returned via DialogResult from the ShowAsync call.
+    // If this component must also support standalone usage with OnClose, that's a more complex scenario.
+    // For now, assuming primary usage is via DialogService.
+
+    private void HandleConfirm()
+    {
+        MudDialog.Close(MudBlazor.DialogResult.Ok(true));
+    }
+
+    private void HandleCancel()
+    {
+        MudDialog.Cancel();
+    }
+}
