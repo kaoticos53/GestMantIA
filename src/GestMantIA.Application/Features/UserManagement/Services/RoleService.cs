@@ -94,7 +94,7 @@ namespace GestMantIA.Application.Features.UserManagement.Services
                 var role = new ApplicationRole
                 {
                     Name = RoleDto.Name,
-                    Description = RoleDto.Description,
+                    Description = RoleDto.Description ?? string.Empty,
                     CreatedAt = DateTime.UtcNow
                 };
 

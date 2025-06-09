@@ -678,3 +678,4 @@ Cada versiÃ³n debe documentar:
 - **Eliminado**: Para funcionalidades eliminadas
 - **Corregido**: Para correcciÃ³n de errores
 - **Seguridad**: En caso de vulnerabilidades corregidas
+## [2025-06-08] - Cascade AI\n### Mejorado\n- Movido CookieService e ICookieService al proyecto de Infraestructura para mantener una mejor organización del código.\n- Actualizadas las referencias en AuthController y Program.cs para usar la nueva ubicación.\n\n

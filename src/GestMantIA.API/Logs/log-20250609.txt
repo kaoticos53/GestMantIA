@@ -1,0 +1,6 @@
+2025-06-09 10:53:38.874 +02:00 [INF] Iniciando la aplicación...
+2025-06-09 10:53:39.155 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-09 10:53:39.198 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-09 10:53:39.849 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-09 10:53:39.854 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-09 10:53:39.868 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.

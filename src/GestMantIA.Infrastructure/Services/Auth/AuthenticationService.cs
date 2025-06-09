@@ -45,7 +45,7 @@ namespace GestMantIA.Infrastructure.Services.Auth
         }
 
         /// <inheritdoc />
-        public async Task<AuthenticationResult> AuthenticateAsync(LoginRequest request, string ipAddress)
+        public async Task<AuthenticationResult> AuthenticateAsync(LoginRequest request, string ipAddress = "N/S")
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));

@@ -136,6 +136,10 @@ public class Program
         // Configuración de servicios de presentación (Controllers, CORS, Swagger, HealthChecks)
         builder.Services.AddPresentationServices(builder.Configuration);
 
+        // Registrar servicios de cookies
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<GestMantIA.Infrastructure.Services.ICookieService, GestMantIA.Infrastructure.Services.CookieService>();
+
         // Configuración de notificaciones de seguridad
         builder.Services.Configure<SecurityNotificationOptions>(
             builder.Configuration.GetSection("SecurityNotifications"));

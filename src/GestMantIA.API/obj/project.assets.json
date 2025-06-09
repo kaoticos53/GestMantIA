@@ -7544,6 +7544,8 @@
           "App.Metrics.Formatters.Prometheus": "4.3.0",
           "App.Metrics.Reporting.InfluxDB": "4.3.0",
           "Ardalis.GuardClauses": "5.0.0",
+          "AutoFixture": "4.18.1",
+          "AutoFixture.AutoMoq": "4.18.1",
           "AutoMapper": "14.0.0",
           "Blazored.LocalStorage": "4.5.0",
           "Blazored.Toast": "4.2.1",
@@ -7560,6 +7562,7 @@
           "Microsoft.AspNetCore.Components.WebAssembly": "9.0.5",
           "Microsoft.AspNetCore.Components.WebAssembly.Authentication": "9.0.5",
           "Microsoft.AspNetCore.Components.WebAssembly.DevServer": "9.0.5",
+          "Microsoft.AspNetCore.Http.Abstractions": "2.3.0",
           "Microsoft.AspNetCore.Identity": "2.3.1",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.5",
           "Microsoft.AspNetCore.Mvc.Testing": "9.0.5",
@@ -7578,8 +7581,10 @@
           "Microsoft.Extensions.Http": "9.0.5",
           "Microsoft.Extensions.Identity.Core": "9.0.5",
           "Microsoft.Extensions.Logging.Abstractions": "9.0.5",
+          "Microsoft.Extensions.Options": "9.0.5",
           "Microsoft.NET.Test.Sdk": "17.14.1",
           "Moq": "4.20.72",
+          "Moq.EntityFrameworkCore": "9.0.0.5",
           "MudBlazor": "8.7.0",
           "Newtonsoft.Json": "13.0.3",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
@@ -7592,6 +7597,7 @@
           "System.IdentityModel.Tokens.Jwt": "8.12.0",
           "System.Net.Http.Json": "9.0.5",
           "xunit": "2.9.3",
+          "xunit.assert": "2.9.3",
           "xunit.runner.visualstudio": "3.1.0"
         },
         "imports": [
@@ -7605,6 +7611,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.Net.Sdk.Compilers.Toolset",
+            "version": "[9.0.300, 9.0.300]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"

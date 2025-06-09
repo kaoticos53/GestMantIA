@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "6AxIxqxReCs=",
+  "dgSpecHash": "Z+DiYKZN6h4=",
   "success": true,
   "projectFilePath": "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.Web\\GestMantIA.Web.csproj",
   "expectedPackageFiles": [
@@ -93,7 +93,8 @@
     "D:\\packages\\NuGet\\cache\\system.security.cryptography.pkcs\\8.0.1\\system.security.cryptography.pkcs.8.0.1.nupkg.sha512",
     "D:\\packages\\NuGet\\cache\\system.security.cryptography.xml\\8.0.2\\system.security.cryptography.xml.8.0.2.nupkg.sha512",
     "D:\\packages\\NuGet\\cache\\system.security.principal.windows\\5.0.0\\system.security.principal.windows.5.0.0.nupkg.sha512",
-    "D:\\packages\\NuGet\\cache\\system.text.encodings.web\\8.0.0\\system.text.encodings.web.8.0.0.nupkg.sha512"
+    "D:\\packages\\NuGet\\cache\\system.text.encodings.web\\8.0.0\\system.text.encodings.web.8.0.0.nupkg.sha512",
+    "D:\\packages\\NuGet\\cache\\microsoft.net.sdk.compilers.toolset\\9.0.300\\microsoft.net.sdk.compilers.toolset.9.0.300.nupkg.sha512"
   ],
   "logs": []
 }

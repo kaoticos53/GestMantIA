@@ -48,16 +48,26 @@
     <Content Remove="wwwroot\SwaggerMaterial.css" />
   </ItemGroup>
 
-  <Target Name="GenerateSwaggerFile" AfterTargets="Build">
+  <Target Name="GenerateSwaggerFile" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
     <PropertyGroup>
-      <SwaggerJsonPath>$(OutputPath)swagger\v1\swagger.json</SwaggerJsonPath>
+      <SwaggerJsonPath>$(ProjectDir)swagger.json</SwaggerJsonPath>
+      <SwaggerCommand>dotnet swagger tofile --output &quot;$(SwaggerJsonPath)&quot; &quot;$(TargetPath)&quot; v1</SwaggerCommand>
     </PropertyGroup>
-    <MakeDir Directories="$(OutputPath)swagger\v1" Condition="!Exists('$(OutputPath)swagger\v1')" />
-    <Message Text="GenerateSwaggerFile: ProjectDir = $(ProjectDir)" Importance="high" />
-    <Message Text="GenerateSwaggerFile: TargetPath = $(TargetPath)" Importance="high" />
-    <Message Text="GenerateSwaggerFile: OutputPath for swagger.json = $(ProjectDir)swagger.json" Importance="high" />
-    <Exec Command="dotnet swagger tofile --output &quot;$(ProjectDir)swagger.json&quot; &quot;$(TargetPath)&quot; v1" WorkingDirectory="$(ProjectDir)" />
-    <Message Text="GenerateSwaggerFile: Intentando ejecutar comando swagger..." Importance="high" />
-    <Message Text="Archivo Swagger generado en: $(SwaggerJsonPath)" Importance="high" />
+    
+    <Message Text="Generando archivo Swagger..." Importance="high" />
+    <Message Text="Comando: $(SwaggerCommand)" Importance="high" />
+    
+    <Exec Command="$(SwaggerCommand)" 
+          WorkingDirectory="$(ProjectDir)" 
+          ConsoleToMSBuild="true"
+          IgnoreExitCode="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec" />
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </Exec>
+    
+    <Message Text="Salida del comando: $(OutputOfExec)" Importance="high" />
+    <Message Text="Código de salida: $(ExitCode)" Importance="high" />
+    <Message Text="Archivo Swagger generado en: $(SwaggerJsonPath)" Importance="high" Condition="Exists('$(SwaggerJsonPath)')" />
+    <Warning Text="No se pudo generar el archivo Swagger. Asegúrate de que la API se pueda iniciar correctamente." Condition="!Exists('$(SwaggerJsonPath)')" />
   </Target>
 </Project>

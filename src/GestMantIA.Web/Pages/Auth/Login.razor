@@ -48,7 +48,7 @@
                                               AdornmentIcon="@Icons.Material.Filled.Lock"
                                               Class="mb-4" />
 
-                                <MudCheckBox T="bool" @bind-Checked="_loginModel.RememberMe" Label="Recordarme" Class="mb-4" />
+                                <MudCheckBox T="bool" @bind-checked="_loginModel.RememberMe" Label="Recordarme" Class="mb-4" />
 
                                 <MudButton ButtonType="ButtonType.Submit"
                                            Variant="Variant.Filled"
@@ -145,18 +145,34 @@
             {
                 try
                 {
-                    using var jsonDoc = JsonDocument.Parse(apiEx.Response);
-                    if (jsonDoc.RootElement.TryGetProperty("title", out var titleElement) && titleElement.ValueKind == JsonValueKind.String)
+                    if (!string.IsNullOrEmpty(apiEx.Response))
                     {
-                        _errorMessageFromServer = titleElement.GetString();
-                    }
-                    else if (jsonDoc.RootElement.TryGetProperty("detail", out var detailElement) && detailElement.ValueKind == JsonValueKind.String)
-                    {
-                        _errorMessageFromServer = detailElement.GetString();
+                        using var jsonDoc = JsonDocument.Parse(apiEx.Response);
+                        if (jsonDoc.RootElement.TryGetProperty("title", out var titleElement) && 
+                            titleElement.ValueKind == JsonValueKind.String)
+                        {
+                            _errorMessageFromServer = titleElement.GetString() ?? "Error desconocido";
+                        }
+                        else if (jsonDoc.RootElement.TryGetProperty("detail", out var detailElement) && 
+                                 detailElement.ValueKind == JsonValueKind.String)
+                        {
+                            _errorMessageFromServer = detailElement.GetString() ?? "Error en la solicitud";
+                        }
+                        else
+                        {
+                            _errorMessageFromServer = "Error en la solicitud. Por favor, revisa los datos ingresados.";
+                        }
                     }
                     else
                     {
-                        _errorMessageFromServer = "Error en la solicitud. Por favor, revisa los datos ingresados.";
+                        _errorMessageFromServer = apiEx.StatusCode switch
+                        {
+                            401 => "Credenciales inválidas. Por favor, verifica tu correo y contraseña.",
+                            403 => "No tienes permiso para acceder a este recurso.",
+                            404 => "El recurso solicitado no se encontró.",
+                            500 => "Error interno del servidor. Por favor, inténtalo de nuevo más tarde.",
+                            _ => "Ha ocurrido un error al procesar tu solicitud."
+                        };
                     }
                 }
                 catch (JsonException)

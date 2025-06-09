@@ -15,6 +15,7 @@ namespace GestMantIA.Core.Identity.Entities
             UserRoles = new HashSet<ApplicationUserRole>();
             RolePermissions = new HashSet<ApplicationRolePermission>();
             CreatedAt = DateTime.UtcNow;
+            ConcurrencyStamp = Guid.NewGuid().ToString();
         }
 
         /// <summary>
@@ -28,6 +29,7 @@ namespace GestMantIA.Core.Identity.Entities
             UserRoles = new HashSet<ApplicationUserRole>();
             RolePermissions = new HashSet<ApplicationRolePermission>();
             CreatedAt = DateTime.UtcNow;
+            ConcurrencyStamp = Guid.NewGuid().ToString();
         }
 
         /// <summary>

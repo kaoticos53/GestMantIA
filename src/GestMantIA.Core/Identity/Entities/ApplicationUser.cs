@@ -14,6 +14,7 @@ namespace GestMantIA.Core.Identity.Entities
         /// </summary>
         public ApplicationUser()
         {
+            Id = Guid.NewGuid();
             LockoutReason = string.Empty;
             FullName = string.Empty;
             FirstName = string.Empty;
@@ -21,6 +22,8 @@ namespace GestMantIA.Core.Identity.Entities
             UserRoles = new HashSet<ApplicationUserRole>();
             RefreshTokens = new HashSet<RefreshToken>();
             CreatedAt = DateTime.UtcNow;
+            SecurityStamp = Guid.NewGuid().ToString();
+            ConcurrencyStamp = Guid.NewGuid().ToString();
         }
 
         // Propiedades de IdentityUser<Guid> que ya están definidas en la clase base:

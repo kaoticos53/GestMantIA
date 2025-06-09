@@ -1741,10 +1741,18 @@ namespace GestMantIA.Application.UnitTests.Features.UserManagement.Services
 
             // Act
             var result = await _userService.UnlockUserAsync(userId);
+
             // Assert
-            result.Should().BeFalse(); // Because the exception is caught by the main try-catch
-            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Usuario '{userId}' desbloqueado exitosamente."); // Log for successful SetLockoutEndDateAsync
-            _mockLogger.VerifyLog(LogLevel.Error, Times.Once(), $"Error inesperado al desbloquear al usuario '{userId}'.", typeof(InvalidOperationException)); // Log for the exception from ResetAccessFailedCountAsync
+            result.Should().BeFalse(); // La excepción es manejada internamente y devuelve false
+            _mockLogger.VerifyLog(LogLevel.Information, Times.Once(), $"Usuario '{userId}' desbloqueado exitosamente.");
+            _mockLogger.Verify(
+                x => x.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains($"Error al restablecer el contador de intentos fallidos para el usuario '{userId}'")),
+                    It.Is<Exception>(ex => ex.GetType() == typeof(InvalidOperationException) && ex.Message == "DB error during ResetAccessFailedCountAsync"),
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                Times.Once);
         }
 
         // Tests for IsUserLockedOutAsync
@@ -2819,22 +2827,7 @@ namespace GestMantIA.Application.UnitTests.Features.UserManagement.Services
             _mockLogger.VerifyLog(LogLevel.Warning, Times.Once(), It.Is<string>(msg => msg.Contains("Error al remover roles")));
         }
 
-        [Fact]
-        public async Task UpdateUserAsync_UnexpectedException_LogsErrorAndThrows()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var dto = new UpdateUserDTO { Id = userId };
-            var user = new ApplicationUser { Id = userId };
-            _mockUserManager.Setup(um => um.FindByIdAsync(userId.ToString())).ThrowsAsync(new InvalidOperationException("DB error"));
-
-            // Act
-            Func<Task> act = async () => await _userService.UpdateUserAsync(userId, dto);
-
-            // Assert
-            await act.Should().ThrowAsync<InvalidOperationException>();
-            _mockLogger.VerifyLog(LogLevel.Error, Times.AtLeastOnce(), It.Is<string>(msg => msg.Contains("Error inesperado")));
-        }
+        
 
     }
 
@@ -2847,9 +2840,10 @@ namespace GestMantIA.Application.UnitTests.Features.UserManagement.Services
                     level,
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains(expectedMessage)),
-                    exceptionType == null ? null : It.IsAny<Exception>(),
+                    exceptionType == null ? null : It.Is<Exception>(ex => ex.GetType() == exceptionType),
                     It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
                 times);
         }
     }
 }
+

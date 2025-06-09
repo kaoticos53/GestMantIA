@@ -1,15 +1,6 @@
-D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.csproj.AssemblyReference.cache
-D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.GeneratedMSBuildEditorConfig.editorconfig
-D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.AssemblyInfoInputs.cache
-D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.AssemblyInfo.cs
-D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.csproj.CoreCompileInputs.cache
-D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.MvcApplicationPartsAssemblyInfo.cs
-D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.MvcApplicationPartsAssemblyInfo.cache
-D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.sourcelink.json
 D:\source\Repos\GestMantIA\src\GestMantIA.API\bin\Debug\net9.0\appsettings.json
 D:\source\Repos\GestMantIA\src\GestMantIA.API\bin\Debug\net9.0\serilog.json
 D:\source\Repos\GestMantIA\src\GestMantIA.API\bin\Debug\net9.0\swagger.json
-D:\source\Repos\GestMantIA\src\GestMantIA.API\bin\Debug\net9.0\GestMantIA.API.staticwebassets.runtime.json
 D:\source\Repos\GestMantIA\src\GestMantIA.API\bin\Debug\net9.0\GestMantIA.API.staticwebassets.endpoints.json
 D:\source\Repos\GestMantIA\src\GestMantIA.API\bin\Debug\net9.0\GestMantIA.API.exe
 D:\source\Repos\GestMantIA\src\GestMantIA.API\bin\Debug\net9.0\GestMantIA.API.deps.json
@@ -196,6 +187,14 @@ D:\source\Repos\GestMantIA\src\GestMantIA.API\bin\Debug\net9.0\GestMantIA.Core.p
 D:\source\Repos\GestMantIA\src\GestMantIA.API\bin\Debug\net9.0\GestMantIA.Infrastructure.pdb
 D:\source\Repos\GestMantIA\src\GestMantIA.API\bin\Debug\net9.0\GestMantIA.Shared.pdb
 D:\source\Repos\GestMantIA\src\GestMantIA.API\bin\Debug\net9.0\GestMantIA.Application.pdb
+D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.csproj.AssemblyReference.cache
+D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.GeneratedMSBuildEditorConfig.editorconfig
+D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.AssemblyInfoInputs.cache
+D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.AssemblyInfo.cs
+D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.csproj.CoreCompileInputs.cache
+D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.MvcApplicationPartsAssemblyInfo.cs
+D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.MvcApplicationPartsAssemblyInfo.cache
+D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.sourcelink.json
 D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\scopedcss\bundle\GestMantIA.API.styles.css
 D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\staticwebassets.build.json
 D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\staticwebassets.build.json.cache
@@ -208,3 +207,4 @@ D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.xm
 D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.pdb
 D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\GestMantIA.API.genruntimeconfig.cache
 D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\ref\GestMantIA.API.dll
+D:\source\Repos\GestMantIA\src\GestMantIA.API\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt

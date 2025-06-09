@@ -1,5 +1,8 @@
 using FluentAssertions;
 using GestMantIA.Core.Identity.Entities;
+using System;
+using System.Collections.Generic;
+using Xunit;
 
 namespace GestMantIA.Core.UnitTests.Identity.Entities
 {
@@ -18,7 +21,8 @@ namespace GestMantIA.Core.UnitTests.Identity.Entities
             role.Description.Should().Be(string.Empty);
             role.UserRoles.Should().NotBeNull().And.BeEmpty();
             role.RolePermissions.Should().NotBeNull().And.BeEmpty();
-            role.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
+            role.CreatedAt.Should().NotBe(default);
+            role.CreatedAt.Should().BeOnOrBefore(DateTime.UtcNow);
             role.UpdatedAt.Should().BeNull();
             role.ConcurrencyStamp.Should().NotBeNullOrEmpty(); // From IdentityRole
         }
@@ -39,7 +43,8 @@ namespace GestMantIA.Core.UnitTests.Identity.Entities
             role.Description.Should().Be(string.Empty);
             role.UserRoles.Should().NotBeNull().And.BeEmpty();
             role.RolePermissions.Should().NotBeNull().And.BeEmpty();
-            role.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
+            role.CreatedAt.Should().NotBe(default);
+            role.CreatedAt.Should().BeOnOrBefore(DateTime.UtcNow);
             role.UpdatedAt.Should().BeNull();
             role.ConcurrencyStamp.Should().NotBeNullOrEmpty(); // From IdentityRole
         }

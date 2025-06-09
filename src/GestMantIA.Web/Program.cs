@@ -55,10 +55,16 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddHttpClient("API", client =>
 {
     var baseAddress = builder.Configuration["ApiBaseAddress"] ?? builder.HostEnvironment.BaseAddress;
+    if (string.IsNullOrEmpty(baseAddress))
+    {
+        throw new InvalidOperationException("No se pudo determinar la dirección base de la API");
+    }
+    
     if (!baseAddress.EndsWith("/"))
     {
         baseAddress += "/";
     }
+    
     client.BaseAddress = new Uri(baseAddress);
     client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 })
@@ -71,6 +77,10 @@ builder.Services.AddScoped<GestMantIA.Web.HttpClients.AuthHeaderHandler>();
 builder.Services.AddScoped<IGestMantIAApiClient>(sp =>
 {
     var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("API");
+    if (httpClient.BaseAddress == null)
+    {
+        throw new InvalidOperationException("No se pudo obtener la dirección base de la API");
+    }
     return new GestMantIAApiClient(httpClient.BaseAddress.ToString(), httpClient);
 });
 

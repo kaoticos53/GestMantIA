@@ -1,0 +1,1293 @@
+2025-06-08 15:29:41.070 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 15:29:41.686 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:29:41.926 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 15:29:42.413 +02:00 [ERR] Error al aplicar migraciones
+System.InvalidOperationException: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'ApplicationDbContext' has pending changes. Add a new migration before updating the database. See https://aka.ms/efcore-docs-pending-changes. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.
+   at Microsoft.EntityFrameworkCore.Diagnostics.EventDefinition`1.Log[TLoggerCategory](IDiagnosticsLogger`1 logger, TParam arg)
+   at Microsoft.EntityFrameworkCore.Diagnostics.RelationalLoggerExtensions.PendingModelChangesWarning(IDiagnosticsLogger`1 diagnostics, Type contextType)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.ValidateMigrations(Boolean useTransaction, String targetMigration)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.MigrateAsync(String targetMigration, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.Internal.NpgsqlMigrator.MigrateAsync(String targetMigration, CancellationToken cancellationToken)
+   at Program.SeedDatabaseAsync(WebApplication app) in D:\source\Repos\GestMantIA\src\GestMantIA.API\Program.cs:line 201
+2025-06-08 15:31:20.782 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 15:31:20.987 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:31:21.015 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 15:31:21.605 +02:00 [ERR] Error al aplicar migraciones
+System.InvalidOperationException: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'ApplicationDbContext' has pending changes. Add a new migration before updating the database. See https://aka.ms/efcore-docs-pending-changes. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.
+   at Microsoft.EntityFrameworkCore.Diagnostics.EventDefinition`1.Log[TLoggerCategory](IDiagnosticsLogger`1 logger, TParam arg)
+   at Microsoft.EntityFrameworkCore.Diagnostics.RelationalLoggerExtensions.PendingModelChangesWarning(IDiagnosticsLogger`1 diagnostics, Type contextType)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.ValidateMigrations(Boolean useTransaction, String targetMigration)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.MigrateAsync(String targetMigration, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.Internal.NpgsqlMigrator.MigrateAsync(String targetMigration, CancellationToken cancellationToken)
+   at Program.SeedDatabaseAsync(WebApplication app) in D:\source\Repos\GestMantIA\src\GestMantIA.API\Program.cs:line 201
+2025-06-08 15:31:40.490 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 15:31:40.701 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:31:40.729 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 15:31:41.233 +02:00 [ERR] Error al aplicar migraciones
+System.InvalidOperationException: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'ApplicationDbContext' has pending changes. Add a new migration before updating the database. See https://aka.ms/efcore-docs-pending-changes. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.
+   at Microsoft.EntityFrameworkCore.Diagnostics.EventDefinition`1.Log[TLoggerCategory](IDiagnosticsLogger`1 logger, TParam arg)
+   at Microsoft.EntityFrameworkCore.Diagnostics.RelationalLoggerExtensions.PendingModelChangesWarning(IDiagnosticsLogger`1 diagnostics, Type contextType)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.ValidateMigrations(Boolean useTransaction, String targetMigration)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.MigrateAsync(String targetMigration, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.Internal.NpgsqlMigrator.MigrateAsync(String targetMigration, CancellationToken cancellationToken)
+   at Program.SeedDatabaseAsync(WebApplication app) in D:\source\Repos\GestMantIA\src\GestMantIA.API\Program.cs:line 201
+2025-06-08 15:33:39.882 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 15:33:40.117 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:33:40.146 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 15:33:40.776 +02:00 [INF] Applying migration '20250608133313_AddBlogCreatedTimestamp'.
+2025-06-08 15:33:40.792 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 15:33:40.804 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 15:33:57.738 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 15:33:57.957 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:33:57.987 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 15:33:58.540 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 15:33:58.544 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 15:33:58.558 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 15:34:29.993 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 15:34:30.207 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:34:30.235 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 15:34:30.801 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 15:34:30.805 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 15:34:30.818 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 15:34:34.164 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 15:34:34.706 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:34:34.761 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 15:34:35.084 +02:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2025-06-08 15:34:35.088 +02:00 [INF] warn: 08/06/2025 15:34:35.088 CoreEventId.SensitiveDataLoggingEnabledWarning[10400] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2025-06-08 15:34:35.303 +02:00 [INF] info: 08/06/2025 15:34:35.303 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (10ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT "MigrationId", "ProductVersion"
+      FROM "__EFMigrationsHistory"
+      ORDER BY "MigrationId";
+2025-06-08 15:34:35.567 +02:00 [INF] info: 08/06/2025 15:34:35.566 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+          "MigrationId" character varying(150) NOT NULL,
+          "ProductVersion" character varying(32) NOT NULL,
+          CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+      );
+2025-06-08 15:34:35.575 +02:00 [INF] info: 08/06/2025 15:34:35.575 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      LOCK TABLE "__EFMigrationsHistory" IN ACCESS EXCLUSIVE MODE
+2025-06-08 15:34:35.581 +02:00 [INF] info: 08/06/2025 15:34:35.581 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT "MigrationId", "ProductVersion"
+      FROM "__EFMigrationsHistory"
+      ORDER BY "MigrationId";
+2025-06-08 15:34:35.583 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 15:34:35.584 +02:00 [INF] info: 08/06/2025 15:34:35.584 RelationalEventId.MigrationsNotApplied[20405] (Microsoft.EntityFrameworkCore.Migrations) 
+      No migrations were applied. The database is already up to date.
+2025-06-08 15:34:35.589 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 15:34:35.739 +02:00 [INF] info: 08/06/2025 15:34:35.739 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (6ms) [Parameters=[@__normalizedName_0='ADMIN'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Id", r."ConcurrencyStamp", r."CreatedAt", r."Description", r."Name", r."NormalizedName", r."UpdatedAt"
+      FROM identity."Roles" AS r
+      WHERE r."NormalizedName" = @__normalizedName_0
+      LIMIT 1
+2025-06-08 15:34:35.773 +02:00 [INF] info: 08/06/2025 15:34:35.773 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__normalizedName_0='USER'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Id", r."ConcurrencyStamp", r."CreatedAt", r."Description", r."Name", r."NormalizedName", r."UpdatedAt"
+      FROM identity."Roles" AS r
+      WHERE r."NormalizedName" = @__normalizedName_0
+      LIMIT 1
+2025-06-08 15:34:35.790 +02:00 [INF] info: 08/06/2025 15:34:35.790 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (3ms) [Parameters=[@__normalizedEmail_0='ADMIN@LOCALHOST'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."NormalizedEmail" = @__normalizedEmail_0
+      LIMIT 2
+2025-06-08 15:34:35.836 +02:00 [INF] info: 08/06/2025 15:34:35.836 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__normalizedEmail_0='USUARIO@LOCALHOST'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."NormalizedEmail" = @__normalizedEmail_0
+      LIMIT 2
+2025-06-08 15:34:35.837 +02:00 [INF] Iniciando la inserción de datos de ejemplo...
+2025-06-08 15:34:35.837 +02:00 [INF] Datos de ejemplo insertados correctamente
+2025-06-08 15:34:35.837 +02:00 [INF] Datos iniciales insertados correctamente
+2025-06-08 15:34:35.923 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 15:34:35.977 +02:00 [WRN] Overriding address(es) 'http://localhost:6080, https://localhost:6001'. Binding to endpoints defined via IConfiguration and/or UseKestrel() instead.
+2025-06-08 15:34:36.000 +02:00 [INF] Now listening on: http://localhost:6080
+2025-06-08 15:34:36.000 +02:00 [INF] Now listening on: https://localhost:6001
+2025-06-08 15:34:36.024 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-06-08 15:34:36.024 +02:00 [INF] Hosting environment: Development
+2025-06-08 15:34:36.025 +02:00 [INF] Content root path: D:\source\Repos\GestMantIA\src\GestMantIA.API
+2025-06-08 15:34:39.976 +02:00 [WRN] Reporter App.Metrics.Reporting.InfluxDB.InfluxDbMetricsReporter FlushAsync failed
+2025-06-08 15:34:55.330 +02:00 [WRN] Reporter App.Metrics.Reporting.InfluxDB.InfluxDbMetricsReporter FlushAsync failed
+2025-06-08 15:35:10.644 +02:00 [WRN] Reporter App.Metrics.Reporting.InfluxDB.InfluxDbMetricsReporter FlushAsync failed
+2025-06-08 15:35:14.255 +02:00 [INF] Solicitud Entrante: GET /health desde 127.0.0.1 | User-Agent: Telegraf/1.29.5 Go/1.22.0
+2025-06-08 15:35:14.258 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:35:23.484 +02:00 [INF] Solicitud Entrante: GET /health desde 127.0.0.1 | User-Agent: Telegraf/1.29.5 Go/1.22.0
+2025-06-08 15:35:23.484 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:35:32.709 +02:00 [INF] Solicitud Entrante: GET /health desde 127.0.0.1 | User-Agent: Telegraf/1.29.5 Go/1.22.0
+2025-06-08 15:35:32.709 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:35:41.944 +02:00 [INF] Solicitud Entrante: GET /health desde 127.0.0.1 | User-Agent: Telegraf/1.29.5 Go/1.22.0
+2025-06-08 15:35:41.945 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:35:44.082 +02:00 [INF] Solicitud Entrante: GET /health desde 127.0.0.1 | User-Agent: Telegraf/1.29.5 Go/1.22.0
+2025-06-08 15:35:44.083 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:36:27.177 +02:00 [INF] Solicitud Entrante: POST /api/auth/login desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:36:27.178 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:36:27.212 +02:00 [INF] Solicitud Entrante: POST /api/auth/login desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:36:27.424 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:36:27.439 +02:00 [INF] Intento de autenticación para el usuario: admin@localhost
+2025-06-08 15:36:27.460 +02:00 [INF] info: 08/06/2025 15:36:27.460 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__ToUpper_0='ADMIN@LOCALHOST'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."NormalizedUserName" = @__ToUpper_0 OR u."NormalizedEmail" = @__ToUpper_0
+      LIMIT 1
+2025-06-08 15:36:27.537 +02:00 [INF] info: 08/06/2025 15:36:27.537 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (3ms) [Parameters=[@__user_Id_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."ClaimType", u."ClaimValue", u."UserId"
+      FROM identity."UserClaims" AS u
+      WHERE u."UserId" = @__user_Id_0
+2025-06-08 15:36:27.552 +02:00 [INF] info: 08/06/2025 15:36:27.552 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (3ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 15:36:27.554 +02:00 [INF] info: 08/06/2025 15:36:27.554 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__normalizedName_0='ADMIN'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Id", r."ConcurrencyStamp", r."CreatedAt", r."Description", r."Name", r."NormalizedName", r."UpdatedAt"
+      FROM identity."Roles" AS r
+      WHERE r."NormalizedName" = @__normalizedName_0
+      LIMIT 1
+2025-06-08 15:36:27.559 +02:00 [INF] info: 08/06/2025 15:36:27.559 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__role_Id_0='84e69c3b-97f9-4e24-a657-6e0e40af6b89'], CommandType='Text', CommandTimeout='60']
+      SELECT r."ClaimType", r."ClaimValue"
+      FROM identity."RoleClaims" AS r
+      WHERE r."RoleId" = @__role_Id_0
+2025-06-08 15:36:27.560 +02:00 [INF] info: 08/06/2025 15:36:27.560 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 15:36:27.648 +02:00 [INF] info: 08/06/2025 15:36:27.648 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (6ms) [Parameters=[@p0='54b4d733-30bb-4be0-a968-24a7d6ea7d62', @p1='2025-06-08T13:36:27.6135470Z' (DbType = DateTime), @p2='0.0.0.1' (Nullable = false), @p3=NULL (DbType = DateTime), @p4=NULL (DbType = Guid), @p5='2025-06-15T13:36:27.5673368Z' (DbType = DateTime), @p6='False', @p7=NULL, @p8='' (Nullable = false), @p9=NULL (DbType = DateTime), @p10='' (Nullable = false), @p11='eKzX6ouNtj68bt3gOguq2tZLFn9RuefbjRAthIhQ0LM=' (Nullable = false), @p12=NULL (DbType = DateTime), @p13='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      INSERT INTO identity."RefreshTokens" ("Id", "CreatedAt", "CreatedByIp", "DeletedAt", "DeletedBy", "Expires", "IsDeleted", "ReasonRevoked", "ReplacedByToken", "Revoked", "RevokedByIp", "Token", "UpdatedAt", "UserId")
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13)
+      RETURNING "IsRevoked";
+2025-06-08 15:36:27.658 +02:00 [INF] Autenticación exitosa para el usuario: "01972049-4c99-74d4-8dc3-3a58a012f44c"
+2025-06-08 15:36:27.659 +02:00 [INF] info: 08/06/2025 15:36:27.659 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 15:36:27.669 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 15:37:02.425 +02:00 [INF] Solicitud Entrante: GET /api/users/01972049-4c99-74d4-8dc3-3a58a012f44c desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:37:02.425 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:37:02.427 +02:00 [INF] Solicitud Entrante: GET /api/users/01972049-4c99-74d4-8dc3-3a58a012f44c desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:37:02.437 +02:00 [INF] Respuesta Saliente: 401 | Content-Type: application/json | Content-Length: -1
+2025-06-08 15:37:13.925 +02:00 [INF] Solicitud Entrante: GET /api/users/01972049-4c99-74d4-8dc3-3a58a012f44c desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:37:13.926 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:37:13.927 +02:00 [INF] Solicitud Entrante: GET /api/users/01972049-4c99-74d4-8dc3-3a58a012f44c desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:37:13.929 +02:00 [INF] Respuesta Saliente: 401 | Content-Type: application/json | Content-Length: -1
+2025-06-08 15:38:15.192 +02:00 [INF] Solicitud Entrante: GET /api/roles desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:38:15.196 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:38:15.197 +02:00 [INF] Solicitud Entrante: GET /api/roles desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:38:15.208 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:38:15.346 +02:00 [INF] info: 08/06/2025 15:38:15.346 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT r."Id", r."ConcurrencyStamp", r."CreatedAt", r."Description", r."Name", r."NormalizedName", r."UpdatedAt"
+      FROM identity."Roles" AS r
+2025-06-08 15:38:15.355 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 15:38:46.640 +02:00 [INF] Solicitud Entrante: GET /api/users/01972049-4c99-74d4-8dc3-3a58a012f44c desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:38:46.640 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:38:46.642 +02:00 [INF] Solicitud Entrante: GET /api/users/01972049-4c99-74d4-8dc3-3a58a012f44c desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:38:46.645 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:38:46.660 +02:00 [INF] info: 08/06/2025 15:38:46.660 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_0='01972049-4c99-74d4-8dc3-3a58a012f44c' (Nullable = true)], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."Id" = @__p_0
+      LIMIT 1
+2025-06-08 15:38:46.662 +02:00 [INF] info: 08/06/2025 15:38:46.662 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 15:38:46.675 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 15:39:11.935 +02:00 [INF] Solicitud Entrante: GET /api/Roles/84e69c3b-97f9-4e24-a657-6e0e40af6b89 desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:39:11.936 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:39:11.937 +02:00 [INF] Solicitud Entrante: GET /api/Roles/84e69c3b-97f9-4e24-a657-6e0e40af6b89 desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:39:11.939 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:39:11.946 +02:00 [INF] info: 08/06/2025 15:39:11.946 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__roleId_0='84e69c3b-97f9-4e24-a657-6e0e40af6b89'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Id", r."ConcurrencyStamp", r."CreatedAt", r."Description", r."Name", r."NormalizedName", r."UpdatedAt"
+      FROM identity."Roles" AS r
+      WHERE r."Id" = @__roleId_0
+      LIMIT 1
+2025-06-08 15:39:11.948 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 15:39:21.933 +02:00 [INF] Solicitud Entrante: GET /api/healthcheck desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:39:21.934 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:39:21.935 +02:00 [INF] Solicitud Entrante: GET /api/healthcheck desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:39:21.937 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 15:39:26.928 +02:00 [INF] Solicitud Entrante: GET /api/metrics/test desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:39:26.928 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:39:26.929 +02:00 [INF] Solicitud Entrante: GET /api/metrics/test desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:39:27.031 +02:00 [INF] Métricas de prueba generadas
+2025-06-08 15:39:27.034 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 15:39:32.309 +02:00 [INF] Solicitud Entrante: GET /api/UserManagement desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:39:32.309 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:39:32.310 +02:00 [INF] Solicitud Entrante: GET /api/UserManagement desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:39:32.312 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:39:32.314 +02:00 [INF] === INICIO: GetAllUsers ===
+2025-06-08 15:39:32.315 +02:00 [INF] Parámetros de la solicitud:
+2025-06-08 15:39:32.315 +02:00 [INF] - Término de búsqueda: (ninguno)
+2025-06-08 15:39:32.315 +02:00 [INF] - Página: 1
+2025-06-08 15:39:32.315 +02:00 [INF] - Tamaño de página: 10
+2025-06-08 15:39:32.315 +02:00 [INF] - Solo activos: null
+2025-06-08 15:39:32.315 +02:00 [INF] Llamando a _userService.GetAllUsersAsync...
+2025-06-08 15:39:32.316 +02:00 [INF] GetAllUsersAsync invocado con pageNumber: 1, pageSize: 10, searchTerm: null, activeOnly: true
+2025-06-08 15:39:32.329 +02:00 [INF] info: 08/06/2025 15:39:32.329 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT count(*)::int
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+2025-06-08 15:39:32.340 +02:00 [INF] info: 08/06/2025 15:39:32.340 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_1='10', @__p_0='0'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+      ORDER BY u."UserName"
+      LIMIT @__p_1 OFFSET @__p_0
+2025-06-08 15:39:32.343 +02:00 [INF] info: 08/06/2025 15:39:32.343 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 15:39:32.344 +02:00 [INF] info: 08/06/2025 15:39:32.344 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4d1e-735e-bd07-aab1b81319d6'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 15:39:32.344 +02:00 [INF] Se encontraron 2 usuarios de un total de 2
+2025-06-08 15:39:32.344 +02:00 [INF] Resultado obtenido exitosamente
+2025-06-08 15:39:32.345 +02:00 [INF] - Total de usuarios: 2
+2025-06-08 15:39:32.345 +02:00 [INF] - Usuarios en la página: 2
+2025-06-08 15:39:32.345 +02:00 [INF] - Página actual: 1 de 1 (Tamaño: 10)
+2025-06-08 15:39:32.345 +02:00 [INF] === FIN: GetAllUsers ===
+2025-06-08 15:39:32.346 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 15:42:51.771 +02:00 [INF] Solicitud Entrante: GET /api/auth/register desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:42:51.771 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:42:51.773 +02:00 [INF] Solicitud Entrante: GET /api/auth/register desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:42:51.774 +02:00 [INF] Respuesta Saliente: 405 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:43:01.074 +02:00 [INF] Solicitud Entrante: POST /api/auth/register desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:43:01.074 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:43:01.075 +02:00 [INF] Solicitud Entrante: POST /api/auth/register desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:43:01.077 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:43:01.081 +02:00 [WRN] Intento de registro con modelo inválido
+2025-06-08 15:43:01.083 +02:00 [INF] Respuesta Saliente: 400 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 15:43:26.542 +02:00 [INF] Solicitud Entrante: POST /api/auth/register desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:43:26.543 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:43:26.544 +02:00 [INF] Solicitud Entrante: POST /api/auth/register desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:43:26.546 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:43:26.553 +02:00 [INF] Intento de registro para el correo: user@example.com
+2025-06-08 15:43:26.613 +02:00 [INF] info: 08/06/2025 15:43:26.613 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (2ms) [Parameters=[@__normalizedEmail_0='USER@EXAMPLE.COM'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."NormalizedEmail" = @__normalizedEmail_0
+      LIMIT 2
+2025-06-08 15:43:26.622 +02:00 [INF] info: 08/06/2025 15:43:26.622 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__normalizedUserName_0='RICARDO'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."NormalizedUserName" = @__normalizedUserName_0
+      LIMIT 1
+2025-06-08 15:43:26.661 +02:00 [INF] info: 08/06/2025 15:43:26.661 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__normalizedUserName_0='RICARDO'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."NormalizedUserName" = @__normalizedUserName_0
+      LIMIT 1
+2025-06-08 15:43:26.663 +02:00 [INF] info: 08/06/2025 15:43:26.663 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__normalizedEmail_0='USER@EXAMPLE.COM'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."NormalizedEmail" = @__normalizedEmail_0
+      LIMIT 2
+2025-06-08 15:43:26.669 +02:00 [INF] info: 08/06/2025 15:43:26.669 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@p0='3e57be0c-5735-4119-94fe-447573159bf1', @p1='0', @p2='5be6427a-53d1-441a-b904-e75940eef2cd', @p3='2025-06-08T13:43:26.6661748Z' (DbType = DateTime), @p4=NULL (DbType = DateTime), @p5=NULL (DbType = Guid), @p6='user@example.com' (Nullable = false), @p7='False', @p8='' (Nullable = false), @p9='Ricardo GL' (Nullable = false), @p10='True', @p11='False', @p12=NULL (DbType = DateTime), @p13='' (Nullable = false), @p14=NULL (DbType = DateTime), @p15='True', @p16=NULL (DbType = DateTime), @p17='' (Nullable = false), @p18='USER@EXAMPLE.COM', @p19='RICARDO', @p20='AQAAAAIAAYagAAAAEHpXdDwBJ6xOE1+0I1UYM8N8LThzie/ejxU7tUwXH+UTz/ACv8ZKiVI3wQ0ZRvcWQw==' (Nullable = false), @p21=NULL, @p22=NULL (DbType = DateTime), @p23='123123123', @p24='False', @p25='HO7LDBZYOG5N2CEDMYFB6YRBBASJDKWH', @p26='False', @p27=NULL (DbType = DateTime), @p28='Ricardo' (Nullable = false)], CommandType='Text', CommandTimeout='60']
+      INSERT INTO identity."Users" ("Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedAt", "DeletedAt", "DeletedBy", "Email", "EmailConfirmed", "FirstName", "FullName", "IsActive", "IsDeleted", "LastLoginDate", "LastName", "LockoutDate", "LockoutEnabled", "LockoutEnd", "LockoutReason", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PasswordResetToken", "PasswordResetTokenExpiration", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UpdatedAt", "UserName")
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21, @p22, @p23, @p24, @p25, @p26, @p27, @p28);
+2025-06-08 15:43:26.676 +02:00 [INF] info: 08/06/2025 15:43:26.676 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__normalizedRoleName_0='USER'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Id", r."ConcurrencyStamp", r."CreatedAt", r."Description", r."Name", r."NormalizedName", r."UpdatedAt"
+      FROM identity."Roles" AS r
+      WHERE r."NormalizedName" = @__normalizedRoleName_0
+      LIMIT 2
+2025-06-08 15:43:26.681 +02:00 [INF] info: 08/06/2025 15:43:26.681 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_0='3e57be0c-5735-4119-94fe-447573159bf1' (Nullable = true), @__p_1='60ea170a-4be7-4edd-8656-a7567c8860a4' (Nullable = true)], CommandType='Text', CommandTimeout='60']
+      SELECT u."UserId", u."RoleId"
+      FROM identity."UserRoles" AS u
+      WHERE u."UserId" = @__p_0 AND u."RoleId" = @__p_1
+      LIMIT 1
+2025-06-08 15:43:26.683 +02:00 [INF] info: 08/06/2025 15:43:26.683 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__normalizedRoleName_0='USER'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Id", r."ConcurrencyStamp", r."CreatedAt", r."Description", r."Name", r."NormalizedName", r."UpdatedAt"
+      FROM identity."Roles" AS r
+      WHERE r."NormalizedName" = @__normalizedRoleName_0
+      LIMIT 2
+2025-06-08 15:43:26.692 +02:00 [INF] info: 08/06/2025 15:43:26.692 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__normalizedUserName_0='RICARDO'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."NormalizedUserName" = @__normalizedUserName_0
+      LIMIT 1
+2025-06-08 15:43:26.693 +02:00 [INF] info: 08/06/2025 15:43:26.693 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__normalizedEmail_0='USER@EXAMPLE.COM'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."NormalizedEmail" = @__normalizedEmail_0
+      LIMIT 2
+2025-06-08 15:43:26.706 +02:00 [INF] info: 08/06/2025 15:43:26.706 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (2ms) [Parameters=[@p0='60ea170a-4be7-4edd-8656-a7567c8860a4', @p1='3e57be0c-5735-4119-94fe-447573159bf1', @p30='3e57be0c-5735-4119-94fe-447573159bf1', @p2='0', @p3='eecc4e17-6b70-4660-b1a3-8060f0cd4302', @p31='5be6427a-53d1-441a-b904-e75940eef2cd', @p4='2025-06-08T13:43:26.6661748Z' (DbType = DateTime), @p5=NULL (DbType = DateTime), @p6=NULL (DbType = Guid), @p7='user@example.com' (Nullable = false), @p8='False', @p9='' (Nullable = false), @p10='Ricardo GL' (Nullable = false), @p11='True', @p12='False', @p13=NULL (DbType = DateTime), @p14='' (Nullable = false), @p15=NULL (DbType = DateTime), @p16='True', @p17=NULL (DbType = DateTime), @p18='' (Nullable = false), @p19='USER@EXAMPLE.COM', @p20='RICARDO', @p21='AQAAAAIAAYagAAAAEHpXdDwBJ6xOE1+0I1UYM8N8LThzie/ejxU7tUwXH+UTz/ACv8ZKiVI3wQ0ZRvcWQw==' (Nullable = false), @p22=NULL, @p23=NULL (DbType = DateTime), @p24='123123123', @p25='False', @p26='HO7LDBZYOG5N2CEDMYFB6YRBBASJDKWH', @p27='False', @p28='2025-06-08T13:43:26.6951315Z' (Nullable = true) (DbType = DateTime), @p29='Ricardo' (Nullable = false)], CommandType='Text', CommandTimeout='60']
+      INSERT INTO identity."UserRoles" ("RoleId", "UserId")
+      VALUES (@p0, @p1);
+      UPDATE identity."Users" SET "AccessFailedCount" = @p2, "ConcurrencyStamp" = @p3, "CreatedAt" = @p4, "DeletedAt" = @p5, "DeletedBy" = @p6, "Email" = @p7, "EmailConfirmed" = @p8, "FirstName" = @p9, "FullName" = @p10, "IsActive" = @p11, "IsDeleted" = @p12, "LastLoginDate" = @p13, "LastName" = @p14, "LockoutDate" = @p15, "LockoutEnabled" = @p16, "LockoutEnd" = @p17, "LockoutReason" = @p18, "NormalizedEmail" = @p19, "NormalizedUserName" = @p20, "PasswordHash" = @p21, "PasswordResetToken" = @p22, "PasswordResetTokenExpiration" = @p23, "PhoneNumber" = @p24, "PhoneNumberConfirmed" = @p25, "SecurityStamp" = @p26, "TwoFactorEnabled" = @p27, "UpdatedAt" = @p28, "UserName" = @p29
+      WHERE "Id" = @p30 AND "ConcurrencyStamp" = @p31;
+2025-06-08 15:43:26.707 +02:00 [INF] Usuario registrado exitosamente: "3e57be0c-5735-4119-94fe-447573159bf1"
+2025-06-08 15:43:26.708 +02:00 [INF] URL de verificación para user@example.com: https://localhost:6001/api/auth/verify-email?token=3e57be0c-5735-4119-94fe-447573159bf1%7CCfDJ8LGXN2wyHAZAlKce84Gzkgib6bMMokzKLoeoM3qpj6bn19Jr%2BN9yFL7SFFcJmrk6A9ZoRFjLn8lrgC8E2siYu%2FcyVzycw%2B%2FHTVPRDnmiTnQMBns4EVFgY1GWOerZgYROH9Y6%2FqQOVNdguP1KJFyhLdpF%2BWw3%2BOzXHPTp7rTVYPUDYJkSdQOSuIBVOwpLMncetmmylqqerE2lfbBbvDZ5EFr%2F%2BCCVb9Hu%2BjcoMSWMLLQzjsgDd1TDF3M98%2Fs6nNOefA%3D%3D
+2025-06-08 15:43:26.711 +02:00 [INF] Correo simulado guardado en: D:\source\Repos\GestMantIA\src\GestMantIA.API\TempEmails\email_user@example.com_20250608154326.html
+2025-06-08 15:43:26.712 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 15:43:39.575 +02:00 [INF] Solicitud Entrante: GET /api/UserManagement desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:43:39.575 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:43:39.576 +02:00 [INF] Solicitud Entrante: GET /api/UserManagement desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:43:39.577 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:43:39.578 +02:00 [INF] === INICIO: GetAllUsers ===
+2025-06-08 15:43:39.578 +02:00 [INF] Parámetros de la solicitud:
+2025-06-08 15:43:39.578 +02:00 [INF] - Término de búsqueda: (ninguno)
+2025-06-08 15:43:39.578 +02:00 [INF] - Página: 1
+2025-06-08 15:43:39.578 +02:00 [INF] - Tamaño de página: 10
+2025-06-08 15:43:39.578 +02:00 [INF] - Solo activos: null
+2025-06-08 15:43:39.578 +02:00 [INF] Llamando a _userService.GetAllUsersAsync...
+2025-06-08 15:43:39.578 +02:00 [INF] GetAllUsersAsync invocado con pageNumber: 1, pageSize: 10, searchTerm: null, activeOnly: true
+2025-06-08 15:43:39.579 +02:00 [INF] info: 08/06/2025 15:43:39.579 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT count(*)::int
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+2025-06-08 15:43:39.580 +02:00 [INF] info: 08/06/2025 15:43:39.580 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_1='10', @__p_0='0'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+      ORDER BY u."UserName"
+      LIMIT @__p_1 OFFSET @__p_0
+2025-06-08 15:43:39.582 +02:00 [INF] info: 08/06/2025 15:43:39.582 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 15:43:39.583 +02:00 [INF] info: 08/06/2025 15:43:39.583 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='3e57be0c-5735-4119-94fe-447573159bf1'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 15:43:39.584 +02:00 [INF] info: 08/06/2025 15:43:39.584 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4d1e-735e-bd07-aab1b81319d6'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 15:43:39.584 +02:00 [INF] Se encontraron 3 usuarios de un total de 3
+2025-06-08 15:43:39.584 +02:00 [INF] Resultado obtenido exitosamente
+2025-06-08 15:43:39.584 +02:00 [INF] - Total de usuarios: 3
+2025-06-08 15:43:39.584 +02:00 [INF] - Usuarios en la página: 3
+2025-06-08 15:43:39.584 +02:00 [INF] - Página actual: 1 de 1 (Tamaño: 10)
+2025-06-08 15:43:39.584 +02:00 [INF] === FIN: GetAllUsers ===
+2025-06-08 15:43:39.585 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 15:45:21.648 +02:00 [INF] Solicitud Entrante: GET /api/Database/test-connection desde ::1 | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0
+2025-06-08 15:45:21.649 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:45:21.675 +02:00 [INF] Solicitud Entrante: GET /api/Database/test-connection desde ::1 | User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0
+2025-06-08 15:45:21.677 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:45:21.745 +02:00 [INF] info: 08/06/2025 15:45:21.745 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT "MigrationId", "ProductVersion"
+      FROM "__EFMigrationsHistory"
+      ORDER BY "MigrationId";
+2025-06-08 15:45:21.747 +02:00 [INF] info: 08/06/2025 15:45:21.747 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT "MigrationId", "ProductVersion"
+      FROM "__EFMigrationsHistory"
+      ORDER BY "MigrationId";
+2025-06-08 15:45:21.748 +02:00 [INF] info: 08/06/2025 15:45:21.748 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT "MigrationId", "ProductVersion"
+      FROM "__EFMigrationsHistory"
+      ORDER BY "MigrationId";
+2025-06-08 15:45:21.750 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 15:48:07.575 +02:00 [INF] Solicitud Entrante: GET /api/DAtabase/test-connection desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:48:07.576 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 15:48:07.577 +02:00 [INF] Solicitud Entrante: GET /api/DAtabase/test-connection desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 15:48:07.578 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 15:48:07.645 +02:00 [INF] info: 08/06/2025 15:48:07.645 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT "MigrationId", "ProductVersion"
+      FROM "__EFMigrationsHistory"
+      ORDER BY "MigrationId";
+2025-06-08 15:48:07.646 +02:00 [INF] info: 08/06/2025 15:48:07.646 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT "MigrationId", "ProductVersion"
+      FROM "__EFMigrationsHistory"
+      ORDER BY "MigrationId";
+2025-06-08 15:48:07.646 +02:00 [INF] info: 08/06/2025 15:48:07.646 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT "MigrationId", "ProductVersion"
+      FROM "__EFMigrationsHistory"
+      ORDER BY "MigrationId";
+2025-06-08 15:48:07.646 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:02:56.670 +02:00 [INF] Solicitud Entrante: POST //api/Auth/login desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:02:56.671 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:02:56.680 +02:00 [INF] Solicitud Entrante: POST //api/Auth/login desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:02:56.681 +02:00 [INF] Respuesta Saliente: 404 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:04:15.245 +02:00 [INF] Solicitud Entrante: POST //api/Auth/login desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:04:15.245 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:04:15.246 +02:00 [INF] Solicitud Entrante: POST //api/Auth/login desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:04:15.247 +02:00 [INF] Respuesta Saliente: 404 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:05:05.901 +02:00 [INF] Solicitud Entrante: POST /api/Auth/login desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:05:05.901 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:05:05.902 +02:00 [INF] Solicitud Entrante: POST /api/Auth/login desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:05:05.902 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:05:05.907 +02:00 [WRN] Intento de inicio de sesión con modelo inválido
+2025-06-08 16:05:05.914 +02:00 [INF] Respuesta Saliente: 400 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:05:16.701 +02:00 [INF] Solicitud Entrante: POST /api/Auth/login desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:05:16.701 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:05:16.702 +02:00 [INF] Solicitud Entrante: POST /api/Auth/login desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:05:16.703 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:05:16.704 +02:00 [WRN] Intento de inicio de sesión con modelo inválido
+2025-06-08 16:05:16.704 +02:00 [INF] Respuesta Saliente: 400 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:05:30.717 +02:00 [INF] Solicitud Entrante: POST /api/Auth/login desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:05:30.717 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:05:30.719 +02:00 [INF] Solicitud Entrante: POST /api/Auth/login desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:05:30.720 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:05:30.721 +02:00 [INF] Intento de autenticación para el usuario: admin@localhost
+2025-06-08 16:05:30.774 +02:00 [INF] info: 08/06/2025 16:05:30.774 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (2ms) [Parameters=[@__ToUpper_0='ADMIN@LOCALHOST'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."NormalizedUserName" = @__ToUpper_0 OR u."NormalizedEmail" = @__ToUpper_0
+      LIMIT 1
+2025-06-08 16:05:30.809 +02:00 [INF] info: 08/06/2025 16:05:30.809 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__user_Id_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."ClaimType", u."ClaimValue", u."UserId"
+      FROM identity."UserClaims" AS u
+      WHERE u."UserId" = @__user_Id_0
+2025-06-08 16:05:30.811 +02:00 [INF] info: 08/06/2025 16:05:30.811 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:05:30.812 +02:00 [INF] info: 08/06/2025 16:05:30.812 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__normalizedName_0='ADMIN'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Id", r."ConcurrencyStamp", r."CreatedAt", r."Description", r."Name", r."NormalizedName", r."UpdatedAt"
+      FROM identity."Roles" AS r
+      WHERE r."NormalizedName" = @__normalizedName_0
+      LIMIT 1
+2025-06-08 16:05:30.813 +02:00 [INF] info: 08/06/2025 16:05:30.813 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__role_Id_0='84e69c3b-97f9-4e24-a657-6e0e40af6b89'], CommandType='Text', CommandTimeout='60']
+      SELECT r."ClaimType", r."ClaimValue"
+      FROM identity."RoleClaims" AS r
+      WHERE r."RoleId" = @__role_Id_0
+2025-06-08 16:05:30.813 +02:00 [INF] info: 08/06/2025 16:05:30.813 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:05:30.817 +02:00 [INF] info: 08/06/2025 16:05:30.817 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (2ms) [Parameters=[@p0='fdd7c862-76c2-4332-989c-624751cf1373', @p1='2025-06-08T14:05:30.8153169Z' (DbType = DateTime), @p2='0.0.0.1' (Nullable = false), @p3=NULL (DbType = DateTime), @p4=NULL (DbType = Guid), @p5='2025-06-15T14:05:30.8143669Z' (DbType = DateTime), @p6='False', @p7=NULL, @p8='' (Nullable = false), @p9=NULL (DbType = DateTime), @p10='' (Nullable = false), @p11='J8C4SMtwDvQIvPU9nNWYlzfB/lMPEIr+GmuKmuolqIA=' (Nullable = false), @p12=NULL (DbType = DateTime), @p13='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      INSERT INTO identity."RefreshTokens" ("Id", "CreatedAt", "CreatedByIp", "DeletedAt", "DeletedBy", "Expires", "IsDeleted", "ReasonRevoked", "ReplacedByToken", "Revoked", "RevokedByIp", "Token", "UpdatedAt", "UserId")
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13)
+      RETURNING "IsRevoked";
+2025-06-08 16:05:30.817 +02:00 [INF] Autenticación exitosa para el usuario: "01972049-4c99-74d4-8dc3-3a58a012f44c"
+2025-06-08 16:05:30.818 +02:00 [INF] info: 08/06/2025 16:05:30.818 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:05:30.818 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:07:09.445 +02:00 [INF] Solicitud Entrante: GET /api/UserManagement desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:07:09.445 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:07:09.446 +02:00 [INF] Solicitud Entrante: GET /api/UserManagement desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:07:09.448 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:07:09.452 +02:00 [INF] === INICIO: GetAllUsers ===
+2025-06-08 16:07:09.452 +02:00 [INF] Parámetros de la solicitud:
+2025-06-08 16:07:09.452 +02:00 [INF] - Término de búsqueda: nostrud inc
+2025-06-08 16:07:09.452 +02:00 [INF] - Página: 1
+2025-06-08 16:07:09.453 +02:00 [INF] - Tamaño de página: 10
+2025-06-08 16:07:09.453 +02:00 [INF] - Solo activos: true
+2025-06-08 16:07:09.453 +02:00 [INF] Llamando a _userService.GetAllUsersAsync...
+2025-06-08 16:07:09.453 +02:00 [INF] GetAllUsersAsync invocado con pageNumber: 1, pageSize: 10, searchTerm: nostrud inc, activeOnly: true
+2025-06-08 16:07:09.466 +02:00 [INF] info: 08/06/2025 16:07:09.466 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (5ms) [Parameters=[@__searchTermLower_0_contains='%nostrud inc%', @__searchTermLower_0_contains_1='%nostrud inc%'], CommandType='Text', CommandTimeout='60']
+      SELECT count(*)::int
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted") AND (lower(u."UserName") LIKE @__searchTermLower_0_contains OR lower(u."Email") LIKE @__searchTermLower_0_contains_1 OR lower(u."FirstName") LIKE @__searchTermLower_0_contains OR lower(u."LastName") LIKE @__searchTermLower_0_contains)
+2025-06-08 16:07:09.475 +02:00 [INF] info: 08/06/2025 16:07:09.475 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__searchTermLower_0_contains='%nostrud inc%', @__searchTermLower_0_contains_1='%nostrud inc%', @__p_2='10', @__p_1='0'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted") AND (lower(u."UserName") LIKE @__searchTermLower_0_contains OR lower(u."Email") LIKE @__searchTermLower_0_contains_1 OR lower(u."FirstName") LIKE @__searchTermLower_0_contains OR lower(u."LastName") LIKE @__searchTermLower_0_contains)
+      ORDER BY u."UserName"
+      LIMIT @__p_2 OFFSET @__p_1
+2025-06-08 16:07:09.475 +02:00 [INF] Se encontraron 0 usuarios de un total de 0
+2025-06-08 16:07:09.475 +02:00 [INF] Resultado obtenido exitosamente
+2025-06-08 16:07:09.475 +02:00 [INF] - Total de usuarios: 0
+2025-06-08 16:07:09.475 +02:00 [INF] - Usuarios en la página: 0
+2025-06-08 16:07:09.475 +02:00 [INF] - Página actual: 1 de 0 (Tamaño: 10)
+2025-06-08 16:07:09.475 +02:00 [INF] === FIN: GetAllUsers ===
+2025-06-08 16:07:09.476 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:07:16.580 +02:00 [INF] Solicitud Entrante: GET /api/UserManagement desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:07:16.580 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:07:16.581 +02:00 [INF] Solicitud Entrante: GET /api/UserManagement desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:07:16.582 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:07:16.582 +02:00 [INF] === INICIO: GetAllUsers ===
+2025-06-08 16:07:16.582 +02:00 [INF] Parámetros de la solicitud:
+2025-06-08 16:07:16.582 +02:00 [INF] - Término de búsqueda: (ninguno)
+2025-06-08 16:07:16.582 +02:00 [INF] - Página: 1
+2025-06-08 16:07:16.582 +02:00 [INF] - Tamaño de página: 10
+2025-06-08 16:07:16.582 +02:00 [INF] - Solo activos: null
+2025-06-08 16:07:16.583 +02:00 [INF] Llamando a _userService.GetAllUsersAsync...
+2025-06-08 16:07:16.583 +02:00 [INF] GetAllUsersAsync invocado con pageNumber: 1, pageSize: 10, searchTerm: null, activeOnly: true
+2025-06-08 16:07:16.583 +02:00 [INF] info: 08/06/2025 16:07:16.583 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT count(*)::int
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+2025-06-08 16:07:16.584 +02:00 [INF] info: 08/06/2025 16:07:16.584 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_1='10', @__p_0='0'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+      ORDER BY u."UserName"
+      LIMIT @__p_1 OFFSET @__p_0
+2025-06-08 16:07:16.585 +02:00 [INF] info: 08/06/2025 16:07:16.585 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:07:16.585 +02:00 [INF] info: 08/06/2025 16:07:16.585 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='3e57be0c-5735-4119-94fe-447573159bf1'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:07:16.586 +02:00 [INF] info: 08/06/2025 16:07:16.586 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4d1e-735e-bd07-aab1b81319d6'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:07:16.586 +02:00 [INF] Se encontraron 3 usuarios de un total de 3
+2025-06-08 16:07:16.586 +02:00 [INF] Resultado obtenido exitosamente
+2025-06-08 16:07:16.586 +02:00 [INF] - Total de usuarios: 3
+2025-06-08 16:07:16.586 +02:00 [INF] - Usuarios en la página: 3
+2025-06-08 16:07:16.586 +02:00 [INF] - Página actual: 1 de 1 (Tamaño: 10)
+2025-06-08 16:07:16.586 +02:00 [INF] === FIN: GetAllUsers ===
+2025-06-08 16:07:16.587 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:08:00.517 +02:00 [INF] Solicitud Entrante: GET /api/Roles/users/urn:uuid:b9723453-5e46-4393-3887-deece36ed4cb/roles desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:08:00.518 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:08:00.519 +02:00 [INF] Solicitud Entrante: GET /api/Roles/users/urn:uuid:b9723453-5e46-4393-3887-deece36ed4cb/roles desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:08:00.522 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:08:00.698 +02:00 [ERR] Error al obtener los roles del usuario "00000000-0000-0000-0000-000000000000"
+System.ArgumentNullException: Value cannot be null. (Parameter 'userId')
+   at GestMantIA.Application.Features.UserManagement.Services.RoleService.GetUserRolesAsync(Guid userId) in D:\source\Repos\GestMantIA\src\GestMantIA.Application\Features\UserManagement\Services\RoleService.cs:line 326
+   at GestMantIA.API.Controllers.RolesController.GetUserRoles(Guid userId) in D:\source\Repos\GestMantIA\src\GestMantIA.API\Controllers\RolesController.cs:line 274
+2025-06-08 16:08:00.702 +02:00 [INF] Respuesta Saliente: 500 | Content-Type: text/plain; charset=utf-8 | Content-Length: -1
+2025-06-08 16:09:04.477 +02:00 [INF] Solicitud Entrante: GET /api/Roles/users/01972049-4c99-74d4-8dc3-3a58a012f44c/roles desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:09:04.508 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:09:04.509 +02:00 [INF] Solicitud Entrante: GET /api/Roles/users/01972049-4c99-74d4-8dc3-3a58a012f44c/roles desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:09:04.510 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:09:04.512 +02:00 [INF] info: 08/06/2025 16:09:04.512 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_0='01972049-4c99-74d4-8dc3-3a58a012f44c' (Nullable = true)], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."Id" = @__p_0
+      LIMIT 1
+2025-06-08 16:09:04.513 +02:00 [INF] info: 08/06/2025 16:09:04.513 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:09:04.513 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:09:40.515 +02:00 [INF] Solicitud Entrante: POST /api/Roles/users/01972049-4c99-74d4-8dc3-3a58a012f44c/roles/user desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:09:40.515 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:09:40.516 +02:00 [INF] Solicitud Entrante: POST /api/Roles/users/01972049-4c99-74d4-8dc3-3a58a012f44c/roles/user desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:09:40.518 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:09:40.521 +02:00 [INF] info: 08/06/2025 16:09:40.521 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_0='01972049-4c99-74d4-8dc3-3a58a012f44c' (Nullable = true)], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."Id" = @__p_0
+      LIMIT 1
+2025-06-08 16:09:40.522 +02:00 [INF] info: 08/06/2025 16:09:40.522 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__normalizedName_0='USER'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Id", r."ConcurrencyStamp", r."CreatedAt", r."Description", r."Name", r."NormalizedName", r."UpdatedAt"
+      FROM identity."Roles" AS r
+      WHERE r."NormalizedName" = @__normalizedName_0
+      LIMIT 1
+2025-06-08 16:09:40.523 +02:00 [INF] info: 08/06/2025 16:09:40.523 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__normalizedRoleName_0='USER'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Id", r."ConcurrencyStamp", r."CreatedAt", r."Description", r."Name", r."NormalizedName", r."UpdatedAt"
+      FROM identity."Roles" AS r
+      WHERE r."NormalizedName" = @__normalizedRoleName_0
+      LIMIT 2
+2025-06-08 16:09:40.523 +02:00 [INF] info: 08/06/2025 16:09:40.523 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='01972049-4c99-74d4-8dc3-3a58a012f44c' (Nullable = true), @__p_1='60ea170a-4be7-4edd-8656-a7567c8860a4' (Nullable = true)], CommandType='Text', CommandTimeout='60']
+      SELECT u."UserId", u."RoleId"
+      FROM identity."UserRoles" AS u
+      WHERE u."UserId" = @__p_0 AND u."RoleId" = @__p_1
+      LIMIT 1
+2025-06-08 16:09:40.524 +02:00 [INF] info: 08/06/2025 16:09:40.524 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__normalizedRoleName_0='USER'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Id", r."ConcurrencyStamp", r."CreatedAt", r."Description", r."Name", r."NormalizedName", r."UpdatedAt"
+      FROM identity."Roles" AS r
+      WHERE r."NormalizedName" = @__normalizedRoleName_0
+      LIMIT 2
+2025-06-08 16:09:40.525 +02:00 [INF] info: 08/06/2025 16:09:40.524 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='01972049-4c99-74d4-8dc3-3a58a012f44c' (Nullable = true), @__p_1='60ea170a-4be7-4edd-8656-a7567c8860a4' (Nullable = true)], CommandType='Text', CommandTimeout='60']
+      SELECT u."UserId", u."RoleId"
+      FROM identity."UserRoles" AS u
+      WHERE u."UserId" = @__p_0 AND u."RoleId" = @__p_1
+      LIMIT 1
+2025-06-08 16:09:40.525 +02:00 [INF] info: 08/06/2025 16:09:40.525 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__normalizedRoleName_0='USER'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Id", r."ConcurrencyStamp", r."CreatedAt", r."Description", r."Name", r."NormalizedName", r."UpdatedAt"
+      FROM identity."Roles" AS r
+      WHERE r."NormalizedName" = @__normalizedRoleName_0
+      LIMIT 2
+2025-06-08 16:09:40.526 +02:00 [INF] info: 08/06/2025 16:09:40.526 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__normalizedUserName_0='ADMIN@LOCALHOST'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."NormalizedUserName" = @__normalizedUserName_0
+      LIMIT 1
+2025-06-08 16:09:40.526 +02:00 [INF] info: 08/06/2025 16:09:40.526 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__normalizedEmail_0='ADMIN@LOCALHOST'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."NormalizedEmail" = @__normalizedEmail_0
+      LIMIT 2
+2025-06-08 16:09:40.528 +02:00 [INF] info: 08/06/2025 16:09:40.528 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@p0='60ea170a-4be7-4edd-8656-a7567c8860a4', @p1='01972049-4c99-74d4-8dc3-3a58a012f44c', @p30='01972049-4c99-74d4-8dc3-3a58a012f44c', @p2='0', @p3='0d5c30f6-d311-41cf-aa60-b275a6f71934', @p31='c8d1b103-e63b-4585-b61a-e20d0ed114fe', @p4='2025-05-30T08:22:44.1567840Z' (DbType = DateTime), @p5=NULL (DbType = DateTime), @p6=NULL (DbType = Guid), @p7='admin@localhost' (Nullable = false), @p8='True', @p9='Admin' (Nullable = false), @p10='' (Nullable = false), @p11='True', @p12='False', @p13='2025-05-30T08:22:44.0606300Z' (Nullable = true) (DbType = DateTime), @p14='Local' (Nullable = false), @p15=NULL (DbType = DateTime), @p16='True', @p17=NULL (DbType = DateTime), @p18='' (Nullable = false), @p19='ADMIN@LOCALHOST', @p20='ADMIN@LOCALHOST', @p21='AQAAAAIAAYagAAAAEAnzR3HTZTNImTRVTolkWuNj21zATASRmee5ZHMiUPMd3d8NCaS5y4PKGpO4dsHJVw==' (Nullable = false), @p22=NULL, @p23=NULL (DbType = DateTime), @p24='+34600000000', @p25='False', @p26='3VXW3L32ZPYINKPQ5WEIUSPSNFXLUL6F', @p27='False', @p28='2025-06-08T14:09:40.5272977Z' (Nullable = true) (DbType = DateTime), @p29='admin@localhost' (Nullable = false)], CommandType='Text', CommandTimeout='60']
+      INSERT INTO identity."UserRoles" ("RoleId", "UserId")
+      VALUES (@p0, @p1);
+      UPDATE identity."Users" SET "AccessFailedCount" = @p2, "ConcurrencyStamp" = @p3, "CreatedAt" = @p4, "DeletedAt" = @p5, "DeletedBy" = @p6, "Email" = @p7, "EmailConfirmed" = @p8, "FirstName" = @p9, "FullName" = @p10, "IsActive" = @p11, "IsDeleted" = @p12, "LastLoginDate" = @p13, "LastName" = @p14, "LockoutDate" = @p15, "LockoutEnabled" = @p16, "LockoutEnd" = @p17, "LockoutReason" = @p18, "NormalizedEmail" = @p19, "NormalizedUserName" = @p20, "PasswordHash" = @p21, "PasswordResetToken" = @p22, "PasswordResetTokenExpiration" = @p23, "PhoneNumber" = @p24, "PhoneNumberConfirmed" = @p25, "SecurityStamp" = @p26, "TwoFactorEnabled" = @p27, "UpdatedAt" = @p28, "UserName" = @p29
+      WHERE "Id" = @p30 AND "ConcurrencyStamp" = @p31;
+2025-06-08 16:09:40.532 +02:00 [INF] Rol 'user' asignado exitosamente al usuario "01972049-4c99-74d4-8dc3-3a58a012f44c"
+2025-06-08 16:09:40.533 +02:00 [INF] Respuesta Saliente: 204 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:09:59.397 +02:00 [INF] Solicitud Entrante: GET /api/UserManagement desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:09:59.397 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:09:59.398 +02:00 [INF] Solicitud Entrante: GET /api/UserManagement desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:09:59.398 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:09:59.399 +02:00 [INF] === INICIO: GetAllUsers ===
+2025-06-08 16:09:59.399 +02:00 [INF] Parámetros de la solicitud:
+2025-06-08 16:09:59.399 +02:00 [INF] - Término de búsqueda: (ninguno)
+2025-06-08 16:09:59.399 +02:00 [INF] - Página: 1
+2025-06-08 16:09:59.399 +02:00 [INF] - Tamaño de página: 10
+2025-06-08 16:09:59.399 +02:00 [INF] - Solo activos: null
+2025-06-08 16:09:59.399 +02:00 [INF] Llamando a _userService.GetAllUsersAsync...
+2025-06-08 16:09:59.399 +02:00 [INF] GetAllUsersAsync invocado con pageNumber: 1, pageSize: 10, searchTerm: null, activeOnly: true
+2025-06-08 16:09:59.400 +02:00 [INF] info: 08/06/2025 16:09:59.400 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT count(*)::int
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+2025-06-08 16:09:59.401 +02:00 [INF] info: 08/06/2025 16:09:59.401 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_1='10', @__p_0='0'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+      ORDER BY u."UserName"
+      LIMIT @__p_1 OFFSET @__p_0
+2025-06-08 16:09:59.401 +02:00 [INF] info: 08/06/2025 16:09:59.401 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:09:59.402 +02:00 [INF] info: 08/06/2025 16:09:59.402 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='3e57be0c-5735-4119-94fe-447573159bf1'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:09:59.403 +02:00 [INF] info: 08/06/2025 16:09:59.403 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4d1e-735e-bd07-aab1b81319d6'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:09:59.403 +02:00 [INF] Se encontraron 3 usuarios de un total de 3
+2025-06-08 16:09:59.403 +02:00 [INF] Resultado obtenido exitosamente
+2025-06-08 16:09:59.403 +02:00 [INF] - Total de usuarios: 3
+2025-06-08 16:09:59.403 +02:00 [INF] - Usuarios en la página: 3
+2025-06-08 16:09:59.403 +02:00 [INF] - Página actual: 1 de 1 (Tamaño: 10)
+2025-06-08 16:09:59.403 +02:00 [INF] === FIN: GetAllUsers ===
+2025-06-08 16:09:59.404 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:18:16.448 +02:00 [INF] Solicitud Entrante: GET /api/users/01972049-4c99-74d4-8dc3-3a58a012f44c desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:18:16.473 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:18:16.505 +02:00 [INF] Solicitud Entrante: GET /api/users/01972049-4c99-74d4-8dc3-3a58a012f44c desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:18:16.506 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:18:16.553 +02:00 [INF] info: 08/06/2025 16:18:16.553 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (2ms) [Parameters=[@__p_0='01972049-4c99-74d4-8dc3-3a58a012f44c' (Nullable = true)], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."Id" = @__p_0
+      LIMIT 1
+2025-06-08 16:18:16.555 +02:00 [INF] info: 08/06/2025 16:18:16.555 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:18:16.555 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:19:15.348 +02:00 [INF] Solicitud Entrante: GET /api/users/01972049-4c99-74d4-8dc3-3a58a012f44c/lockout-info desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:19:15.348 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:19:15.349 +02:00 [INF] Solicitud Entrante: GET /api/users/01972049-4c99-74d4-8dc3-3a58a012f44c/lockout-info desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:19:15.351 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:19:15.354 +02:00 [INF] info: 08/06/2025 16:19:15.354 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_0='01972049-4c99-74d4-8dc3-3a58a012f44c' (Nullable = true)], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."Id" = @__p_0
+      LIMIT 1
+2025-06-08 16:19:15.359 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:19:31.490 +02:00 [INF] Solicitud Entrante: GET /api/users/01972049-4c99-74d4-8dc3-3a58a012f44co/lockout-info desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:19:31.490 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:19:31.491 +02:00 [INF] Solicitud Entrante: GET /api/users/01972049-4c99-74d4-8dc3-3a58a012f44co/lockout-info desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:19:31.492 +02:00 [INF] Respuesta Saliente: 404 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:19:37.407 +02:00 [INF] Solicitud Entrante: GET /api/users/01972049-4c99-74d4-8dc3-3a58a012f44c/lockout-info desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:19:37.407 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:19:37.408 +02:00 [INF] Solicitud Entrante: GET /api/users/01972049-4c99-74d4-8dc3-3a58a012f44c/lockout-info desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:19:37.409 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:19:37.410 +02:00 [INF] info: 08/06/2025 16:19:37.410 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='01972049-4c99-74d4-8dc3-3a58a012f44c' (Nullable = true)], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."Id" = @__p_0
+      LIMIT 1
+2025-06-08 16:19:37.411 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:19:57.999 +02:00 [INF] Solicitud Entrante: GET /api/Users/01972049-4c99-74d4-8dc3-3a58a012f44c desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:19:57.999 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:19:58.000 +02:00 [INF] Solicitud Entrante: GET /api/Users/01972049-4c99-74d4-8dc3-3a58a012f44c desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:19:58.001 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:19:58.002 +02:00 [INF] info: 08/06/2025 16:19:58.002 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='01972049-4c99-74d4-8dc3-3a58a012f44c' (Nullable = true)], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."Id" = @__p_0
+      LIMIT 1
+2025-06-08 16:19:58.003 +02:00 [INF] info: 08/06/2025 16:19:58.003 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:19:58.003 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:20:07.419 +02:00 [INF] Solicitud Entrante: GET /api/users/01972049-4c99-74d4-8dc3-3a58a012f44c/lockout-info desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:20:07.419 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:20:07.420 +02:00 [INF] Solicitud Entrante: GET /api/users/01972049-4c99-74d4-8dc3-3a58a012f44c/lockout-info desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:20:07.421 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:20:07.423 +02:00 [INF] info: 08/06/2025 16:20:07.423 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='01972049-4c99-74d4-8dc3-3a58a012f44c' (Nullable = true)], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE u."Id" = @__p_0
+      LIMIT 1
+2025-06-08 16:20:07.423 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:20:18.821 +02:00 [INF] Solicitud Entrante: GET /api/Users/search desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:20:18.821 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:20:18.822 +02:00 [INF] Solicitud Entrante: GET /api/Users/search desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:20:18.824 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:20:18.825 +02:00 [INF] GetAllUsersAsync invocado con pageNumber: 1, pageSize: 10, searchTerm: null, activeOnly: true
+2025-06-08 16:20:18.826 +02:00 [INF] info: 08/06/2025 16:20:18.826 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT count(*)::int
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+2025-06-08 16:20:18.827 +02:00 [INF] info: 08/06/2025 16:20:18.827 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_1='10', @__p_0='0'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+      ORDER BY u."UserName"
+      LIMIT @__p_1 OFFSET @__p_0
+2025-06-08 16:20:18.828 +02:00 [INF] info: 08/06/2025 16:20:18.828 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:20:18.829 +02:00 [INF] info: 08/06/2025 16:20:18.829 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='3e57be0c-5735-4119-94fe-447573159bf1'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:20:18.829 +02:00 [INF] info: 08/06/2025 16:20:18.829 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4d1e-735e-bd07-aab1b81319d6'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:20:18.829 +02:00 [INF] Se encontraron 3 usuarios de un total de 3
+2025-06-08 16:20:18.829 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:20:28.711 +02:00 [INF] Solicitud Entrante: GET /api/Users/search desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:20:28.711 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:20:28.712 +02:00 [INF] Solicitud Entrante: GET /api/Users/search desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:20:28.713 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:20:28.713 +02:00 [INF] GetAllUsersAsync invocado con pageNumber: 1, pageSize: 10, searchTerm: null, activeOnly: true
+2025-06-08 16:20:28.714 +02:00 [INF] info: 08/06/2025 16:20:28.714 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT count(*)::int
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+2025-06-08 16:20:28.715 +02:00 [INF] info: 08/06/2025 16:20:28.715 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_1='10', @__p_0='0'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+      ORDER BY u."UserName"
+      LIMIT @__p_1 OFFSET @__p_0
+2025-06-08 16:20:28.715 +02:00 [INF] info: 08/06/2025 16:20:28.715 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:20:28.716 +02:00 [INF] info: 08/06/2025 16:20:28.716 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='3e57be0c-5735-4119-94fe-447573159bf1'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:20:28.716 +02:00 [INF] info: 08/06/2025 16:20:28.716 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4d1e-735e-bd07-aab1b81319d6'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:20:28.716 +02:00 [INF] Se encontraron 3 usuarios de un total de 3
+2025-06-08 16:20:28.717 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:20:40.440 +02:00 [INF] Solicitud Entrante: GET /api/Users/search desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:20:40.440 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:20:40.441 +02:00 [INF] Solicitud Entrante: GET /api/Users/search desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:20:40.442 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:20:40.443 +02:00 [INF] GetAllUsersAsync invocado con pageNumber: 1, pageSize: 1, searchTerm: null, activeOnly: true
+2025-06-08 16:20:40.444 +02:00 [INF] info: 08/06/2025 16:20:40.444 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT count(*)::int
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+2025-06-08 16:20:40.444 +02:00 [INF] info: 08/06/2025 16:20:40.444 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_1='1', @__p_0='0'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+      ORDER BY u."UserName"
+      LIMIT @__p_1 OFFSET @__p_0
+2025-06-08 16:20:40.445 +02:00 [INF] info: 08/06/2025 16:20:40.445 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:20:40.445 +02:00 [INF] Se encontraron 1 usuarios de un total de 3
+2025-06-08 16:20:40.445 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:20:51.458 +02:00 [INF] Solicitud Entrante: GET /api/Users/search desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:20:51.458 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:20:51.459 +02:00 [INF] Solicitud Entrante: GET /api/Users/search desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:20:51.459 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:20:51.460 +02:00 [INF] GetAllUsersAsync invocado con pageNumber: 3, pageSize: 1, searchTerm: null, activeOnly: true
+2025-06-08 16:20:51.461 +02:00 [INF] info: 08/06/2025 16:20:51.461 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT count(*)::int
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+2025-06-08 16:20:51.461 +02:00 [INF] info: 08/06/2025 16:20:51.461 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_1='1', @__p_0='2'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+      ORDER BY u."UserName"
+      LIMIT @__p_1 OFFSET @__p_0
+2025-06-08 16:20:51.462 +02:00 [INF] info: 08/06/2025 16:20:51.462 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4d1e-735e-bd07-aab1b81319d6'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:20:51.462 +02:00 [INF] Se encontraron 1 usuarios de un total de 3
+2025-06-08 16:20:51.463 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:21:01.274 +02:00 [INF] Solicitud Entrante: GET /api/Users/search desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:21:01.274 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:21:01.276 +02:00 [INF] Solicitud Entrante: GET /api/Users/search desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:21:01.276 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:21:01.276 +02:00 [INF] GetAllUsersAsync invocado con pageNumber: 4, pageSize: 1, searchTerm: null, activeOnly: true
+2025-06-08 16:21:01.277 +02:00 [INF] info: 08/06/2025 16:21:01.277 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT count(*)::int
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+2025-06-08 16:21:01.278 +02:00 [INF] info: 08/06/2025 16:21:01.278 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_1='1', @__p_0='3'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+      ORDER BY u."UserName"
+      LIMIT @__p_1 OFFSET @__p_0
+2025-06-08 16:21:01.278 +02:00 [INF] Se encontraron 0 usuarios de un total de 3
+2025-06-08 16:21:01.278 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:21:14.321 +02:00 [INF] Solicitud Entrante: GET /api/Users/search desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:21:14.321 +02:00 [INF] Respuesta Saliente: 307 | Content-Type: N/A | Content-Length: -1
+2025-06-08 16:21:14.322 +02:00 [INF] Solicitud Entrante: GET /api/Users/search desde ::1 | User-Agent: PostmanRuntime/7.44.0
+2025-06-08 16:21:14.322 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:21:14.323 +02:00 [INF] GetAllUsersAsync invocado con pageNumber: 1, pageSize: 10, searchTerm: null, activeOnly: true
+2025-06-08 16:21:14.324 +02:00 [INF] info: 08/06/2025 16:21:14.324 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT count(*)::int
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+2025-06-08 16:21:14.324 +02:00 [INF] info: 08/06/2025 16:21:14.324 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_1='10', @__p_0='0'], CommandType='Text', CommandTimeout='60']
+      SELECT u."Id", u."AccessFailedCount", u."ConcurrencyStamp", u."CreatedAt", u."DeletedAt", u."DeletedBy", u."Email", u."EmailConfirmed", u."FirstName", u."FullName", u."IsActive", u."IsDeleted", u."LastLoginDate", u."LastName", u."LockoutDate", u."LockoutEnabled", u."LockoutEnd", u."LockoutReason", u."NormalizedEmail", u."NormalizedUserName", u."PasswordHash", u."PasswordResetToken", u."PasswordResetTokenExpiration", u."PhoneNumber", u."PhoneNumberConfirmed", u."SecurityStamp", u."TwoFactorEnabled", u."UpdatedAt", u."UserName"
+      FROM identity."Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."IsActive" AND NOT (u."IsDeleted")
+      ORDER BY u."UserName"
+      LIMIT @__p_1 OFFSET @__p_0
+2025-06-08 16:21:14.325 +02:00 [INF] info: 08/06/2025 16:21:14.325 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4c99-74d4-8dc3-3a58a012f44c'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:21:14.326 +02:00 [INF] info: 08/06/2025 16:21:14.326 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='3e57be0c-5735-4119-94fe-447573159bf1'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:21:14.326 +02:00 [INF] info: 08/06/2025 16:21:14.326 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__userId_0='01972049-4d1e-735e-bd07-aab1b81319d6'], CommandType='Text', CommandTimeout='60']
+      SELECT r."Name"
+      FROM identity."UserRoles" AS u
+      INNER JOIN identity."Roles" AS r ON u."RoleId" = r."Id"
+      WHERE u."UserId" = @__userId_0
+2025-06-08 16:21:14.327 +02:00 [INF] Se encontraron 3 usuarios de un total de 3
+2025-06-08 16:21:14.327 +02:00 [INF] Respuesta Saliente: 200 | Content-Type: application/json; charset=utf-8 | Content-Length: -1
+2025-06-08 16:33:08.413 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 16:33:08.623 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 16:33:08.653 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 16:33:09.214 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 16:33:09.219 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 16:33:09.233 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:00:40.011 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:00:40.229 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:00:40.261 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:00:40.801 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:00:40.805 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:00:40.819 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:03:40.302 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:03:40.514 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:03:40.546 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:03:41.164 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:03:41.168 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:03:41.181 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:10:13.814 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:10:14.031 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:10:14.064 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:10:14.628 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:10:14.633 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:10:14.646 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:13:08.451 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:13:08.673 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:13:08.706 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:13:09.318 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:13:09.324 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:13:09.338 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:13:33.636 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:13:33.845 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:13:33.874 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:13:34.432 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:13:34.437 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:13:34.451 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:15:32.692 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:15:32.907 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:15:32.935 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:15:33.497 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:15:33.504 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:15:33.517 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:15:49.114 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:15:49.337 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:15:49.369 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:15:49.908 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:15:49.913 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:15:49.926 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:20:17.536 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:20:17.755 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:20:17.786 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:20:18.333 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:20:18.338 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:20:18.351 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:20:31.795 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:20:32.007 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:20:32.035 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:20:32.661 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:20:32.668 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:20:32.682 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:23:29.111 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:23:29.335 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:23:29.372 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:23:29.918 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:23:29.923 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:23:29.935 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:23:43.118 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:23:43.340 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:23:43.371 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:23:43.919 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:23:43.923 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:23:43.936 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:24:56.082 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:24:56.305 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:24:56.334 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:24:56.913 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:24:56.920 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:24:56.932 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:25:07.007 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:25:07.218 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:25:07.246 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:25:07.803 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:25:07.807 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:25:07.819 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:28:04.464 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:28:04.694 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:28:04.723 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:28:05.298 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:28:05.303 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:28:05.316 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:28:11.629 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:28:11.858 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:28:11.893 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:28:12.513 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:28:12.518 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:28:12.532 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:28:31.679 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:28:31.917 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:28:31.955 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:28:32.543 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:28:32.548 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:28:32.563 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:29:17.503 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:29:17.742 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:29:17.775 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:29:18.339 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:29:18.343 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:29:18.357 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:29:24.709 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:29:24.925 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:29:24.954 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:29:25.496 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:29:25.504 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:29:25.517 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:29:39.004 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:29:39.235 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:29:39.268 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:29:39.858 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:29:39.863 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:29:39.877 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:31:03.040 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:31:03.261 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:31:03.293 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:31:03.854 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:31:03.858 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:31:03.870 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:31:08.771 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:31:08.996 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:31:09.027 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:31:09.643 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:31:09.651 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:31:09.664 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:31:27.643 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:31:27.885 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:31:27.915 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:31:28.617 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:31:28.621 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:31:28.633 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:32:18.741 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:32:18.986 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:32:19.019 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:32:19.660 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:32:19.664 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:32:19.678 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:32:28.543 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:32:28.759 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:32:28.789 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:32:29.364 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:32:29.369 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:32:29.383 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:34:13.638 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:34:13.876 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:34:13.911 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:34:14.551 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:34:14.557 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:34:14.574 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:34:21.514 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:34:21.755 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:34:21.793 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:34:22.509 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:34:22.514 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:34:22.527 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:57:38.137 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:57:38.358 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:57:38.388 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:57:38.931 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:57:38.936 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:57:38.948 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 19:58:32.419 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 19:58:32.630 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 19:58:32.661 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 19:58:33.223 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 19:58:33.227 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 19:58:33.241 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 20:46:04.262 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 20:46:04.500 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 20:46:04.538 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 20:46:05.131 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 20:46:05.135 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 20:46:05.147 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 20:46:20.378 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 20:46:20.600 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 20:46:20.628 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 20:46:21.159 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 20:46:21.165 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 20:46:21.178 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 20:54:57.581 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 20:54:57.800 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 20:54:57.831 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 20:54:58.421 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 20:54:58.425 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 20:54:58.438 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:01:19.149 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:01:19.369 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:01:19.402 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:01:19.955 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:01:19.959 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:01:19.972 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:06:31.759 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:06:31.973 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:06:32.005 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:06:32.545 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:06:32.550 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:06:32.564 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:06:44.459 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:06:44.684 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:06:44.714 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:06:45.289 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:06:45.294 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:06:45.308 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:07:04.928 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:07:05.155 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:07:05.187 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:07:05.764 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:07:05.768 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:07:05.780 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:17:09.784 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:17:09.994 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:17:10.023 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:17:10.675 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:17:10.679 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:17:10.692 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:17:50.726 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:17:50.939 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:17:50.969 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:17:51.554 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:17:51.558 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:17:51.571 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:21:17.378 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:21:17.611 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:21:17.643 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:21:18.219 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:21:18.223 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:21:18.237 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:22:19.217 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:22:19.479 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:22:19.518 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:22:20.124 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:22:20.128 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:22:20.140 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:22:45.220 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:22:45.447 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:22:45.479 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:22:46.189 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:22:46.193 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:22:46.207 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:22:51.980 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:22:52.215 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:22:52.249 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:22:52.893 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:22:52.898 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:22:52.912 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:25:58.756 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:25:58.972 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:25:59.005 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:25:59.612 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:25:59.617 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:25:59.630 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:26:42.345 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:26:42.563 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:26:42.594 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:26:43.132 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:26:43.137 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:26:43.151 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:27:51.024 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:27:51.239 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:27:51.269 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:27:51.835 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:27:51.840 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:27:51.854 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:28:04.100 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:28:04.331 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:28:04.363 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:28:04.899 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:28:04.904 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:28:04.917 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:28:44.126 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:28:44.351 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:28:44.384 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:28:44.944 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:28:44.948 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:28:44.961 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:28:50.106 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:28:50.345 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:28:50.377 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:28:50.963 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:28:50.968 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:28:50.981 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:29:05.281 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:29:05.496 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:29:05.527 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:29:06.069 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:29:06.074 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:29:06.087 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.
+2025-06-08 21:29:37.060 +02:00 [INF] Iniciando la aplicación...
+2025-06-08 21:29:37.285 +02:00 [INF] [DB] Configurando ApplicationDbContext con cadena de conexión: Host=localhost;Port=5432;Database=gestmantia_dev;Username=postgres;Password=PoLiKu71;Include Error Detail=true;Trust Server Certificate=true;Pooling=true;Command Timeout=60
+2025-06-08 21:29:37.318 +02:00 [INF] Verificando y aplicando migraciones para ApplicationDbContext (esto puede crear la base de datos si no existe)...
+2025-06-08 21:29:37.906 +02:00 [INF] No migrations were applied. The database is already up to date.
+2025-06-08 21:29:37.910 +02:00 [INF] Base de datos ApplicationDbContext actualizada correctamente mediante migraciones.
+2025-06-08 21:29:37.923 +02:00 [WRN] The WebRootPath was not found: D:\source\Repos\GestMantIA\src\GestMantIA.API\wwwroot. Static files may be unavailable.

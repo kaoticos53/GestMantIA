@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "f3CFbo3IQ7g=",
+  "dgSpecHash": "F+3tlA0aStw=",
   "success": true,
   "projectFilePath": "D:\\source\\Repos\\GestMantIA\\src\\GestMantIA.API\\GestMantIA.API.csproj",
   "expectedPackageFiles": [
@@ -153,7 +153,8 @@
     "D:\\packages\\NuGet\\cache\\system.servicemodel.primitives\\4.5.3\\system.servicemodel.primitives.4.5.3.nupkg.sha512",
     "D:\\packages\\NuGet\\cache\\system.text.encodings.web\\8.0.0\\system.text.encodings.web.8.0.0.nupkg.sha512",
     "D:\\packages\\NuGet\\cache\\system.text.json\\9.0.5\\system.text.json.9.0.5.nupkg.sha512",
-    "D:\\packages\\NuGet\\cache\\system.threading.channels\\7.0.0\\system.threading.channels.7.0.0.nupkg.sha512"
+    "D:\\packages\\NuGet\\cache\\system.threading.channels\\7.0.0\\system.threading.channels.7.0.0.nupkg.sha512",
+    "D:\\packages\\NuGet\\cache\\microsoft.net.sdk.compilers.toolset\\9.0.300\\microsoft.net.sdk.compilers.toolset.9.0.300.nupkg.sha512"
   ],
   "logs": []
 }

@@ -17,7 +17,8 @@ namespace GestMantIA.Core.Identity.Entities
         {
             Title = string.Empty;
             Message = string.Empty;
-            ResolutionNotes = null;
+            ResolutionNotes = string.Empty;
+            AlertType = "SecurityAlert";
         }
 
         /// <summary>
@@ -48,6 +49,13 @@ namespace GestMantIA.Core.Identity.Entities
         /// Indica si la alerta ha sido resuelta.
         /// </summary>
         public bool IsResolved { get; set; }
+
+        /// <summary>
+        /// Tipo de alerta de seguridad.
+        /// </summary>
+        [Required]
+        [MaxLength(100)]
+        public string AlertType { get; set; }
         /// <summary>
         /// Fecha y hora en que se resolvió la alerta (si aplica).
         /// </summary>

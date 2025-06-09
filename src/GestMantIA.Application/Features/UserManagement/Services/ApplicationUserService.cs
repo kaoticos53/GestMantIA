@@ -71,7 +71,7 @@ namespace GestMantIA.Application.Features.UserManagement.Services
                 var user = await _userManager.FindByIdAsync(userId.ToString());
                 if (user == null || user.IsDeleted)
                 {
-                    _logger.LogInformation("GetUserByIdAsync: No se encontró el usuario con ID '{UserId}' o está marcado como eliminado.", userId);
+                    _logger.LogWarning("No se encontró el usuario con ID '{UserId}' o está marcado como eliminado.", userId);
                     return null;
                 }
 
@@ -662,8 +662,16 @@ namespace GestMantIA.Application.Features.UserManagement.Services
                 if (identityResult.Succeeded)
                 {
                     _logger.LogInformation("Usuario '{UserId}' desbloqueado exitosamente.", userId);
-                    await _userManager.ResetAccessFailedCountAsync(user);
-                    return true;
+                    try
+                    {
+                        await _userManager.ResetAccessFailedCountAsync(user);
+                        return true;
+                    }
+                    catch (Exception resetEx)
+                    {
+                        _logger.LogError(resetEx, "Error al restablecer el contador de intentos fallidos para el usuario '{UserId}'.", userId);
+                        return false;
+                    }
                 }
                 else
                 {
@@ -678,12 +686,12 @@ namespace GestMantIA.Application.Features.UserManagement.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<bool> IsUserLockedOutAsync(Guid userId)
         {
-            ApplicationUser? user;
             try
             {
-                user = await _userManager.FindByIdAsync(userId.ToString());
+                var user = await _userManager.FindByIdAsync(userId.ToString());
 
                 if (user == null || user.IsDeleted)
                 {

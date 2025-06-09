@@ -60,7 +60,7 @@
                 </MudSelect>
             </MudItem>
             <MudItem xs="12">
-                <MudCheckBox T="bool" @bind-Checked="_createUserModel.RequireEmailConfirmation" Label="Requerir Confirmación de Email" Color="Color.Primary" />
+                <MudCheckBox T="bool" Label="¿Enviar correo de verificación?" @bind-Checked="_sendVerificationEmail" />
             </MudItem>
         </MudGrid>
 
@@ -103,6 +103,7 @@
 private IEnumerable<string> _selectedRoleNames = new List<String>();
 
     private bool _isSubmitting = false;
+    private bool _sendVerificationEmail = true;
 
     protected override async Task OnInitializedAsync()
     {
